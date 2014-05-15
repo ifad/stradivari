@@ -6,7 +6,7 @@ module Filter
 
       name = options[:scope] || "#{attribute_name}_in"
       if type == :single_line
-        listing_type = "single-line"
+        listing_type = "single-line form-inline"
       else
         listing_type = "multi-line"
       end
@@ -21,9 +21,11 @@ module Filter
           collection.each do |item|
             if type == :single_line
               # build single line multiple selection
-              haml_tag :label, class: classes do
-                haml_concat check_box(@@form_namespace, name, { multiple: true, value: item.last, checked: values.include?(item.last.to_s) }, item.last, nil)
-                haml_concat item.first
+              haml_tag :div, class: 'checkbox' do
+                haml_tag :label, class: classes do
+                  haml_concat check_box(@@form_namespace, name, { multiple: true, value: item.last, checked: values.include?(item.last.to_s) }, item.last, nil)
+                  haml_concat item.first
+                end
               end
             else
               # build multi line multiple selection

@@ -10,15 +10,11 @@ module Filter
         haml_tag :fieldset do
           haml_concat label(@@form_namespace, input_name, options[:title] || attribute_name.to_s.humanize, for: 'date')
           haml_tag :br
-          haml_tag :div, class: "form-group input-daterange table-datepicker" do
-            value = options[:value]
+          haml_tag :div, class: "form-group input-daterange ccm-datepicker" do
             haml_concat text_field(@@form_namespace, "#{input_name}_gteq", {value: from_value, class: 'form-control'})
           end
-          haml_tag :div, class: "form-group delimiter" do
-            haml_tag :label, "-"
-          end
-          haml_tag :div, class: "form-group input-daterange table-datepicker" do
-            value = options[:value]
+          haml_tag :div, '-', class: "form-group delimiter"
+          haml_tag :div, class: "form-group input-daterange ccm-datepicker" do
             haml_concat text_field(@@form_namespace, "#{input_name}_lteq", {value: to_value, class: 'form-control'})
           end
         end
