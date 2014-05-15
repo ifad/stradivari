@@ -38,7 +38,7 @@ module Table
               :using => {
                 :tsearch => {
                   :prefix => true,
-                  :dictionary => @_scope_search_dictionary || options[:dictionary] || :english,
+                  :dictionary => options[:dictionary] || @_scope_search_dictionary || :english,
                   :tsvector_column => 'tsv'
                 }
               }
