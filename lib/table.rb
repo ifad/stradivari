@@ -1,4 +1,5 @@
 require 'pg_search'
+require 'ransack'
 
 require 'table/version'
 require 'table/engine'

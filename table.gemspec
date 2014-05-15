@@ -23,4 +23,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"
 
   spec.add_runtime_dependency 'pg_search'
+  spec.add_runtime_dependency 'ransack'
 end
