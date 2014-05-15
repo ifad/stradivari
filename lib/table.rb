@@ -22,6 +22,10 @@ module Table
     autoload :Sort,          'table/controllers/sort'
   end
 
+  module Helpers
+    autoload :Generator,     'table/helpers/generator'
+  end
+
   module Models
     autoload :ScopeSearch,   'table/models/scope_search'
   end
