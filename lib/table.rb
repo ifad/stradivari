@@ -18,7 +18,11 @@ module Table
   autoload :TextBuilder,     'table/text_builder'
   autoload :TextLinkBuilder, 'table/text_link_builder'
 
+  module Controllers
+    autoload :Sort,          'table/controllers/sort'
+  end
+
   module Models
-    autoload :ScopeSearch, 'table/models/scope_search'
+    autoload :ScopeSearch,   'table/models/scope_search'
   end
 end
