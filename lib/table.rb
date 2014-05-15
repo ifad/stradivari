@@ -3,7 +3,6 @@ require 'table/engine'
 require 'filter'
 
 module Table
-  # Your code goes here...
   autoload :ActionBuilder,   'table/action_builder'
   autoload :BaseBuilder,     'table/base_builder'
   autoload :BooleanBuilder,  'table/boolean_builder'
@@ -15,4 +14,8 @@ module Table
   autoload :NumberBuilder,   'table/number_builder'
   autoload :TextBuilder,     'table/text_builder'
   autoload :TextLinkBuilder, 'table/text_link_builder'
+
+  module Models
+    autoload :ScopeSearch, 'table/models/scope_search'
+  end
 end
