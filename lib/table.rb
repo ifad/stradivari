@@ -1,3 +1,5 @@
+require 'pg_search'
+
 require 'table/version'
 require 'table/engine'
 require 'filter'
