@@ -57,7 +57,7 @@ module Filter
       @klass = klass
       @options = options.reverse_merge Filter::Generator::DEFAULT_FILTER_OPTIONS
 
-      instance_eval &block if block.present?
+      instance_exec &block if block.present?
 
       self
     end
