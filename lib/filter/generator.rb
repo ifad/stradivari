@@ -119,19 +119,24 @@ module Filter
 
     def generate_form
       id = @options[:id].present? ? @options[:id] : "filter_fields_for_#{ActiveModel::Naming.singular(@klass)}"
-      data = {form: id}
       form_classes = 'filter-form '
-      form_classes << 'form-inline detached-form ' + id if @inline_form
-
+      form_classes << 'form-inline '   if @inline_form
+      form_classes << 'detached-form ' if @detached_form
 
       capture_haml do
         haml_tag :div, class: @options[:class] do
+
           haml_tag '.filter-header', "Filters" unless @detached_form
-          haml_tag :form, class: form_classes, role: 'form', id: @detached_form ? '' : id, data: data  do
-            if @custom_form_content.present?
+
+          id, link = id, [ id, 'detached' ].join('_')
+          id, link = link, id if @detached_form
+
+          haml_tag :form, class: form_classes, role: 'form', id: id, data: { link: link } do
+
+            if !@detached_form && @custom_form_content.present?
               haml_tag 'custom_content', @custom_form_content.call
             end
-            
+
             generate_field(:action_field) if @field_order.include? :action_field
             generate_active_fields
             generate_inactive_fields
@@ -162,9 +167,7 @@ module Filter
           generate_field(field_attribute)
         end
 
-        if @detached_form && 
-           @inline_form
-
+        if @detached_form && @inline_form
           generate_field(:action_field)
         end
       end if @field_order.count > 0
