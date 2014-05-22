@@ -10,7 +10,7 @@ module Filter
       ]
 
       haml_tag :div, class: "form-group number-builder" do
-        haml_concat label("search_fields", "#{attribute_name}_eq", options[:title] || attribute_name.to_s.humanize)
+        haml_concat label(@@form_namespace, "#{attribute_name}_eq", options[:title] || attribute_name.to_s.humanize)
         haml_tag :div, class: "row form-inline" do
           haml_tag :fieldset do
             haml_tag :div, class: "form-group col-sm-3 col-sm-offset-1 number_field" do

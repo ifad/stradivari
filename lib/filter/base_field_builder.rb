@@ -7,7 +7,7 @@ module Filter
     include ActionView::Helpers::FormOptionsHelper
     include Rails.application.routes.url_helpers
 
-    @@form_namespace = :search_fields
+    @@form_namespace = Filter::NAMESPACE
 
     def controller
       ApplicationController

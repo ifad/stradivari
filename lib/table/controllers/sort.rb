@@ -47,7 +47,7 @@ module Table
         end
 
         def ransack_options
-          sortable.merge(params[:search_fields].presence || {})
+          sortable.merge(params[Filter::NAMESPACE].presence || {})
         end
 
     end

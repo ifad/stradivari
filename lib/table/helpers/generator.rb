@@ -13,12 +13,12 @@ module Table
       end
 
       def filter_for class_object, options = {}, &block
-        options.merge!({env: request.env, controller: controller, search_fields: params[:search_fields] || {}})
+        options.merge!({env: request.env, controller: controller, Filter::NAMESPACE => params[Filter::NAMESPACE] || {}})
         Filter::Generator.generate_filter_for class_object, options, &block
       end
 
       def search_param(name)
-        params[:search_fields].try(:[], name).presence
+        params[Filter::NAMESPACE].try(:[], name).presence
       end
 
       def download_file_links

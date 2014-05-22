@@ -9,6 +9,8 @@ module Filter
     # include ActionView::Helpers::TagHelper
     include Rails.application.routes.url_helpers
 
+    NAMESPACE = Filter::NAMESPACE
+
     DEFAULT_FILTER_OPTIONS = {
       class: 'filter-form-container ',
       id:    'filter-form'
@@ -180,32 +182,32 @@ module Filter
       when :action_field
         false
       when :number_field
-        @options[:search_fields][field_name].present? ||
-        @options[:search_fields]["#{field_attribute}_eq"].present? ||
-        @options[:search_fields]["#{field_attribute}_lt"].present? ||
-        @options[:search_fields]["#{field_attribute}_gt"].present?
+        @options[NAMESPACE][field_name].present? ||
+        @options[NAMESPACE]["#{field_attribute}_eq"].present? ||
+        @options[NAMESPACE]["#{field_attribute}_lt"].present? ||
+        @options[NAMESPACE]["#{field_attribute}_gt"].present?
       when :selection_field
-        @options[:search_fields][field_name].present? ||
-        @options[:search_fields]["#{field_attribute}_equals"].present? ||
-        @options[:search_fields]["#{field_attribute}_eq"].present? ||
-        @options[:search_fields]["#{field_attribute}"].present?
+        @options[NAMESPACE][field_name].present? ||
+        @options[NAMESPACE]["#{field_attribute}_equals"].present? ||
+        @options[NAMESPACE]["#{field_attribute}_eq"].present? ||
+        @options[NAMESPACE]["#{field_attribute}"].present?
       when :date_range_field
-        @options[:search_fields][field_name].present? ||
-        @options[:search_fields]["#{field_attribute}_gteq"].present? ||
-        @options[:search_fields]["#{field_attribute}_lteq"].present?
+        @options[NAMESPACE][field_name].present? ||
+        @options[NAMESPACE]["#{field_attribute}_gteq"].present? ||
+        @options[NAMESPACE]["#{field_attribute}_lteq"].present?
       when :boolean_field
-        @options[:search_fields][field_name].present? ||
-        @options[:search_fields]["#{field_attribute}_equals"].present? ||
-        @options[:search_fields]["#{field_attribute}_eq"].present?
+        @options[NAMESPACE][field_name].present? ||
+        @options[NAMESPACE]["#{field_attribute}_equals"].present? ||
+        @options[NAMESPACE]["#{field_attribute}_eq"].present?
       when :checkbox_field
-        @options[:search_fields][field_name].present? ||
-        @options[:search_fields]["#{field_attribute}_in"].present? ||
-        @options[:search_fields][@fields[field_attribute][:options][:scope]].present?
+        @options[NAMESPACE][field_name].present? ||
+        @options[NAMESPACE]["#{field_attribute}_in"].present? ||
+        @options[NAMESPACE][@fields[field_attribute][:options][:scope]].present?
       when :full_text_search_field
-        @options[:search_fields][field_name].present? ||
-        @options[:search_fields][field_attribute].present?
+        @options[NAMESPACE][field_name].present? ||
+        @options[NAMESPACE][field_attribute].present?
       else
-        @options[:search_fields]["#{field_attribute}_cont"].present?
+        @options[NAMESPACE]["#{field_attribute}_cont"].present?
       end
     end
 
@@ -231,7 +233,7 @@ module Filter
     def process_builder field_attribute
       options = @fields[field_attribute][:options]
       builder = options[:builder]
-      value   = @options[:search_fields][field_attribute]
+      value   = @options[NAMESPACE][field_attribute]
 
       klass = if builder.present?
         builder
@@ -242,48 +244,48 @@ module Filter
         when :action_field
           Filter::ActionFieldBuilder
         when :selection_field
-          value = @options[:search_fields][field_name] ||
-                  @options[:search_fields]["#{field_attribute}_equals"] ||
-                  @options[:search_fields]["#{field_attribute}_eq"] ||
-                  @options[:search_fields]["#{field_attribute}"]
+          value = @options[NAMESPACE][field_name] ||
+                  @options[NAMESPACE]["#{field_attribute}_equals"] ||
+                  @options[NAMESPACE]["#{field_attribute}_eq"] ||
+                  @options[NAMESPACE]["#{field_attribute}"]
           Filter::SelectionFieldBuilder
 
         when :date_range_field
           field_name = @fields[field_attribute][:options][:field_name]
           field_value = field_name.present? ? field_name : field_attribute
-          value = [@options[:search_fields]["#{field_value}_gteq"],
-                   @options[:search_fields]["#{field_value}_lteq"]]
+          value = [@options[NAMESPACE]["#{field_value}_gteq"],
+                   @options[NAMESPACE]["#{field_value}_lteq"]]
           Filter::DateRangeFieldBuilder
 
         when :number_field
-          value = if @options[:search_fields]["#{field_attribute}_lt"].present?
-            ["#{field_attribute}_lt", @options[:search_fields]["#{field_attribute}_lt"]]
-          elsif @options[:search_fields]["#{field_attribute}_gt"].present?
-            ["#{field_attribute}_gt", @options[:search_fields]["#{field_attribute}_gt"]]
+          value = if @options[NAMESPACE]["#{field_attribute}_lt"].present?
+            ["#{field_attribute}_lt", @options[NAMESPACE]["#{field_attribute}_lt"]]
+          elsif @options[NAMESPACE]["#{field_attribute}_gt"].present?
+            ["#{field_attribute}_gt", @options[NAMESPACE]["#{field_attribute}_gt"]]
           else
-            ["#{field_attribute}_eq", @options[:search_fields]["#{field_attribute}_eq"]]
+            ["#{field_attribute}_eq", @options[NAMESPACE]["#{field_attribute}_eq"]]
           end
 
           Filter::NumberFieldBuilder
         when :boolean_field
-          value = @options[:search_fields][field_attribute] ||
-                  @options[:search_fields]["#{field_attribute}_is_true"]  ||
-                  @options[:search_fields]["#{field_attribute}_is_false"] ||
-                  @options[:search_fields]["#{field_attribute}_eq"]   ||
-                  @options[:search_fields]["#{field_attribute}_equals"]
+          value = @options[NAMESPACE][field_attribute] ||
+                  @options[NAMESPACE]["#{field_attribute}_is_true"]  ||
+                  @options[NAMESPACE]["#{field_attribute}_is_false"] ||
+                  @options[NAMESPACE]["#{field_attribute}_eq"]   ||
+                  @options[NAMESPACE]["#{field_attribute}_equals"]
           Filter::BooleanFieldBuilder
 
         when :checkbox_field
-          value = @options[:search_fields]["#{field_attribute}_in"] ||
-                  @options[:search_fields][@fields[field_attribute][:options][:scope]]
+          value = @options[NAMESPACE]["#{field_attribute}_in"] ||
+                  @options[NAMESPACE][@fields[field_attribute][:options][:scope]]
           Filter::CheckboxFieldBuilder
 
         when :full_text_search_field
-          value   = @options[:search_fields][field_attribute]
+          value   = @options[NAMESPACE][field_attribute]
           Filter::FullTextSearchFieldBuilder
 
         else
-          value   = @options[:search_fields]["#{field_attribute}_cont"]
+          value   = @options[NAMESPACE]["#{field_attribute}_cont"]
           Filter::SearchFieldBuilder
         end
       end

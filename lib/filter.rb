@@ -9,4 +9,6 @@ module Filter
   autoload :NumberFieldBuilder,         'filter/number_field_builder'
   autoload :SearchFieldBuilder,         'filter/search_field_builder'
   autoload :SelectionFieldBuilder,      'filter/selection_field_builder'
+
+  NAMESPACE = :q
 end
