@@ -134,6 +134,8 @@ module Filter
           id, link = link, id if @detached_form
 
           haml_tag :form, class: form_classes, role: 'form', id: id, data: { link: link } do
+            haml_tag :input, type: :hidden, name: :sort,      value: request.params[:sort]
+            haml_tag :input, type: :hidden, name: :direction, value: request.params[:direction]
 
             if !@detached_form && @custom_form_content.present?
               haml_tag 'custom_content', @custom_form_content.call
