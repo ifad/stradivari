@@ -15,20 +15,32 @@ module Filter
         haml_concat label(@@form_namespace, name, title)
 
         haml_tag :div, class: (type == :single_line ? 'form-inline' : 'multi-line') do
-          collection.each do |item|
-            key, value = item
+          if type == :multi_line
+            # Display checked items first
+            checked, unchecked = collection.partition {|_, value| values.include?(value.to_s)}
 
-            haml_tag :div, class: 'checkbox' do
-              haml_tag :label, class: 'checkbox-field' do
-                haml_concat check_box(@@form_namespace, name, {multiple: true, value: value, checked: values.include?(value.to_s)}, value, nil)
-                haml_concat key
-              end
+            checked  .each {|label, value| check_box(name, label, value, true) }
+            haml_tag :hr
+            unchecked.each {|label, value| check_box(name, label, value, false)}
+          else
+            collection.each do |label, value|
+              check_box(name, label, value, values.include?(value.to_s))
             end
           end
         end
 
       end
     end
+
+    private
+      def check_box(name, label, value, checked)
+        haml_tag :div, class: 'checkbox' do
+          haml_tag :label, class: 'checkbox-field' do
+            haml_concat super(@@form_namespace, name, {multiple: true, value: value, checked: checked}, value, nil)
+            haml_concat label
+          end
+        end
+      end
 
   end
 end
