@@ -1,46 +1,34 @@
 module Filter
-  class CheckboxFieldBuilder < Filter::BaseFieldBuilder
+  class CheckboxFieldBuilder < BaseFieldBuilder
+
     def render object_class, attribute_name, options = {}
-      type = options[:type] || :single_line
-      values = options[:value] || []
+      type   = options.fetch :type , :single_line
+      title  = options.fetch :title, attribute_name.to_s.humanize
+      name   = options.fetch :scope, "#{attribute_name}_in"
+      values = options.fetch :value, nil
 
-      name = options[:scope] || "#{attribute_name}_in"
-      if type == :single_line
-        listing_type = "single-line form-inline"
-      else
-        listing_type = "multi-line"
-      end
+      values   ||= []
+      collection = options[:collection]
+      collection = collection.call if collection.respond_to?(:call)
 
-      haml_tag :div, class: "form-group #{listing_type}" do
-        haml_concat label(@@form_namespace, name, options[:title] || attribute_name.to_s.humanize)
+      haml_tag :div, class: 'form-group' do
+        haml_concat label(@@form_namespace, name, title)
 
-        classes = "checkbox-field #{listing_type}"
-        collection = options[:collection].is_a?(Proc) ? options[:collection].call : options[:collection]
-
-        haml_tag :div, class: listing_type do
+        haml_tag :div, class: (type == :single_line ? 'form-inline' : 'multi-line') do
           collection.each do |item|
-            if type == :single_line
-              # build single line multiple selection
-              haml_tag :div, class: 'checkbox' do
-                haml_tag :label, class: classes do
-                  haml_concat check_box(@@form_namespace, name, { multiple: true, value: item.last, checked: values.include?(item.last.to_s) }, item.last, nil)
-                  haml_concat item.first
-                end
-              end
-            else
-              # build multi line multiple selection
-              
-              haml_tag :div, class: 'checkbox' do
-                haml_tag :label, class: classes do
-                  haml_concat check_box(@@form_namespace, name, { multiple: true, value: item.last, checked: values.include?(item.last.to_s) }, item.last, nil)
-                  haml_concat item.first
-                end
+            key, value = item
+
+            haml_tag :div, class: 'checkbox' do
+              haml_tag :label, class: 'checkbox-field' do
+                haml_concat check_box(@@form_namespace, name, {multiple: true, value: value, checked: values.include?(value.to_s)}, value, nil)
+                haml_concat key
               end
             end
-
           end
         end
+
       end
     end
+
   end
 end
