@@ -83,10 +83,6 @@ module Filter
       end
     end
 
-    def action_fields options = {}
-      field :action_field, :action_field, options
-    end
-
     def full_text_search_field field_attribute, options = {}
       field :full_text_search_field, field_attribute, options
     end
@@ -102,15 +98,14 @@ module Filter
         @inline_form     = options[:inline_form]     || false
 
         if @detached_form
-          @temp_field_order = @field_order
+          save_field_order = @field_order
           @field_order = @detached_fields
         end
 
         content = generate_form.html_safe
 
         if @detached_form
-          @field_order = @temp_field_order - @detached_fields
-          remove_instance_variable(:@temp_field_order)
+          @field_order = save_field_order - @detached_fields
         end
 
         content
@@ -128,8 +123,6 @@ module Filter
       capture_haml do
         haml_tag :div, class: @options[:class] do
 
-          haml_tag '.filter-header', "Filters" unless @detached_form
-
           id, link = id, [ id, 'detached' ].join('_')
           id, link = link, id if @detached_form
 
@@ -138,16 +131,21 @@ module Filter
             haml_tag :input, type: :hidden, name: :direction, value: request.params[:direction]
 
             if !@detached_form && @custom_form_content.present?
-              haml_tag 'custom_content', @custom_form_content.call
+              haml_tag :div, @custom_form_content.call, class: 'custom-content'
             end
 
-            generate_field(:action_field) if @field_order.include? :action_field
+            generate_actions if !@detached_form && @field_order.count > 5
             generate_active_fields
             generate_inactive_fields
-
+            generate_actions if !@detached_form && @field_order.count > 0
           end
         end
       end
+    end
+
+    def detached_form options = {}
+      options.reverse_merge!({detached_form: true, inline_form: true})
+      render options
     end
 
     def generate_active_fields
@@ -158,8 +156,6 @@ module Filter
 
       haml_tag :div, class: 'active-fields' do
         @active_fields.each { |field_attribute| generate_field(field_attribute) }
-        generate_field(:action_field) if @detached_form && @inline_form
-
       end if @active_fields.count > 0
 
       @field_order = @field_order - @active_fields
@@ -170,19 +166,17 @@ module Filter
         @field_order.each do |field_attribute|
           generate_field(field_attribute)
         end
-
-        if @detached_form && @inline_form
-          generate_field(:action_field)
-        end
       end if @field_order.count > 0
+    end
+
+    def generate_actions
+      invoke_builder(Filter::ActionFieldBuilder, :action_field)
     end
 
     def active_field field_attribute
       field_name = @fields[field_attribute][:options][:field_name] || field_attribute
 
       case @fields[field_attribute][:field_type]
-      when :action_field
-        false
       when :number_field
         @options[NAMESPACE][field_name].present? ||
         @options[NAMESPACE]["#{field_attribute}_eq"].present? ||
@@ -216,7 +210,6 @@ module Filter
     def generate_field field_attribute
       if class_object.columns_hash[field_attribute.to_s].present? ||
         class_object._ransackers[field_attribute.to_s].present? ||
-        field_attribute == :action_field ||
         field_attribute.to_s =~ /or|and/ ||
         @fields[field_attribute][:options][:field_name].present?
 
@@ -243,8 +236,6 @@ module Filter
         field_name = @fields[field_attribute][:options][:field_name]
 
         case @fields[field_attribute][:field_type]
-        when :action_field
-          Filter::ActionFieldBuilder
         when :selection_field
           value = @options[NAMESPACE][field_name] ||
                   @options[NAMESPACE]["#{field_attribute}_equals"] ||
@@ -292,19 +283,17 @@ module Filter
         end
       end
 
-      haml_buffer = self.send(:haml_buffer)
+      invoke_builder(klass, field_attribute, value, options)
+    end
 
-      options = options.merge(haml_buffer: haml_buffer, value: value, detached_form: @detached_form, inline_form: @inline_form)
-      klass.generate_field(class_object, field_attribute, options)
+    def invoke_builder(klass, field_attribute, value = nil, options = {})
+      klass.generate_field(class_object, field_attribute, options.merge(
+        haml_buffer: self.send(:haml_buffer), value: value, detached_form: @detached_form, inline_form: @inline_form
+      ))
     end
 
     def method_missing name, *args, &block
       controller.view_context.send(name, *args)
-    end
-
-    def detached_form options = {}
-      options.reverse_merge!({detached_form: true, inline_form: true})
-      render options
     end
 
     def to_s

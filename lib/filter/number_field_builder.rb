@@ -9,18 +9,11 @@ module Filter
         ['Less Than', "#{attribute_name}_lt"]
       ]
 
-      haml_tag :div, class: "form-group number-builder" do
+      haml_tag :div, class: "form-group" do
         haml_concat label(@@form_namespace, "#{attribute_name}_eq", options[:title] || attribute_name.to_s.humanize)
-        haml_tag :div, class: "row form-inline" do
-          haml_tag :fieldset do
-            haml_tag :div, class: "form-group col-sm-3 col-sm-offset-1 number_field" do
-              haml_concat select(nil, nil, options_for_select(select_options, selected: options[:value].first), {}, class: 'form-control')
-            end
-
-            haml_tag :div, class: "form-group col-sm-4 col-sm-offset-3 value_field" do
-              haml_concat text_field(@@form_namespace, options[:value].first, value: value, class: 'form-control')
-            end
-          end
+        haml_tag :div, class: "input-number" do
+          haml_concat select(nil, nil, options_for_select(select_options, selected: options[:value].first), {}, class: 'form-control')
+          haml_concat text_field(@@form_namespace, options[:value].first, value: value, class: 'form-control')
         end
       end
     end

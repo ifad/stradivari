@@ -20,7 +20,7 @@ module Filter
             checked, unchecked = collection.partition {|_, value| values.include?(value.to_s)}
 
             checked  .each {|label, value| check_box(name, label, value, true) }
-            haml_tag :hr
+            haml_tag :hr if checked.present?
             unchecked.each {|label, value| check_box(name, label, value, false)}
           else
             collection.each do |label, value|
@@ -35,7 +35,7 @@ module Filter
     private
       def check_box(name, label, value, checked)
         haml_tag :div, class: 'checkbox' do
-          haml_tag :label, class: 'checkbox-field' do
+          haml_tag :label do
             haml_concat super(@@form_namespace, name, {multiple: true, value: value, checked: checked}, value, nil)
             haml_concat label
           end
