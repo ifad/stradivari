@@ -333,21 +333,30 @@ module Table
          @data.respond_to?(:current_page)
 
         haml_tag :tfoot do
-          haml_tag :tr, class: 'last-updated-row' do
+          haml_tag :tr do
             haml_tag :td, colspan: @column_order.count do
-
-              content = if @data.current_page == 1
-                "1 to #{@data.limit_value > @data.total_count ? @data.total_count : @data.limit_value} out of #{@data.total_count} records displayed"
-              elsif @data.current_page == @data.num_pages
-                "#{(@data.current_page - 1) * (@data.limit_value) + 1} to #{@data.total_count} out of #{@data.total_count} records displayed"
-              else
-                "#{(@data.current_page - 1) * (@data.limit_value) + 1} to #{@data.current_page * (@data.limit_value)} out of #{@data.total_count} records displayed"
-              end
-
-              haml_concat content
+              haml_tag :div, download, class: 'download pull-left' if @options[:downloadable]
+              haml_tag :div, counters, class: 'counters pull-right'
+              haml_tag :div, '', class: 'clearfix'
             end
           end
         end
+      end
+    end
+
+    def counters
+      if @data.current_page == 1
+        "1 to #{@data.limit_value > @data.total_count ? @data.total_count : @data.limit_value} out of #{@data.total_count} records displayed"
+      elsif @data.current_page == @data.num_pages
+        "#{(@data.current_page - 1) * (@data.limit_value) + 1} to #{@data.total_count} out of #{@data.total_count} records displayed"
+      else
+        "#{(@data.current_page - 1) * (@data.limit_value) + 1} to #{@data.current_page * (@data.limit_value)} out of #{@data.total_count} records displayed"
+      end
+    end
+
+    def download
+      capture_haml do
+        haml_tag :a, 'Download...', href: url_for(params.merge(format: :csv))
       end
     end
 

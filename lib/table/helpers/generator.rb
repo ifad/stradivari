@@ -21,12 +21,6 @@ module Table
         params[Filter::NAMESPACE].try(:[], name).presence
       end
 
-      def download_file_links
-        haml_tag '.download-files' do
-          haml_tag :span, 'download as:'
-          haml_concat link_to 'csv', url_for({format: :csv}.merge(params))
-        end
-      end
     end
   end
 end
