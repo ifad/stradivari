@@ -30,7 +30,7 @@ module Table
     attr_accessor :data, :options, :column_order, :haml_buffer
 
     DEFAULT_TABLE_OPTIONS = {
-      class: "table table-striped table-hover table-condensed ",
+      class: "table table-hover",
       header_visible: true,
       body_visible:   true,
       footer_visible: true,
@@ -208,15 +208,9 @@ module Table
 
     def generate_table
       table_wrapping do
-        basic_class = "table table-striped table-hover table-condensed #{@options[:class]}"
-
-        html_options = {
-          class: "",
-          name: "#{@options[:name]}"
-        }
-        html_options.merge! @options[:html] if @options[:html].present?
-        html_options[:class] << " #{basic_class}"
-        html_options[:class] = html_options[:class].split(/\s+/).uniq.join(' ')
+        html_options = @options[:html].presence || {}
+        html_options[:class] = [ DEFAULT_TABLE_OPTIONS[:class], @options[:class] ].join(' ')
+        html_options[:name]  = @options[:name]
 
         haml_tag :table, html_options  do
           render_header if @options[:header_visible]
@@ -238,10 +232,7 @@ module Table
 
     def table_wrapping(&block)
       init_haml_helpers
-
-      capture_haml do
-        haml_tag :div, class: "table-responsive", &block
-      end
+      capture_haml(&block)
     end
 
     def generate_pagination
