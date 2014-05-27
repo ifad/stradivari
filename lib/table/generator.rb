@@ -32,6 +32,7 @@ module Table
     DEFAULT_TABLE_OPTIONS = {
       class: "table table-hover",
       format: :html,
+      no_data: "There is no data.",
       header_visible: true,
       body_visible:   true,
       footer_visible: true,
@@ -53,24 +54,14 @@ module Table
       options: {}
     }
 
-    def controller
-      @options[:controller] || ApplicationController
-    end
+    class << self
+      def generate_table_for data = [], options = {}, &block
+        new.table_for data, options, &block
+      end
 
-    #def request
-    #  controller.request
-    #end
-
-    def env
-      controller.env
-    end
-
-    def self.generate_table_for data = [], options = {}, &block
-      new.table_for data, options, &block
-    end
-
-    def self.generate_csv_for data = [], options = {}, &block
-      new.csv_for data, options, &block
+      def generate_csv_for data = [], options = {}, &block
+        new.csv_for data, options, &block
+      end
     end
 
     def initialize
@@ -103,102 +94,79 @@ module Table
     end
 
     def column_actions options = {}, &block
-      column :actions, options, &block
+      column :actions, options.merge(builder: Table::ActionBuilder), &block
     end
-
-    #def column_row options = {}
-    #
-    #end
 
     def to_s
       render
     end
 
     protected
+      def env
+        controller.env
+      end
+
+      def controller
+        @options[:controller] || ApplicationController
+      end
+
+      def column_title column_name
+        case title = @columns[column_name][:options][:title]
+        when nil
+          column_name.to_s.titleize
+        when Proc
+          title.call
+        when false
+          ""
+        else
+          title
+        end
+      end
+
       def render
         case @options[:format]
         when :html
-          @data.present? ? generate_table.html_safe : generate_no_data
+          @data.present? ? generate_table : generate_no_data
         when :csv
           render_csv_content
         end
       end
 
-      def render_csv_content options = {}
-        CSV.generate do |csv|
-          csv << render_file_header(options)
+      def render_csv_content
+        wrapping do
+          CSV.generate do |csv|
+            csv << render_file_header
 
-          @data.each do |object|
-            csv << render_file_row(object, options)
-          end
-        end
-      end
-
-      def render_file_header options = {}
-        file_render_columns.select{|column| column != :actions}.map do |column_name|
-          if @columns[column_name][:options][:title].nil?
-            column_name.to_s.titleize
-          else
-            if @columns[column_name][:options][:title].is_a?(Proc)
-              @columns[column_name][:options][:title].call
-            elsif @columns[column_name][:options][:title] == false
-              ""
-            else
-              @columns[column_name][:options][:title]
+            @data.each do |object|
+              csv << render_file_row(object)
             end
           end
         end
       end
 
-      def render_file_row object, options = {}
-        file_render_columns.select{|column| column != :actions}.map do |attribute_name|
-          generate_file_column(object, attribute_name, options)
+      def render_file_header
+        file_render_columns.map do |column_name|
+          column_title(column_name)
+        end
+      end
+
+      def render_file_row object
+        file_render_columns.map do |attribute_name|
+          generate_column(object, attribute_name)
         end
       end
 
       def file_render_columns
         @column_order.reject { |attribute_name|
-          @columns[attribute_name][:options][:skip_file_generation].present? && @columns[attribute_name][:options][:skip_file_generation]
+          c = @columns[attribute_name]
+
+          c[:options][:skip_file_generation].presence || attribute_name == :actions
         }
       end
 
-      def generate_file_column object, attribute_name, options = {}
-        block = @columns[attribute_name][:block]
-
-        if block.present?
-          instance_exec(object, &block)
-        elsif (file_value = @columns[attribute_name][:options][:file_value]).present?
-
-          value = if file_value.is_a?(Proc)
-            file_value.call(object)
-          elsif file_value.is_a? Symbol
-            object.send(file_value)
-          else
-            file_value
-          end
-          value.to_s.gsub(/\n|\r/, " ")
-
-        elsif object_has_attribute?(object, attribute_name)
-          value = object.send(attribute_name)
-
-          if value.is_a?(TrueClass)
-            "Yes"
-          elsif value.is_a?(FalseClass)
-            "No"
-          else
-            value.to_s.gsub(/\n|\r/, " ")
-          end
-        elsif attribute_name == :actions
-          ''
-        else
-          raise ArgumentError, "Provided attribute name does not exist on the model, if you want to have custom field inside the file content please define file_value options for a column"
-        end
-
-      end
-
       def generate_table
-        table_wrapping do
-          html_options = @options[:html].presence || {}
+        wrapping do
+          html_options         = @options[:html].presence || {}
           html_options[:class] = [ DEFAULT_TABLE_OPTIONS[:class], @options[:class] ].join(' ')
           html_options[:name]  = @options[:name]
 
@@ -214,13 +182,12 @@ module Table
       end
 
       def generate_no_data
-        table_wrapping do
-          label = @options[:no_data] || "There are no data."
-          haml_tag :div, label, class: 'no-data alert alert-warning'
+        wrapping do
+          haml_tag :div, @options[:no_data], class: 'no-data alert alert-warning'
         end
       end
 
-      def table_wrapping(&block)
+      def wrapping(&block)
         init_haml_helpers
         capture_haml(&block)
       end
@@ -248,34 +215,25 @@ module Table
         haml_tag :thead do
           haml_tag :tr do
             @column_order.each do |column_name|
-              title = if @columns[column_name][:options][:title].nil?
-                column_name.to_s.titleize
-              else
-                if @columns[column_name][:options][:title].is_a?(Proc)
-                  @columns[column_name][:options][:title].call
-                elsif @columns[column_name][:options][:title] == false
-                  ""
-                else
-                  @columns[column_name][:options][:title]
-                end
-              end
+              title    = column_title(column_name)
+              classes  = ""
+              s_class  = "fa fa-sort"
+              data     = {}
+              sortable = @columns[column_name][:options][:sortable]
 
-              classes = ""
-              data = {}
-
-              if @columns[column_name][:options][:sortable].present?
+              if sortable.present?
                 classes << " sortable"
 
-                data[:sort] = if [String, Symbol].include?(@columns[column_name][:options][:sortable].class)
-                  @columns[column_name][:options][:sortable].to_s
+                data[:sort] = if sortable.class.in?([String, Symbol])
+                  sortable.to_s
                 else
                   column_name
                 end
 
-                if @sortable[:sort] == column_name.to_s ||
-                   @sortable[:sort] == @columns[column_name][:options][:sortable].to_s
-
+                if @sortable[:sort].in?([column_name, sortable].map(&:to_s))
                   classes << " active-column"
+                  s_class << "-#{@sortable[:direction]}"
+
                   data[:direction] = @sortable[:direction] == 'asc' ? 'desc' : 'asc' # Inversion on click
                 else
                   data[:direction] = 'asc'
@@ -287,29 +245,16 @@ module Table
                 data: data
               }
 
-              if @columns[column_name][:options][:html].present?
-                html_options.merge! @columns[column_name][:options][:html]
+              if (html = @columns[column_name][:options][:html]).present?
+                html_options.merge! html
               end
 
-              forbidden = [:select, :checkbox, :actions].include? column_name
-              if !forbidden
-                if html_options[:class].present?
-                  html_options[:class] << " #{column_name} "
-                else
-                  html_options[:class] = " #{column_name} "
-                end
+              unless column_name.in?([:select, :checkbox, :actions])
+                html_options[:class] = "#{html_options[:class]} #{column_name} "
               end
 
               haml_tag :td, html_options do
-                if @columns[column_name][:options][:sortable].present?
-                  if @sortable[:sort] == column_name.to_s ||
-                    @sortable[:sort] == @columns[column_name][:options][:sortable].to_s
-
-                    haml_tag :i, '', class: "fa fa-sort-#{sortable[:direction]}"
-                  else
-                    haml_tag :i, '', class: "fa fa-sort"
-                  end
-                end
+                haml_tag :i, '', class: s_class if sortable.present?
 
                 haml_concat title
               end
@@ -335,9 +280,10 @@ module Table
       end
 
       def counters
-        if @data.current_page == 1
+        case @data.current_page
+        when 1
           "1 to #{@data.limit_value > @data.total_count ? @data.total_count : @data.limit_value} out of #{@data.total_count} records displayed"
-        elsif @data.current_page == @data.num_pages
+        when @data.num_pages
           "#{(@data.current_page - 1) * (@data.limit_value) + 1} to #{@data.total_count} out of #{@data.total_count} records displayed"
         else
           "#{(@data.current_page - 1) * (@data.limit_value) + 1} to #{@data.current_page * (@data.limit_value)} out of #{@data.total_count} records displayed"
@@ -363,12 +309,10 @@ module Table
       end
 
       def render_row_with_children parent
-        children = parent.public_send(@options[:children_rows])
-
-        if children.present?
+        if (children = parent.public_send(@options[:children_rows])).present?
           render_row parent, class: @options[:children_row_html][:parent_class]
 
-          parent.public_send(@options[:children_rows]).each do |child|
+          children.each do |child|
             render_row child, class: @options[:children_row_html][:child_class]
           end
         else
@@ -377,15 +321,7 @@ module Table
       end
 
       def render_row object, row_options = {}
-        classes = " "
-        if @options[:table_row].present?
-          classes << "#{@options[:table_row][:class]} "
-        end
-
-        if row_options[:class].present?
-          classes << " #{row_options[:class]}"
-        end
-
+        classes = "#{@options[:table_row][:class]} #{row_options[:class]}".strip
         html_id = "#{object.class.model_name.to_s.underscore}_row_#{object.id}"
 
         haml_tag :tr, class: classes, id: html_id do
@@ -396,29 +332,21 @@ module Table
       end
 
       def generate_column object, attribute_name
-        block = @columns[attribute_name][:block]
+        block   = @columns[attribute_name][:block]
+        options = @columns[attribute_name][:options][:html].presence || {}
 
-        if block.present?
-          options = @columns[attribute_name][:options][:html].present? ? @columns[attribute_name][:options][:html] : {}
+        options[:class] = "#{options[:class]} #{attribute_name}"
+        options[:class] = "#{options[:class]} action-builder" if attribute_name == :actions
 
-          forbidden = [:select, :checkbox, :actions].include? attribute_name
-          if !forbidden
-            if options[:class].present?
-              options[:class] << " #{attribute_name} "
-            else
-              options[:class] = " #{attribute_name} "
-            end
+        begin
+          value = if block.present?
+            capture_haml(object, &block)
+          else
+            process_builder(object, attribute_name)
           end
 
-          haml_tag :td, instance_exec(object, &block), options
-        elsif object_has_attribute?(object, attribute_name)
-
-          process_builder(object, attribute_name)
-
-        elsif attribute_name == :actions
-          Table::ActionBuilder.generate_field(object, attribute_name, @columns[attribute_name][:options].merge(haml_buffer: haml_buffer))
-
-        else
+          @options[:format] == :html ? haml_tag(:td, value, options) : value
+        rescue
           raise ArgumentError, "Provided attribute name does not exist on the model, if you want to have custom field define block or new builder and add builder class in options for that column"
         end
       end
@@ -441,12 +369,12 @@ module Table
           end
         end
 
-        haml_buffer = self.send(:haml_buffer)
-        klass.generate_field(object, attribute_name, @columns[attribute_name][:options].merge(haml_buffer: haml_buffer, controller: controller))
+        klass.generate_field(object, attribute_name, @columns[attribute_name][:options])
       end
 
       def object_columns_hash object
         klass = object.class
+
         klass.try(:extra_columns_hash) || klass.columns_hash
       end
 
@@ -457,8 +385,6 @@ module Table
       def object_attribute_type object, attribute_name
         if object_has_attribute? object, attribute_name
           object_columns_hash(object).fetch(attribute_name.to_s).type
-        else
-          nil
         end
       end
 

@@ -4,11 +4,11 @@ module Table
     def render object, attribute_name, options = {}
       @haml_buffer = options[:haml_buffer]
 
-      classes = options[:class].present? ? options[:class] : " #{attribute_name} "
-
-      date = object.send(attribute_name)
-      value = date.present? ? history_timestamp(object, attribute_name) : '-'
-      haml_tag :td, value, class: classes
+      if object.send(attribute_name).present?
+        history_timestamp(object, attribute_name)
+      else
+        '-'
+      end
     end
   end
 end
