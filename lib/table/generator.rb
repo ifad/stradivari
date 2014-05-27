@@ -347,7 +347,7 @@ module Table
 
           @options[:format] == :html ? haml_tag(:td, value, options) : value
         rescue
-          raise ArgumentError, "Provided attribute name does not exist on the model, if you want to have custom field define block or new builder and add builder class in options for that column"
+          raise ArgumentError, "Provided attribute name [:#{attribute_name}] does not exist on the model [#{object.class}], if you want to have custom field define block or new builder and add builder class in options for that column"
         end
       end
 
