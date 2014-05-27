@@ -338,17 +338,13 @@ module Table
         options[:class] = "#{options[:class]} #{attribute_name}"
         options[:class] = "#{options[:class]} action-builder" if attribute_name == :actions
 
-        begin
-          value = if block.present?
-            capture_haml(object, &block)
-          else
-            process_builder(object, attribute_name)
-          end
-
-          @options[:format] == :html ? haml_tag(:td, value, options) : value
-        rescue
-          raise ArgumentError, "Provided attribute name [:#{attribute_name}] does not exist on the model [#{object.class}], if you want to have custom field define block or new builder and add builder class in options for that column"
+        value = if block.present?
+          capture_haml(object, &block)
+        else
+          process_builder(object, attribute_name)
         end
+
+        @options[:format] == :html ? haml_tag(:td, value, options) : value
       end
 
       def process_builder object, attribute_name
