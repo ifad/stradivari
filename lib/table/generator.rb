@@ -253,7 +253,7 @@ module Table
                 html_options[:class] = "#{html_options[:class]} #{column_name} "
               end
 
-              haml_tag :td, html_options do
+              haml_tag :th, html_options do
                 haml_tag :i, '', class: s_class if sortable.present?
 
                 haml_concat title
