@@ -134,7 +134,7 @@ module Filter
               haml_tag :div, @custom_form_content.call, class: 'custom-content'
             end
 
-            haml_tag :div, class: (@detached_form ? '' : 'panel panel-default') do
+            haml_tag :div, class: (@detached_form ? '' : 'panel panel-info') do
               generate_actions if !@detached_form && @field_order.count > 5
               generate_active_fields
               generate_inactive_fields
