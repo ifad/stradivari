@@ -14,7 +14,11 @@ module Filter
     end
 
     def initialize(options = {})
-      self.init_haml_helpers
+      if options[:haml_buffer].present?
+        @haml_buffer = options[:haml_buffer]
+      else
+        self.init_haml_helpers
+      end
 
       self
     end
