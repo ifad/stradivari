@@ -112,7 +112,8 @@ module Table
       def column_title column_name
         case title = @columns[column_name][:options][:title]
         when nil
-          @data.klass.human_attribute_name(column_name.to_sym)
+          klass = @data.try(:klass) || @data.first.class
+          klass.human_attribute_name(column_name.to_sym)
         when Proc
           title.call
         when false
