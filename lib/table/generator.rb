@@ -112,7 +112,7 @@ module Table
       def column_title column_name
         case title = @columns[column_name][:options][:title]
         when nil
-          column_name.to_s.titleize
+          @data.klass.human_attribute_name(column_name.to_sym)
         when Proc
           title.call
         when false
