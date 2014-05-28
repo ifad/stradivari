@@ -288,7 +288,7 @@ module Filter
 
     def invoke_builder(klass, field_attribute, value = nil, options = {})
       klass.generate_field(class_object, field_attribute, options.merge(
-        haml_buffer: self.send(:haml_buffer), value: value, detached_form: @detached_form, inline_form: @inline_form
+        value: value, detached_form: @detached_form, inline_form: @inline_form
       ))
     end
 

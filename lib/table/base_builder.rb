@@ -14,12 +14,7 @@ module Table
     end
 
     def initialize(options = {})
-      if options[:haml_buffer].present?
-        @haml_buffer = options[:haml_buffer]
-      else
-        self.init_haml_helpers
-      end
-
+      self.init_haml_helpers
 
       @controller = options[:controller] if options[:controller].present?
 

@@ -27,7 +27,7 @@ module Table
     include Rails.application.helpers
     include ActionView::Helpers::TextHelper
 
-    attr_accessor :data, :options, :column_order, :haml_buffer
+    attr_accessor :data, :options, :column_order
 
     DEFAULT_TABLE_OPTIONS = {
       class: "table table-hover",
@@ -47,11 +47,10 @@ module Table
     }
 
     DEFAULT_COLUMN_OPTIONS = {
-      options: {}
+      present: false
     }
 
     DEFAULT_COLUMN_ROW_OPTIONS = {
-      options: {}
     }
 
     class << self
@@ -332,8 +331,9 @@ module Table
       end
 
       def generate_column object, attribute_name
-        block   = @columns[attribute_name][:block]
-        options = @columns[attribute_name][:options][:html].presence || {}
+        column  = @columns[attribute_name]
+        block   = column[:block]
+        options = column[:options][:html].presence || {}
 
         options[:class] = "#{options[:class]} #{attribute_name}"
         options[:class] = "#{options[:class]} action-builder" if attribute_name == :actions
@@ -344,7 +344,13 @@ module Table
           process_builder(object, attribute_name)
         end
 
-        @options[:format] == :html ? haml_tag(:td, value, options) : value
+        case @options[:format]
+        when :html
+          value = force_presence(value) if column[:options][:present]
+          haml_tag(:td, value, options)
+        else
+          value
+        end
       end
 
       def process_builder object, attribute_name
@@ -402,6 +408,10 @@ module Table
         instance_eval(&block) if block.present? && (@data.present? || @options[:force])
 
         self
+      end
+
+      def force_presence(value)
+        value.presence || t(:empty)
       end
 
       def method_missing name, *args, &block
