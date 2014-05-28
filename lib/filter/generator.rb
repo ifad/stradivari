@@ -134,10 +134,12 @@ module Filter
               haml_tag :div, @custom_form_content.call, class: 'custom-content'
             end
 
-            generate_actions if !@detached_form && @field_order.count > 5
-            generate_active_fields
-            generate_inactive_fields
-            generate_actions if !@detached_form && @field_order.count > 0
+            haml_tag :div, class: (@detached_form ? '' : 'panel panel-default') do
+              generate_actions if !@detached_form && @field_order.count > 5
+              generate_active_fields
+              generate_inactive_fields
+              generate_actions if !@detached_form && @field_order.count > 0
+            end
           end
         end
       end
@@ -154,7 +156,7 @@ module Filter
         @active_fields << field_attribute if active_field(field_attribute)
       end
 
-      haml_tag :div, class: 'active-fields' do
+      haml_tag :div, class: (@detached_form ? '' : 'panel-heading') do
         @active_fields.each { |field_attribute| generate_field(field_attribute) }
       end if @active_fields.count > 0
 
@@ -162,10 +164,8 @@ module Filter
     end
 
     def generate_inactive_fields
-      haml_tag :div, class: 'inactive-fields' do
-        @field_order.each do |field_attribute|
-          generate_field(field_attribute)
-        end
+      haml_tag :div, class: (@detached_form ? '' : 'panel-body') do
+        @field_order.each { |field_attribute| generate_field(field_attribute) }
       end if @field_order.count > 0
     end
 
