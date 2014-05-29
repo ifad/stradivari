@@ -138,7 +138,7 @@ module Filter
               generate_actions if !@detached_form && @field_order.count > 5
               generate_active_fields
               generate_inactive_fields
-              generate_actions if !@detached_form && @field_order.count > 0
+              generate_actions if !@detached_form
             end
           end
         end
