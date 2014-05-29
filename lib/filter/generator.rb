@@ -93,9 +93,9 @@ module Filter
 
     def render options = {}
       if class_name.present?
-        @detached_fields = options[:detached_fields] || []
-        @detached_form   = options[:detached_form]   || false
-        @inline_form     = options[:inline_form]     || false
+        @detached_fields = options.fetch(:detached_fields, [])
+        @detached_form   = options.fetch(:detached_form,   false)
+        @inline_form     = options.fetch(:inline_form,     false)
 
         if @detached_form
           save_field_order = @field_order
