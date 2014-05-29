@@ -184,7 +184,6 @@ module Filter
         @options[NAMESPACE]["#{field_attribute}_gt"].present?
       when :selection_field
         @options[NAMESPACE][field_name].present? ||
-        @options[NAMESPACE]["#{field_attribute}_equals"].present? ||
         @options[NAMESPACE]["#{field_attribute}_eq"].present? ||
         @options[NAMESPACE]["#{field_attribute}"].present?
       when :date_range_field
@@ -193,7 +192,6 @@ module Filter
         @options[NAMESPACE]["#{field_attribute}_lteq"].present?
       when :boolean_field
         @options[NAMESPACE][field_name].present? ||
-        @options[NAMESPACE]["#{field_attribute}_equals"].present? ||
         @options[NAMESPACE]["#{field_attribute}_eq"].present?
       when :checkbox_field
         @options[NAMESPACE][field_name].present? ||
@@ -238,7 +236,6 @@ module Filter
         case @fields[field_attribute][:field_type]
         when :selection_field
           value = @options[NAMESPACE][field_name] ||
-                  @options[NAMESPACE]["#{field_attribute}_equals"] ||
                   @options[NAMESPACE]["#{field_attribute}_eq"] ||
                   @options[NAMESPACE]["#{field_attribute}"]
           Filter::SelectionFieldBuilder
@@ -264,8 +261,7 @@ module Filter
           value = @options[NAMESPACE][field_attribute] ||
                   @options[NAMESPACE]["#{field_attribute}_is_true"]  ||
                   @options[NAMESPACE]["#{field_attribute}_is_false"] ||
-                  @options[NAMESPACE]["#{field_attribute}_eq"]   ||
-                  @options[NAMESPACE]["#{field_attribute}_equals"]
+                  @options[NAMESPACE]["#{field_attribute}_eq"]
           Filter::BooleanFieldBuilder
 
         when :checkbox_field
