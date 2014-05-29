@@ -146,7 +146,7 @@ module Filter
     end
 
     def detached_form options = {}
-      options.reverse_merge!({detached_form: true, inline_form: true})
+      options.reverse_merge!(detached_form: true)
       render options
     end
 
