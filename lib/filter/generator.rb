@@ -153,7 +153,7 @@ module Filter
     def generate_active_fields
       @active_fields = []
       @field_order.each do |field_attribute|
-        @active_fields << field_attribute if active_field(field_attribute)
+        @active_fields << field_attribute if active_field?(field_attribute)
       end
 
       haml_tag :div, class: (@detached_form ? '' : 'panel-heading') do
@@ -173,7 +173,7 @@ module Filter
       invoke_builder(Filter::ActionFieldBuilder, :action_field)
     end
 
-    def active_field field_attribute
+    def active_field? field_attribute
       field_name = @fields[field_attribute][:options][:field_name] || field_attribute
 
       case @fields[field_attribute][:field_type]
