@@ -87,8 +87,12 @@ module Filter
       field :full_text_search_field, field_attribute, options
     end
 
-    def custom_form_content &block
-      @custom_form_content = block
+    def prepend &block
+      @prepended_content = block
+    end
+
+    def append &block
+      @appended_content = block
     end
 
     def render options = {}
@@ -130,14 +134,20 @@ module Filter
             haml_tag :input, type: :hidden, name: :sort,      value: request.params[:sort]
             haml_tag :input, type: :hidden, name: :direction, value: request.params[:direction]
 
-            if !@detached_form && @custom_form_content.present?
-              haml_tag :div, @custom_form_content.call, class: 'custom-content'
-            end
-
             haml_tag :div, class: (@detached_form ? '' : 'panel panel-info') do
               generate_actions if !@detached_form && @field_order.count > 5
+
+              if !@detached_form && @prepended_content.present?
+                haml_tag :div, view_eval(&@prepended_content), class: 'panel-body prepended'
+              end
+
               generate_active_fields
               generate_inactive_fields
+
+              if !@detached_form && @appended_content.present?
+                haml_tag :div, view_eval(&@appended_content), class: 'panel-body appended'
+              end
+
               generate_actions if !@detached_form
             end
           end
@@ -289,7 +299,15 @@ module Filter
     end
 
     def method_missing name, *args, &block
-      controller.view_context.send(name, *args)
+      view_context.send(name, *args)
+    end
+
+    def view_eval(&block)
+      view_context.instance_eval(&block)
+    end
+
+    def view_context
+      controller.view_context
     end
 
     def to_s
