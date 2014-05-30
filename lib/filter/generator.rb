@@ -87,12 +87,12 @@ module Filter
       field :full_text_search_field, field_attribute, options
     end
 
-    def prepend &block
-      @prepended_content = block
+    def prepend options = {}, &block
+      @prepended = options.merge(block: block)
     end
 
-    def append &block
-      @appended_content = block
+    def append options = {}, &block
+      @appended = options.merge(block: block)
     end
 
     def render options = {}
@@ -137,17 +137,10 @@ module Filter
             haml_tag :div, class: (@detached_form ? '' : 'panel panel-info') do
               generate_actions if !@detached_form && @field_order.count > 5
 
-              if !@detached_form && @prepended_content.present?
-                haml_tag :div, view_eval(&@prepended_content), class: 'panel-body prepended'
-              end
-
+              generate_custom_block(@prepended) if !@detached_form && @prepended.present?
               generate_active_fields
               generate_inactive_fields
-
-              if !@detached_form && @appended_content.present?
-                haml_tag :div, view_eval(&@appended_content), class: 'panel-body appended'
-              end
-
+              generate_custom_block(@appended) if !@detached_form && @appended.present?
               generate_actions if !@detached_form
             end
           end
@@ -177,6 +170,11 @@ module Filter
       haml_tag :div, class: (@detached_form ? '' : 'panel-body') do
         @field_order.each { |field_attribute| generate_field(field_attribute) }
       end if @field_order.count > 0
+    end
+
+    def generate_custom_block(options)
+      klass = options[:class] || 'custom'
+      haml_tag :div, view_eval(&options[:block]), class: "panel-body #{klass}"
     end
 
     def generate_actions
