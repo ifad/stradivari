@@ -3,7 +3,10 @@ require 'ransack'
 
 require 'table/version'
 require 'table/engine'
+
 require 'filter'
+
+require 'tabs'
 
 module Table
   autoload :ActionBuilder,   'table/action_builder'
