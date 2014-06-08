@@ -140,12 +140,6 @@ module Table
 
           view.instance_exec(object, @name, @opts, &klass.render)
         end
-
-        def type
-          object_columns_hash = klass.try(:extra_columns_hash) || klass.columns_hash
-
-          object_columns_hash.fetch(@name.to_s, nil).try(:type)
-        end
     end
 
 

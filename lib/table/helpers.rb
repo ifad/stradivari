@@ -20,6 +20,13 @@ module Table
         Table::Generator.new(self, data, _options_for(options)).tap {|table| table.instance_exec(*pass, &block) }.to_s
       end
 
+      def details_for *pass, &block
+        options = pass.extract_options!
+        data    = pass.first
+
+        Details::Generator.new(self, data, options).tap {|detail| detail.instance_exec(*pass, &block) }.to_s
+      end
+
       def filter_for *pass, &block
         options = pass.extract_options!
         data    = pass.first

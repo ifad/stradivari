@@ -5,6 +5,8 @@ module Stradivari
       delegate :view, :klass, to: :@parent
       delegate :t, :capture_haml, :haml_tag, :haml_concat, to: :view
 
+      attr_reader :opts
+
       def initialize(parent, opts)
         @parent = parent
         @opts   = opts
@@ -17,6 +19,12 @@ module Stradivari
           else
             value
           end
+        end
+
+        def type
+          object_columns_hash = klass.try(:extra_columns_hash) || klass.columns_hash
+
+          object_columns_hash.fetch(name.to_s, nil).try(:type)
         end
     end
 

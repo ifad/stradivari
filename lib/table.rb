@@ -5,6 +5,7 @@ require 'table/version'
 require 'table/engine'
 
 require 'stradivari'
+require 'details'
 require 'filter'
 require 'tabs'
 
