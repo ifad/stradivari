@@ -222,25 +222,6 @@ module Table
         haml_tag :div, @opts[:no_data], class: 'no-data alert alert-warning'
       end
 
-      def generate_pagination
-        if Gem::Specification::find_all_by_name('kaminari').any?
-          controller = ActionController::Base.new
-          controller.request = ActionDispatch::Request.new(@opts[:env])
-          ActionView::Base.send(:include, Rails.application.routes.url_helpers)
-          view = ActionView::Base.new(Kaminari::Engine.paths['app/views'].first, {}, controller)
-
-          opts = {
-            current_page: @data.current_page,
-            total_pages: @data.total_pages,
-            per_page: @data.limit_value,
-            param_name: Kaminari.config.param_name,
-            remote: false
-          }
-          paginator = Kaminari::Helpers::Paginator.new(view, opts)
-          haml_concat paginator.to_s
-        end
-      end
-
       def render_header
         haml_tag :thead do
           haml_tag :tr do
