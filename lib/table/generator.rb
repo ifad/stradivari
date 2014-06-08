@@ -56,7 +56,7 @@ module Table
 
       def to_s object, format=:html
         value = if @renderer.present?
-          capture_haml(object, &@renderer)
+          capture_haml { view.instance_exec(object, &@renderer) }
         else
           build(object)
         end

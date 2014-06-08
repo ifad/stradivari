@@ -38,13 +38,5 @@ module Base
       raise "To be implemented"
     end
 
-    def method_missing name, *args, &block
-      begin
-        @view.send(name, *args, &block)
-      rescue
-        super
-      end
-    end
-
   end
 end
