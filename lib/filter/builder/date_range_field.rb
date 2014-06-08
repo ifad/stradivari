@@ -1,5 +1,5 @@
 module Filter
-  class DateRangeFieldBuilder
+  class Builder::DateRangeField < Builder
 
     def self.render
       lambda do |attr, opts|

@@ -1,5 +1,5 @@
 module Filter
-  class SearchFieldBuilder
+  class Builder::SearchField < Builder
 
     def self.render
       lambda do |attr, opts|
@@ -27,10 +27,6 @@ module Filter
 
     def self.value(params, name)
       params[name] || params["#{name}_cont"]
-    end
-
-    def self.active?(params, name)
-      value(params, name).present?
     end
 
   end

@@ -1,5 +1,5 @@
 module Filter
-  class CheckboxFieldBuilder
+  class Builder::CheckboxField < Builder
 
     def self.render
       lambda do |attr, opts|
@@ -46,10 +46,6 @@ module Filter
 
     def self.value(params, name)
       params[name] || params["#{name}_in"]
-    end
-
-    def self.active?(params, name)
-      value(params, name).present?
     end
 
   end

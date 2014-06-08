@@ -1,5 +1,5 @@
 module Filter
-  class ActionFieldBuilder
+  class Builder::ActionField
 
     def self.render
       lambda do

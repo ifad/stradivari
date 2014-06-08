@@ -35,17 +35,8 @@ module Filter
       end
 
       protected
-        BUILDERS = {
-          selection_field:  SelectionFieldBuilder,
-          date_range_field: DateRangeFieldBuilder,
-          number_field:     NumberFieldBuilder,
-          boolean_field:    BooleanFieldBuilder,
-          checkbox_field:   CheckboxFieldBuilder,
-          search_field:     SearchFieldBuilder
-        }.freeze
-
         def builder
-          @_bulder ||= @opts[:builder] || BUILDERS.fetch(@scope)
+          @_bulder ||= @opts[:builder] || Builder::Implementations.fetch(@scope)
         end
 
         def params
@@ -69,9 +60,9 @@ module Filter
       @fields << Field.new(self, scope, attr, opts)
     end
 
-    %w[search selection date_range boolean checkbox number].each do |scope|
-      define_method "#{scope}_field" do |attr, opts = {}|
-        field "#{scope}_field", attr, opts
+    Builder::Implementations.each do |name, klass|
+      define_method name do |attr, opts = {}|
+        field(name, attr, opts)
       end
     end
 
@@ -161,7 +152,7 @@ module Filter
       end
 
       def generate_actions
-        @view.instance_exec(&Filter::ActionFieldBuilder.render)
+        @view.instance_exec(&Filter::Builder::ActionField.render)
       end
 
   end

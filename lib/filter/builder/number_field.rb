@@ -1,5 +1,5 @@
 module Filter
-  class NumberFieldBuilder
+  class Builder::NumberField < Builder
 
     def self.render
       lambda do |attr, opts|

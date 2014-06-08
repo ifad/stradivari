@@ -1,7 +1,7 @@
 require 'filter/helpers'
 
 module Filter
-  class SelectionFieldBuilder
+  class Builder::SelectionField < Builder
 
     def self.render
       lambda do |attr, opts|
@@ -20,14 +20,6 @@ module Filter
           end
         end
       end
-    end
-
-    def self.value(params, name)
-      params[name] || params["#{name}_eq"]
-    end
-
-    def self.active?(params, name)
-      value(params, name).present?
     end
 
   end
