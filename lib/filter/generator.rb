@@ -101,6 +101,7 @@ module Filter
       @fields = []
 
       @opts.reverse_merge! Filter::Generator::FILTER_OPTIONS
+      @opts[:inline] = true if detached?
     end
 
     def field scope, attr, opts = {}
@@ -120,8 +121,7 @@ module Filter
       renderer = lambda do
         id = @opts.fetch(:id, "filter_fields_for_#{ActiveModel::Naming.singular(klass)}")
         form_classes = 'filter-form '
-        form_classes << 'form-inline '   if inline?
-        form_classes << 'detached-form ' if detached?
+        form_classes << 'form-detached ' if detached?
 
         capture_haml do
           haml_tag :div, class: @opts[:class] do
@@ -133,14 +133,14 @@ module Filter
               haml_tag :input, type: :hidden, name: :sort,      value: params[:sort]
               haml_tag :input, type: :hidden, name: :direction, value: params[:direction]
 
-              haml_tag :div, class: (detached? ? '' : 'panel panel-info') do
-                generate_actions if !detached? && @fields.count > 5
+              wrapping do
+                generate_actions if !inline? && @fields.count > 5
 
                 generate_custom_block(@prepended) if !detached? && @prepended.present?
                 generate_active_fields
                 generate_inactive_fields
                 generate_custom_block(@appended) if !detached? && @appended.present?
-                generate_actions if !detached?
+                generate_actions if !inline?
               end
             end
           end
@@ -164,6 +164,14 @@ module Filter
 
     protected
 
+      def wrapping(&block)
+        if inline?
+          block.call
+        else
+          haml_tag :div, class: 'panel panel-info', &block
+        end
+      end
+
       def detached?
         !!@opts.fetch(:detached, nil)
       end
@@ -174,7 +182,7 @@ module Filter
 
       def generate_active_fields
         if (active_fields = @fields.select(&:active?)).count > 0
-          haml_tag :div, class: (detached? ? '' : 'panel-heading') do
+          haml_tag :div, class: (inline? ? '' : 'panel-heading') do
             active_fields.each(&:to_s)
           end
         end
@@ -182,7 +190,7 @@ module Filter
 
       def generate_inactive_fields
         if (inactive_fields = @fields.reject(&:active?)).count > 0
-          haml_tag :div, class: (detached? ? '' : 'panel-body') do
+          haml_tag :div, class: (inline? ? '' : 'panel-body') do
             inactive_fields.each(&:to_s)
           end
         end
