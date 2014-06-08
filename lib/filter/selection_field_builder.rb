@@ -4,7 +4,7 @@ module Filter
   class SelectionFieldBuilder
 
     def self.render
-      lambda do |_, attr, opts|
+      lambda do |attr, opts|
         collection = opts[:collection].is_a?(Proc) ? opts[:collection].call : opts[:collection]
         title      = opts.fetch(:title, attr.to_s.humanize)
         attr       = opts[:is_scoped] ? attr : [attr, 'eq'].join('_')
@@ -20,6 +20,14 @@ module Filter
           end
         end
       end
+    end
+
+    def self.value(params, name)
+      params[name] || params["#{name}_eq"]
+    end
+
+    def self.active?(params, name)
+      value(params, name).present?
     end
 
   end

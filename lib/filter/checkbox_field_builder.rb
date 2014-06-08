@@ -2,7 +2,7 @@ module Filter
   class CheckboxFieldBuilder
 
     def self.render
-      lambda do |_, attr, opts|
+      lambda do |attr, opts|
 
         def cb(name, label, value, checked, opts)
           haml_tag :div, class: 'checkbox' do
@@ -43,5 +43,14 @@ module Filter
         end
       end
     end
+
+    def self.value(params, name)
+      params[name] || params["#{name}_in"]
+    end
+
+    def self.active?(params, name)
+      value(params, name).present?
+    end
+
   end
 end

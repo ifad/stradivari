@@ -1,7 +1,8 @@
 module Filter
   class NumberFieldBuilder
+
     def self.render
-      lambda do |_, attr, opts|
+      lambda do |attr, opts|
         value = opts[:value].last
 
         select_opts = [
@@ -19,5 +20,23 @@ module Filter
         end
       end
     end
+
+    def self.value(params, name)
+      if params["#{name}_lt"].present?
+        [ "#{name}_lt", params["#{name}_lt"] ]
+
+      elsif params["#{name}_gt"].present?
+        [ "#{name}_gt", params["#{name}_gt"] ]
+
+      else
+        [ "#{name}_eq", params["#{name}_eq"] ]
+
+      end
+    end
+
+    def self.active?(params, name)
+       !! [ params["#{name}_eq"], params["#{name}_lt"], params["#{name}_gt"] ].find(&:present?)
+    end
+
   end
 end

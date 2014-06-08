@@ -1,7 +1,8 @@
 module Filter
   class DateRangeFieldBuilder
+
     def self.render
-      lambda do |_, attr, opts|
+      lambda do |attr, opts|
         from_value = opts[:value].first
         to_value   = opts[:value].last
 
@@ -15,5 +16,14 @@ module Filter
         end
       end
     end
+
+    def self.value(params, name)
+      [ params["#{name}_gteq"], params["#{name}_lteq"] ]
+    end
+
+    def self.active?(params, name)
+      !! value(params, name).find(&:present?)
+    end
+
   end
 end

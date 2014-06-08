@@ -1,7 +1,8 @@
 module Filter
   class SearchFieldBuilder
+
     def self.render
-      lambda do |_, attr, opts|
+      lambda do |attr, opts|
         attr  = opts[:is_scoped] ? attr : [attr, 'cont'].join('_')
 
         haml_tag :div, class: 'form-group' do
@@ -23,5 +24,14 @@ module Filter
         end
       end
     end
+
+    def self.value(params, name)
+      params[name] || params["#{name}_cont"]
+    end
+
+    def self.active?(params, name)
+      value(params, name).present?
+    end
+
   end
 end

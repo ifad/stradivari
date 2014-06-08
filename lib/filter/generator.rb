@@ -23,75 +23,33 @@ module Filter
       end
 
       def active?
-        active = case @scope
-        when :number_field
-          [ ns[@name], ns["#{@name}_eq"], ns["#{@name}_lt"], ns["#{@name}_gt"] ]
-        when :selection_field
-          [ ns[@name], ns["#{@name}_eq"] ]
-        when :date_range_field
-          [ ns[@name], ns["#{@name}_gteq"], ns["#{@name}_lteq"] ]
-        when :boolean_field
-          [ ns[@name], ns["#{@name}_eq"] ]
-        when :checkbox_field
-          [ ns[@name], ns["#{@name}_in"] ]
-        else
-          [ ns[@name], ns["#{@name}_cont"] ]
-        end
+        builder.active?(params, @name)
+      end
 
-        active.map(&:present?).any?
+      def value
+        builder.value(params, @name)
       end
 
       def to_s
-        build
+        view.instance_exec(@name, @opts.merge(value: value), &builder.render)
       end
 
       protected
+        BUILDERS = {
+          selection_field:  SelectionFieldBuilder,
+          date_range_field: DateRangeFieldBuilder,
+          number_field:     NumberFieldBuilder,
+          boolean_field:    BooleanFieldBuilder,
+          checkbox_field:   CheckboxFieldBuilder,
+          search_field:     SearchFieldBuilder
+        }.freeze
 
-        def ns
-          @parent.opts[NAMESPACE]
+        def builder
+          @_bulder ||= @opts[:builder] || BUILDERS.fetch(@scope)
         end
 
-        def build
-          value = ns[@name]
-
-          klass = if (builder = @opts[:builder]).present?
-            builder
-          else
-            case @scope
-            when :selection_field
-              value = ns[@name] || ns["#{@name}_eq"]
-
-              Filter::SelectionFieldBuilder
-            when :date_range_field
-              value = [ns["#{@name}_gteq"], ns["#{@name}_lteq"]]
-
-              Filter::DateRangeFieldBuilder
-            when :number_field
-              value = if ns["#{@name}_lt"].present?
-                ["#{@name}_lt", ns["#{@name}_lt"]]
-              elsif ns["#{@name}_gt"].present?
-                ["#{@name}_gt", ns["#{@name}_gt"]]
-              else
-                ["#{@name}_eq", ns["#{@name}_eq"]]
-              end
-
-              Filter::NumberFieldBuilder
-            when :boolean_field
-              value = ns[@name] || ns["#{@name}_eq"]
-
-              Filter::BooleanFieldBuilder
-            when :checkbox_field
-              value = ns[@name] || ns["#{@name}_in"]
-
-              Filter::CheckboxFieldBuilder
-            else
-              value = ns[@name] || ns["#{@name}_cont"]
-
-              Filter::SearchFieldBuilder
-            end
-          end
-
-          view.instance_exec(klass, @name, @opts.merge(value: value), &klass.render)
+        def params
+          @parent.opts[NAMESPACE]
         end
     end
 
