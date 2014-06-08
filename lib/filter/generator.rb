@@ -84,12 +84,8 @@ module Filter
               value = ns["#{@name}_in"] || ns[@scope]
 
               Filter::CheckboxFieldBuilder
-            when :full_text_search_field
-              value = ns[@name]
-
-              Filter::FullTextSearchFieldBuilder
             else
-              value = ns["#{@name}_cont"]
+              value = ns[@name] || ns["#{@name}_cont"]
 
               Filter::SearchFieldBuilder
             end
@@ -114,7 +110,7 @@ module Filter
       @fields << Field.new(self, scope, attr, opts)
     end
 
-    %w[search selection date_range boolean checkbox number full_text_search].each do |scope|
+    %w[search selection date_range boolean checkbox number].each do |scope|
       define_method "#{scope}_field" do |attr, opts = {}|
         field "#{scope}_field", attr, opts
       end
