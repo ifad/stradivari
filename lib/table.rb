@@ -4,13 +4,12 @@ require 'ransack'
 require 'table/version'
 require 'table/engine'
 
+require 'base'
 require 'filter'
-
 require 'tabs'
 
 module Table
   autoload :ActionBuilder,   'table/action_builder'
-  autoload :BaseBuilder,     'table/base_builder'
   autoload :BooleanBuilder,  'table/boolean_builder'
   autoload :CheckboxBuilder, 'table/checkbox_builder'
   autoload :Column,          'table/column'
@@ -20,13 +19,10 @@ module Table
   autoload :NumberBuilder,   'table/number_builder'
   autoload :TextBuilder,     'table/text_builder'
   autoload :TextLinkBuilder, 'table/text_link_builder'
+  autoload :Helpers,         'table/helpers'
 
   module Controllers
     autoload :Sort,          'table/controllers/sort'
-  end
-
-  module Helpers
-    autoload :Generator,     'table/helpers/generator'
   end
 
   module Models

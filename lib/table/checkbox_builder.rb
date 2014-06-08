@@ -1,7 +1,9 @@
 module Table
-  class CheckboxBuilder < Table::BaseBuilder
-    def render object, attribute_name, options = {}
-      ''
+  class CheckboxBuilder
+    def self.render
+      lambda do |_, _, _|
+        ''
+      end
     end
   end
 end

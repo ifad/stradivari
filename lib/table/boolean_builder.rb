@@ -1,8 +1,9 @@
 module Table
-  class BooleanBuilder < Table::BaseBuilder
-
-    def render object, attribute_name, options = {}
-      object.send(attribute_name) ? "Yes" : "No"
+  class BooleanBuilder
+    def self.render
+      lambda do |object, attr, _|
+        object.send(attr) ? "Yes" : "No"
+      end
     end
   end
 end

@@ -1,8 +1,9 @@
 module Table
-  class DateBuilder < Table::BaseBuilder
-
-    def render object, attribute_name, options = {}
-      history_timestamp(object, attribute_name) if object.send(attribute_name).present?
+  class DateBuilder
+    def self.render
+      lambda do |object, attr, _|
+        history_timestamp(object, attr) if object.send(attr).present?
+      end
     end
   end
 end

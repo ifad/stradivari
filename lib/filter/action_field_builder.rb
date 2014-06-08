@@ -1,8 +1,8 @@
 module Filter
-  class ActionFieldBuilder < Filter::BaseFieldBuilder
+  class ActionFieldBuilder
 
-    def render object_class, attribute_name, options = {}
-      unless options[:detached_form]
+    def self.render
+      lambda do
         haml_tag :ul, class: 'list-group actions' do
           haml_tag :li, class: 'list-group-item' do
             haml_tag :button, class: 'btn btn-primary btn-sm search' do

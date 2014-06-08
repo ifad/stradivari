@@ -1,7 +1,9 @@
 module Table
-  class TextBuilder < Table::BaseBuilder
-    def render object, attribute_name, options = {}
-      object.send(attribute_name)
+  class TextBuilder
+    def self.render
+      lambda do |object, attr, _|
+        object.send(attr)
+      end
     end
   end
 end

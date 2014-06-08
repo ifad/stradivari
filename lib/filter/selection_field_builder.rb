@@ -1,53 +1,50 @@
 module Filter
-  class SelectionFieldBuilder < Filter::BaseFieldBuilder
-    def render object_class, attribute_name, options = {}
-      @value = options[:value]
-      @collection = options[:collection].is_a?(Proc) ? options[:collection].call : options[:collection]
-      input_name = options[:field_name].present? ? options[:field_name] : attribute_name
+  class SelectionFieldBuilder
+    def self.render
+      lambda do |_, attr, opts|
+        value      = opts[:value]
+        collection = opts[:collection].is_a?(Proc) ? opts[:collection].call : opts[:collection]
+        input_name = opts[:field_name].present? ? opts[:field_name] : attr
+        namespace  = opts[:namespace]
 
-      @title = options.fetch(:title, attribute_name.to_s.humanize)
-      @field_name = if options[:attribute_type] == :ransack
-        input_name
-      else
-        "#{input_name}_eq"
-      end
+        title = opts.fetch(:title, attr.to_s.humanize)
+        field_name = if opts[:attribute_type] == :ransack
+          input_name
+        else
+          "#{input_name}_eq"
+        end
 
-      haml_tag :div, class: 'form-group' do
-        haml_concat label(@@form_namespace, @field_name, @title)
+        haml_tag :div, class: 'form-group' do
+          haml_concat label(namespace, field_name, title)
 
-        (@collection.kind_of?(Array) && @collection.size <= 5) ? radios : dropdown
-      end
-    end
+          if collection.kind_of?(Array) && collection.size <= 5
+            haml_tag :div, class: 'form-inline' do
+              any_checked = true
 
+              collection.each do |t, v|
+                haml_tag :div, class: 'radio' do
+                  checked = (value.to_s == v.to_s)
+                  any_checked = false if checked
 
-    private
-      def dropdown
-        haml_concat select(@@form_namespace, @field_name, @collection, {selected: @value, include_blank: 'Any'}, {class: 'form-control'})
-      end
+                  haml_tag :label do
+                    haml_concat radio_button(namespace, field_name, v, checked: checked)
+                    haml_concat t
+                  end
+                end
+              end
 
-      def radios
-        haml_tag :div, class: 'form-inline' do
-          any_checked = true
-
-          @collection.each do |title, value|
-            haml_tag :div, class: 'radio' do
-              checked = (@value.to_s == value.to_s)
-              any_checked = false if checked
-
-              haml_tag :label do
-                haml_concat radio_button(@@form_namespace, @field_name, value, checked: checked)
-                haml_concat title
+              haml_tag :div, class: 'radio' do
+                haml_tag :label do
+                  haml_concat radio_button(namespace, field_name, '', checked: any_checked)
+                  haml_concat 'Any'
+                end
               end
             end
-          end
-
-          haml_tag :div, class: 'radio' do
-            haml_tag :label do
-              haml_concat radio_button(@@form_namespace, @field_name, '', checked: any_checked)
-              haml_concat 'Any'
-            end
+          else
+            haml_concat select(namespace, field_name, collection, {selected: value, include_blank: 'Any'}, {class: 'form-control'})
           end
         end
       end
+    end
   end
 end

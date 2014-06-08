@@ -1,11 +1,10 @@
-
 module Table
-  class TextLinkBuilder < Table::BaseBuilder
-    def render object, attribute_name, options = {}
-      if name = object.send(attribute_name)
-        link_to(name, object)
-      else
-        ""
+  class TextLinkBuilder
+    def self.render
+      lambda do |object, attr, _|
+        if name = object.send(attr)
+          link_to(name, object)
+        end
       end
     end
   end
