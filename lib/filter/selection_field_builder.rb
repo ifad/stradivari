@@ -1,21 +1,14 @@
 module Filter
   class SelectionFieldBuilder
+
     def self.render
       lambda do |_, attr, opts|
-        value      = opts[:value]
         collection = opts[:collection].is_a?(Proc) ? opts[:collection].call : opts[:collection]
-        input_name = opts[:field_name].present? ? opts[:field_name] : attr
-        namespace  = opts[:namespace]
-
-        title = opts.fetch(:title, attr.to_s.humanize)
-        field_name = if opts[:attribute_type] == :ransack
-          input_name
-        else
-          "#{input_name}_eq"
-        end
+        title      = opts.fetch(:title, attr.to_s.humanize)
+        attr       = opts[:is_scoped] ? attr : [attr, 'eq'].join('_')
 
         haml_tag :div, class: 'form-group' do
-          haml_concat label(namespace, field_name, title)
+          haml_concat label(opts[:namespace], attr, title)
 
           if collection.kind_of?(Array) && collection.size <= 5
             haml_tag :div, class: 'form-inline' do
@@ -41,10 +34,11 @@ module Filter
               end
             end
           else
-            haml_concat select(namespace, field_name, collection, {selected: value, include_blank: 'Any'}, {class: 'form-control'})
+            haml_concat select(opts[:namespace], attr, collection, {selected: opts[:value], include_blank: 'Any'}, {class: 'form-control'})
           end
         end
       end
     end
+
   end
 end

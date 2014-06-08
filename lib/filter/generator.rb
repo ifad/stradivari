@@ -15,46 +15,34 @@ module Filter
         @parent = parent
         @scope  = scope
         @name   = name
-        @opts   = opts.merge(namespace: NAMESPACE)
+        @opts   = opts.merge(
+          namespace: NAMESPACE,
+          is_column: klass.columns_hash[@name.to_s].present?,
+          is_scoped: klass._ransackers[@name.to_s].present?
+        )
       end
 
       def active?
         active = case @scope
         when :number_field
-          [ ns[field_name], ns["#{@name}_eq"], ns["#{@name}_lt"], ns["#{@name}_gt"] ]
+          [ ns[@name], ns["#{@name}_eq"], ns["#{@name}_lt"], ns["#{@name}_gt"] ]
         when :selection_field
-          [ ns[field_name], ns["#{@name}_eq"], ns["#{@name}"] ]
+          [ ns[@name], ns["#{@name}_eq"] ]
         when :date_range_field
-          [ ns[field_name], ns["#{@name}_gteq"], ns["#{@name}_lteq"] ]
+          [ ns[@name], ns["#{@name}_gteq"], ns["#{@name}_lteq"] ]
         when :boolean_field
-          [ ns[field_name], ns["#{@name}_eq"] ]
+          [ ns[@name], ns["#{@name}_eq"] ]
         when :checkbox_field
-          [ ns[field_name], ns["#{@name}_in"], ns[@scope] ]
-        when :full_text_search_field
-          [ ns[field_name], ns[@name] ]
+          [ ns[@name], ns["#{@name}_in"] ]
         else
-          [ ns["#{@name}_cont"] ]
+          [ ns[@name], ns["#{@name}_cont"] ]
         end
 
         active.map(&:present?).any?
       end
 
       def to_s
-        if klass.columns_hash[@name.to_s].present? ||
-          klass._ransackers[@name.to_s].present? ||
-          @name.to_s =~ /or|and/ ||
-          @opts[:field_name].present?
-
-          @opts[:attribute_type] = if klass._ransackers[@name.to_s].present?
-            :ransack
-          else
-            :active_record
-          end
-
-          build
-        else
-          raise ArgumentError, "Provided attribute '#{@name}' does not exist on #{klass} class."
-        end
+        build
       end
 
       protected
@@ -69,16 +57,13 @@ module Filter
           klass = if (builder = @opts[:builder]).present?
             builder
           else
-            field_name = @opts[:field_name]
-
             case @scope
             when :selection_field
-              value = ns[field_name] || ns["#{@name}_eq"] || ns["#{@name}"]
+              value = ns[@name] || ns["#{@name}_eq"]
 
               Filter::SelectionFieldBuilder
             when :date_range_field
-              name  = field_name.present? ? field_name : @name
-              value = [ns["#{name}_gteq"], ns["#{name}_lteq"]]
+              value = [ns["#{@name}_gteq"], ns["#{@name}_lteq"]]
 
               Filter::DateRangeFieldBuilder
             when :number_field
@@ -92,7 +77,7 @@ module Filter
 
               Filter::NumberFieldBuilder
             when :boolean_field
-              value = ns[@name] || ns["#{@name}_is_true"]  || ns["#{@name}_is_false"] || ns["#{@name}_eq"]
+              value = ns[@name] || ns["#{@name}_eq"]
 
               Filter::BooleanFieldBuilder
             when :checkbox_field
@@ -111,10 +96,6 @@ module Filter
           end
 
           view.instance_exec(klass, @name, @opts.merge(value: value), &klass.render)
-        end
-
-        def field_name
-          @opts.fetch(:field_name, @name)
         end
     end
 
