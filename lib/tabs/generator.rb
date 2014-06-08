@@ -1,6 +1,6 @@
 module Tabs
 
-  class Generator < ::Base::Generator
+  class Generator < Stradivari::Generator
     class Tab < Tag
       def initialize(parent, label, dom_id, content, opts, renderer)
         @parent   = parent

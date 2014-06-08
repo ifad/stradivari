@@ -4,7 +4,7 @@ require 'ransack'
 require 'table/version'
 require 'table/engine'
 
-require 'base'
+require 'stradivari'
 require 'filter'
 require 'tabs'
 

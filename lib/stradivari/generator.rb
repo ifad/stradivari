@@ -1,4 +1,4 @@
-module Base
+module Stradivari
 
   class Generator
     class Tag

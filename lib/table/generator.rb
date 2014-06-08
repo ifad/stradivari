@@ -12,7 +12,7 @@
 # end
 #
 module Table
-  class Generator < ::Base::Generator
+  class Generator < Stradivari::Generator
 
     TABLE_OPTIONS = {
       class: "table table-hover",

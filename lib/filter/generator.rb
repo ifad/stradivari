@@ -1,6 +1,6 @@
 module Filter
 
-  class Generator < ::Base::Generator
+  class Generator < Stradivari::Generator
     NAMESPACE = Filter::NAMESPACE
 
     FILTER_OPTIONS = {
