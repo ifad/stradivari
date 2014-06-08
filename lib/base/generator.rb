@@ -40,7 +40,7 @@ module Base
 
     def method_missing name, *args, &block
       begin
-        @view.send(name, *args)
+        @view.send(name, *args, &block)
       rescue
         super
       end
