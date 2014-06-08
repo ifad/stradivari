@@ -8,8 +8,8 @@ module Details
 
     class Field < Tag
       def initialize(parent, object, label, opts, renderer)
-        @parent   = parent
-        @object   = object
+        super(parent, object)
+
         @label    = label
         @opts     = opts
         @renderer = renderer
