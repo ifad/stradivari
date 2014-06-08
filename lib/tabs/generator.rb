@@ -32,7 +32,7 @@ module Tabs
         klass << ' active' if opts.fetch(:active, false)
 
         haml_tag :div, class: klass, id: @dom_id do
-          @view.instance_exec(@content, &@renderer)
+          view.instance_exec(@content, &@renderer)
         end
       end
     end
