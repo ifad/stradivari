@@ -8,7 +8,7 @@
 #   column :result, { title: "Result"} do |object|
 #     "#{object.id ^ 2}"
 #   end
-#   column_actions actions: [:show, :edit, :delete], class: "test"
+#   column :actions, actions: [:show, :edit, :delete], class: "test"
 # end
 #
 module Table
@@ -169,10 +169,6 @@ module Table
       opts = columns.extract_options!
 
       columns.map { |col| column(col, opts)}
-    end
-
-    def column_actions opts = {}, &renderer
-      column :actions, opts, &renderer
     end
 
     def to_s
