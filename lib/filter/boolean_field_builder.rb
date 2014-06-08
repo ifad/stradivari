@@ -1,3 +1,5 @@
+require 'filter/helpers'
+
 module Filter
   class BooleanFieldBuilder
 
@@ -8,10 +10,8 @@ module Filter
 
         haml_tag :div, class: "form-group" do
           if opts.fetch(:tristate, false)
-
-            # TODO make this a radio
             haml_concat label(opts[:namespace], attr, title)
-            haml_concat select(opts[:namespace], name, [['Yes', 'true'], ['No', 'false']], {include_blank: 'Any', selected: value}, {class: 'form-control'})
+            instance_exec(&Helpers.radios_for_collection([['Yes', 'true'], ['No', 'false']], attr, opts))
 
           else
             haml_tag :div, class: 'checkbox' do

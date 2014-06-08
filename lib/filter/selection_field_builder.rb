@@ -1,3 +1,5 @@
+require 'filter/helpers'
+
 module Filter
   class SelectionFieldBuilder
 
@@ -11,28 +13,8 @@ module Filter
           haml_concat label(opts[:namespace], attr, title)
 
           if collection.kind_of?(Array) && collection.size <= 5
-            haml_tag :div, class: 'form-inline' do
-              any_checked = true
+            instance_exec(&Helpers.radios_for_collection(collection, attr, opts))
 
-              collection.each do |t, v|
-                haml_tag :div, class: 'radio' do
-                  checked = (value.to_s == v.to_s)
-                  any_checked = false if checked
-
-                  haml_tag :label do
-                    haml_concat radio_button(namespace, field_name, v, checked: checked)
-                    haml_concat t
-                  end
-                end
-              end
-
-              haml_tag :div, class: 'radio' do
-                haml_tag :label do
-                  haml_concat radio_button(namespace, field_name, '', checked: any_checked)
-                  haml_concat 'Any'
-                end
-              end
-            end
           else
             haml_concat select(opts[:namespace], attr, collection, {selected: opts[:value], include_blank: 'Any'}, {class: 'form-control'})
           end
