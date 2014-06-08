@@ -299,7 +299,7 @@ module Table
 
       def download
         capture_haml do
-          haml_tag :a, 'Download...', href: url_for(params.merge(format: :csv))
+          haml_tag :a, 'Download...', href: view.url_for(view.params.merge(format: :csv))
         end
       end
 
