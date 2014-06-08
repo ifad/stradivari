@@ -182,6 +182,10 @@ module Table
       capture_haml(&renderer)
     end
 
+    def klass
+      @klass ||= @data.try(:klass) || @data.try(:first).class
+    end
+
     protected
 
       def render_csv_content

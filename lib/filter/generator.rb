@@ -181,6 +181,10 @@ module Filter
       @appended = opts.merge(block: block)
     end
 
+    def klass
+      @data
+    end
+
     protected
 
       def detached?

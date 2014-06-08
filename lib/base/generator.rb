@@ -35,7 +35,7 @@ module Base
     end
 
     def klass
-      @klass ||= @data.try(:klass) || (@data.try(:first).presence || @data).class
+      raise "To be implemented"
     end
 
     def method_missing name, *args, &block
