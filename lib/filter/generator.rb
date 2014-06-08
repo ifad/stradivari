@@ -81,7 +81,7 @@ module Filter
 
               Filter::BooleanFieldBuilder
             when :checkbox_field
-              value = ns["#{@name}_in"] || ns[@scope]
+              value = ns[@name] || ns["#{@name}_in"]
 
               Filter::CheckboxFieldBuilder
             else
