@@ -15,8 +15,8 @@ module Filter
 
         type   = opts.fetch :type , :single_line
         title  = opts.fetch :title, attr.to_s.humanize
-        name   = opts.fetch :scope, "#{attr}_in"
         values = opts.fetch :value, nil
+        name   = opts[:is_scoped] ? attr : [attr, 'in'].join('_')
 
         values   ||= []
         collection = opts[:collection]
