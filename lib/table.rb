@@ -1,14 +1,6 @@
 require 'pg_search'
 require 'ransack'
 
-require 'table/version'
-require 'table/engine'
-
-require 'stradivari'
-require 'details'
-require 'filter'
-require 'tabs'
-
 module Table
   autoload :ActionBuilder,   'table/action_builder'
   autoload :BooleanBuilder,  'table/boolean_builder'
@@ -20,7 +12,6 @@ module Table
   autoload :NumberBuilder,   'table/number_builder'
   autoload :TextBuilder,     'table/text_builder'
   autoload :TextLinkBuilder, 'table/text_link_builder'
-  autoload :Helpers,         'table/helpers'
 
   module Controllers
     autoload :Sort,          'table/controllers/sort'
