@@ -4,7 +4,7 @@
 > 18 December 1737) was an Italian luthier and a crafter of string instruments
 > such as violins, cellos, guitars, violas, and harps. Stradivari is generally
 > considered the most significant and greatest artisan in this field.
->  - http://en.wikipedia.org/wiki/Antonio\_Stradivari
+>  - http://en.wikipedia.org/wiki/Antonio_Stradivari
 
 ## Design
 
