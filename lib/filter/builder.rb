@@ -2,16 +2,16 @@ module Filter
 
   class Builder
     Implementations = {
-      selection_field:  'SelectionField',
-      date_range_field: 'DateRangeField',
-      number_field:     'NumberField',
-      boolean_field:    'BooleanField',
-      checkbox_field:   'CheckboxField',
-      search_field:     'SearchField'
+      selection:  'SelectionField',
+      date_range: 'DateRangeField',
+      number:     'NumberField',
+      boolean:    'BooleanField',
+      checkbox:   'CheckboxField',
+      search:     'SearchField'
     }
 
     Implementations.each do |id, name|
-      require "filter/builder/#{id}"
+      require "filter/builder/#{id}_field"
       Implementations[id] = const_get(name)
     end.freeze
 

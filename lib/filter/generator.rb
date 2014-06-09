@@ -62,7 +62,7 @@ module Filter
       @fields << Field.new(self, scope, attr, opts)
     end
 
-    Builder::Implementations.each do |name, klass|
+    Builder::Implementations.each do |name, _|
       define_method name do |attr, opts = {}|
         field(name, attr, opts)
       end
