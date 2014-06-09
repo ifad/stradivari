@@ -95,19 +95,25 @@ module Table
           # have sorting in some scopes, but when searching
           # through ransack we want always to have full control
           # on the order clause.
-          ransack = arel.except(:order).ransack(ransack_params)
+          if sort.present?
+            ransack = arel.except(:order).ransack(ransack_params)
 
-          return ransack.result unless sort.present?
+            arel_sort = ['sort_by', sort, dir].join('_')
+            if arel.respond_to?(arel_sort) # Named scope
+              ransack.result.public_send(arel_sort)
 
-          # Handle sorting
-          arel_sort = ['sort_by', sort, dir].join('_')
-          if arel.respond_to?(arel_sort) # Named scope
-            ransack.result.public_send(arel_sort)
-
-          else # Try ransack sort
-            ransack.sorts = [sort, dir].join(' ')
-            ransack.result
+            else # Try ransack sort
+              ransack.sorts = [sort, dir].join(' ')
+              ransack.result
+            end
+          else
+            # If sorting is disabled, leave arel alone, using any
+            # sorting introduced by called named scopes. This is
+            # useful, e.g., with pg_search's scopes, to rank search
+            # results by relevance.
+            arel.ransack(ransack_params).result
           end
+
         end
 
       end

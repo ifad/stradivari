@@ -33,6 +33,8 @@ module Table
             sorting_object_class.reflections.keys.any? {|related| params[:sort].include? related.to_s })
 
             params[:sort]
+          elsif params[:sort] == 'nil'
+            nil
           else
             default_sort_column
           end
