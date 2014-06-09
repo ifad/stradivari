@@ -1,5 +1,7 @@
 # Stradivari
 
+![Antonio Stradivari Portrait][logo]
+
 > Antonio Stradivari (Italian pronunciation: [anˈtɔːnjo stradiˈvaːri]; 1644 –
 > 18 December 1737) was an Italian luthier and a crafter of string instruments
 > such as violins, cellos, guitars, violas, and harps. Stradivari is generally
@@ -67,3 +69,5 @@ Information and knowledge wants to be free, and through it we can make a huge
 impact in making the world a better place.
 
   -- vjt  Mon Jun  9 20:21:42 CEST 2014
+
+[logo]: http://upload.wikimedia.org/wikipedia/commons/c/cd/Antonio_stradivari.jpg
