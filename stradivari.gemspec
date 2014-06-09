@@ -24,4 +24,5 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'pg_search'
   spec.add_runtime_dependency 'ransack'
+  spec.add_runtime_dependency 'haml',     [">= 3.1", "< 5.0"]
 end
