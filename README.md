@@ -7,7 +7,7 @@ Stop messing with table columns, sorting and data types
 
 Add to your Gemfile
 
-    gem 'table'
+    gem 'stradivari'
 
 ## License
 MIT
