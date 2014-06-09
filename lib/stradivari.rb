@@ -1,13 +1,15 @@
 require 'stradivari/version'
 require 'stradivari/engine'
 
-require 'details'
-require 'filter'
-require 'tabs'
-require 'table'
+require 'stradivari/details'
+require 'stradivari/filter'
+require 'stradivari/tabs'
+require 'stradivari/table'
+require 'stradivari/csv'
 
 module Stradivari
 
+  autoload :Builder,    'stradivari/builder'
   autoload :Generator,  'stradivari/generator'
   autoload :Helpers,    'stradivari/helpers'
   autoload :Controller, 'stradivari/controller'

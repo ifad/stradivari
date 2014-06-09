@@ -9,15 +9,15 @@ module Stradivari
         else
           case type
           when :integer
-            Table::NumberBuilder
+            Stradivari::Table::Builder::NumberBuilder
           when :date
-            Table::DateBuilder
+            Stradivari::Table::Builder::DateBuilder
           when :datetime
-            Table::DateBuilder
+            Stradivari::Table::Builder::DateBuilder
           when :boolean
-            Table::BooleanBuilder
+            Stradivari::Table::Builder::BooleanBuilder
           else
-            Table::TextBuilder
+            Stradivari::Table::Builder::TextBuilder
           end
         end
       end

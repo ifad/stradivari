@@ -7,9 +7,9 @@ module Stradivari
 
       attr_reader :opts
 
-      def initialize(parent, opts)
-        @parent = parent
-        @opts   = opts
+      def initialize(*args, &block)
+        @parent = args.first
+        @opts   = args.extract_options!
       end
 
       protected
@@ -22,10 +22,14 @@ module Stradivari
         end
 
         def type
-          object_columns_hash = klass.try(:extra_columns_hash) || klass.columns_hash
-
-          object_columns_hash.fetch(name.to_s, nil).try(:type)
+          klass.columns_hash.fetch(name.to_s, nil).try(:type)
         end
+    end
+
+    def self.parse(view, *args, &block)
+      self.new(view, *args).tap do |generator|
+        generator.instance_exec(*args, &block)
+      end
     end
 
     def initialize(view, data, opts = {})
@@ -36,7 +40,7 @@ module Stradivari
 
     attr_reader :view, :opts
 
-    delegate :capture_haml, :haml_tag, to: :@view
+    delegate :params, :t, :capture_haml, :haml_tag, to: :@view
 
     def to_s
       raise "To be implemented"
