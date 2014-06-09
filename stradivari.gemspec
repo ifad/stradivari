@@ -9,9 +9,17 @@ Gem::Specification.new do |spec|
   spec.version       = Stradivari::VERSION
   spec.authors       = ["Lleïr Borràs Metje", "Marcello Barnaba", "Ivan Turkovic"]
   spec.email         = ["l.borrasmetje@ifad.org", "m.barnaba@ifad.org", "i.turkovic@ifad.org"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = "https://github.com/ifad/table"
+  spec.summary       = %q{Table, filters and data visualization helpers for rails applications.}
+  spec.description   = %q{
+This Gem combines HAML and Bootstrap 3 to provide you easy generators for:
+
+- HTML Tables
+- CSV Tables
+- Tabbed layouts
+- Definition Lists
+- Filter forms  
+  }
+  spec.homepage      = "https://github.com/ifad/stradivari"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
