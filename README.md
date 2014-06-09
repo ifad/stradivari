@@ -15,13 +15,14 @@ collection of great tools for your Ruby Web Application.
 
 ## History
 
-Started off as a replacement of the Active Admin table and filter
-generators DSL, during the development of an enterprise product that used to
-rely on Active Admin, it grew up on its own.
+Started off as a replacement of the [Active Admin](https://github.com/gregbell/active_admin) 
+table and filter generators DSL, during the development of an enterprise product 
+that used to rely on Active Admin, it grew up on its own.
 
 ## Features
 
-This Gem combines HAML and Bootstrap to provide you easy generators for:
+This Gem combines [HAML](https://github.com/haml/haml) and
+[Bootstrap 3](https://github.com/twbs/bootstrap) to provide you easy generators for:
 
 - HTML Tables
 - CSV Tables
@@ -31,7 +32,8 @@ This Gem combines HAML and Bootstrap to provide you easy generators for:
 
 The filter form generator includes also all controller code boilerplate to
 parse the form parameters, and model code to define search scopes and process
-the search parameters - leveraging Ransack and PgSearch.
+the search parameters - leveraging [Ransack](https://github.com/activerecord-hackery/ransack)
+and [PgSearch](https://github.com/Casecommons/pg_search).
 
 Whoa, what a lot of Gems this glues together! :smile:
 
