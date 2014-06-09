@@ -79,8 +79,8 @@ module Filter
             id, link = link, id if detached?
 
             haml_tag :form, class: form_classes, role: 'form', id: id, data: { link: link } do
-              haml_tag :input, type: :hidden, name: :sort,      value: view.params[:sort]
-              haml_tag :input, type: :hidden, name: :direction, value: view.params[:direction]
+              haml_tag :input, type: :hidden, name: :sort,      value: @opts.fetch(:sort,      view.params[:sort])
+              haml_tag :input, type: :hidden, name: :direction, value: @opts.fetch(:direction, view.params[:direction])
 
               wrapping do
                 generate_actions if !inline? && @fields.count > 5
