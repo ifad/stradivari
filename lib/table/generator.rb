@@ -32,10 +32,12 @@ module Table
     }
 
     class Column < Tag
+      include Stradivari::Concerns::TableBuilder
+
       def initialize(parent, name, opts, renderer)
-        @parent   = parent
+        super(parent, opts)
+
         @name     = name
-        @opts     = opts
         @renderer = renderer
       end
 
@@ -121,24 +123,7 @@ module Table
 
       protected
         def build object
-          klass = if (b = @opts[:builder]).present?
-            b
-          else
-            case type
-            when :integer
-              Table::NumberBuilder
-            when :date
-              Table::DateBuilder
-            when :datetime
-              Table::DateBuilder
-            when :boolean
-              Table::BooleanBuilder
-            else
-              Table::TextBuilder
-            end
-          end
-
-          view.instance_exec(object, @name, @opts, &klass.render)
+          view.instance_exec(object, @name, @opts, &builder.render)
         end
     end
 

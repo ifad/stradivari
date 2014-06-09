@@ -12,10 +12,12 @@ module Filter
 
     class Field < Tag
       def initialize(parent, scope, name, opts)
-        @parent = parent
+        super(parent, opts)
+
         @scope  = scope
         @name   = name
-        @opts   = opts.merge(
+
+        @opts.merge!(
           namespace: NAMESPACE,
           is_column: klass.columns_hash[@name.to_s].present?,
           is_scoped: klass._ransackers[@name.to_s].present?

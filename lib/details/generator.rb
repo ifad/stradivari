@@ -7,11 +7,13 @@ module Details
     }
 
     class Field < Tag
-      def initialize(parent, object, label, opts, renderer)
-        super(parent, object)
+      include Stradivari::Concerns::TableBuilder
 
+      def initialize(parent, object, label, opts, renderer)
+        super(parent, opts)
+
+        @object   = object
         @label    = label
-        @opts     = opts
         @renderer = renderer
 
         @opts.reverse_merge!(label: {}, content: {}).merge!(present: true)
@@ -33,18 +35,7 @@ module Details
 
       protected
         def build
-          klass = if (b = @opts[:builder]).present?
-            b
-          else
-            case @opts[:type].presence || type
-            when :boolean
-              Table::BooleanBuilder
-            else
-              Table::TextBuilder
-            end
-          end
-
-          view.instance_exec(@object, @opts[:method].presence || @label, @opts, &klass.render)
+          view.instance_exec(@object, @opts[:method].presence || @label, @opts, &builder.render)
         end
 
         def name

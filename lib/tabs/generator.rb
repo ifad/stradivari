@@ -3,11 +3,11 @@ module Tabs
   class Generator < Stradivari::Generator
     class Tab < Tag
       def initialize(parent, label, dom_id, content, opts, renderer)
-        @parent   = parent
+        super(parent, opts)
+
         @label    = label
         @dom_id   = dom_id
         @content  = content
-        @opts     = opts
         @renderer = renderer
       end
 
