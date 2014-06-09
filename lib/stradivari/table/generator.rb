@@ -111,8 +111,10 @@ module Stradivari
       end
 
 
-      def initialize(*)
-        super
+      def initialize(view, data, *args)
+        opts = args.extract_options!
+
+        super(view, data, opts)
 
         @columns = []
 
