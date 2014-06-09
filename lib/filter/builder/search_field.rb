@@ -8,6 +8,10 @@ module Filter
         haml_tag :div, class: 'form-group' do
           input_options = { value: opts[:value], class: 'form-control', placeholder: opts[:title] || "Search #{attr.to_s.humanize}" }
 
+          if sort = opts.fetch(:sort, nil)
+            input_options[:data] = {sort: sort}
+          end
+
           if opts[:skip_button]
             haml_concat label(opts[:namespace], attr, opts[:title] || "Search #{attr.to_s.humanize}")
             haml_concat text_field(opts[:namespace], attr, input_options)
