@@ -16,7 +16,7 @@ module Details
         @label    = label
         @renderer = renderer
 
-        @opts.reverse_merge!(label: {}, content: {}).merge!(present: true)
+        @opts.reverse_merge!(label: {}, content: {})
       end
 
       def label
@@ -59,8 +59,10 @@ module Details
       renderer = lambda do
         haml_tag :dl, @opts do
           @fields.each do |field|
-            haml_tag :dt, field.label, field.opts[:label]
-            haml_tag :dd, field.content, field.opts[:content]
+            if (c = field.content).present?
+              haml_tag :dt, field.label, field.opts[:label]
+              haml_tag :dd, c,           field.opts[:content]
+            end
           end
         end
       end
