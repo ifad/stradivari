@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.version       = Stradivari::VERSION
   spec.authors       = ["Lleïr Borràs Metje", "Marcello Barnaba", "Ivan Turkovic"]
   spec.email         = ["l.borrasmetje@ifad.org", "m.barnaba@ifad.org", "i.turkovic@ifad.org"]
-  spec.summary       = %q{Table, filters and data visualization helpers for rails applications.}
+  spec.summary       = %q{Enterprise toolkit for Ruby/HAML/Bootstrap3 web apps}
   spec.description   = %q{
 This Gem combines HAML and Bootstrap 3 to provide you easy generators for:
 
