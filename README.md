@@ -62,7 +62,7 @@ end
 You'd have in your `app/views/foo/index.html.haml`:
 
 ```haml
-- table_for @foos do
+= table_for @foos do
   - column :id
   - column :awesomeness, presence: true
   - column :something_special do |foo|
@@ -76,6 +76,9 @@ You'd have in your `app/views/foo/index.html.haml`:
 This will generate the table head, body and foot markup, cycling over
 the `@foos` AR collection. Column headings take attribute names using
 `t()`, fitting nicely in [Rails' I18n for Active Record][rails-i18n-ar].
+
+Yhe I18n'ed title can be overriden passing the `:title` option to the
+`column` generator, as shown above.
 
 ### CSV
 
