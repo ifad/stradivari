@@ -23,7 +23,7 @@ grew up on its own. :smile:
 
 ## Features
 
-This Gem combines [HAML][]) and [Bootstrap 3][] to provide you easy
+This Gem combines [HAML][] and [Bootstrap 3][] to provide you easy
 generators for:
 
 - HTML Tables
@@ -126,7 +126,7 @@ impact in making the world a better place.
   -- vjt  Mon Jun  9 20:21:42 CEST 2014
 
 [logo]:              http://upload.wikimedia.org/wikipedia/commons/c/cd/Antonio_stradivari.jpg
-[Boostsrap 3]:       https://github.com/twbs/bootstrap
+[Bootstrap 3]:       https://github.com/twbs/bootstrap
 [Active Admin]:      https://github.com/gregbell/active_admin
 [HAML]:              https://github.com/haml/haml
 [PgSearch]:          https://github.com/Casecommons/pg_search
