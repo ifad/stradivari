@@ -10,19 +10,21 @@
 
 ## Design
 
-Like Antonio Stradivari built great musical instruments, this Ruby Gem is a
-collection of great tools for your Ruby Web Application.
+Like Antonio Stradivari built great musical instruments, this Ruby Gem
+is a collection of great tools you can play in your Ruby Web App, and
+produce the best symphonies ever.
 
 ## History
 
-Started off as a replacement of the [Active Admin](https://github.com/gregbell/active_admin) 
-table and filter generators DSL, during the development of an enterprise product 
-that used to rely on Active Admin, it grew up on its own.
+Started off as a replacement of the [Active Admin][] table and filter
+generators DSLs, during the development of an enterprise product that
+used to rely on Active Admin. It then stood up, started walking, and
+grew up on its own. :smile:
 
 ## Features
 
-This Gem combines [HAML](https://github.com/haml/haml) and
-[Bootstrap 3](https://github.com/twbs/bootstrap) to provide you easy generators for:
+This Gem combines [HAML][]) and [Bootstrap 3][] to provide you easy
+generators for:
 
 - HTML Tables
 - CSV Tables
@@ -30,10 +32,10 @@ This Gem combines [HAML](https://github.com/haml/haml) and
 - Definition Lists
 - Filter forms
 
-The filter form generator includes also all controller code boilerplate to
-parse the form parameters, and model code to define search scopes and process
-the search parameters - leveraging [Ransack](https://github.com/activerecord-hackery/ransack)
-and [PgSearch](https://github.com/Casecommons/pg_search).
+The filter form generator includes also all controller code boilerplate
+to parse submitted form parameters, and model code to define callable
+search scopes and safely process the search parameters, thanks to the
+useful help from [Ransack][] and [PgSearch][].
 
 Whoa, what a lot of Gems this glues together! :smile:
 
@@ -45,7 +47,55 @@ Add to your Gemfile
 
 ## Usage
 
-TODO! Yes, TODO. By example, it'll follow soon in this very README file.
+### Table
+
+Given a typical `app/controllers/foo_controller.rb`:
+
+```ruby
+class FooController < ApplicationController
+  def index
+    @foos = Foo.order_by_awesomeness
+  end
+end
+```
+
+You'd have in your `app/views/foo/index.html.haml`:
+
+```haml
+- table_for @foos do
+  - column :id
+  - column :awesomeness, presence: true
+  - column :something_special do |foo|
+    - if foo.really_special?
+      %strong This is a special Foo!
+    - else
+      Nothing to foo here.
+  - column :lazy_to_translate, title: "Here we go"
+```
+
+This will generate the table head, body and foot markup, cycling over
+the `@foos` AR collection. Column headings take attribute names using
+`t()`, fitting nicely in [Rails' I18n for Active Record][rails-i18n-ar].
+
+### CSV
+
+TODO
+
+### Tabs
+
+TODO
+
+### Filter
+
+#### Model
+#### Controller
+#### View
+
+TODO
+
+### Definition Lists
+
+TODO
 
 ## Tests
 
@@ -72,4 +122,11 @@ impact in making the world a better place.
 
   -- vjt  Mon Jun  9 20:21:42 CEST 2014
 
-[logo]: http://upload.wikimedia.org/wikipedia/commons/c/cd/Antonio_stradivari.jpg
+[logo]:              http://upload.wikimedia.org/wikipedia/commons/c/cd/Antonio_stradivari.jpg
+[Boostsrap 3]:       https://github.com/twbs/bootstrap
+[Active Admin]:      https://github.com/gregbell/active_admin
+[HAML]:              https://github.com/haml/haml
+[PgSearch]:          https://github.com/Casecommons/pg_search
+[Ransack]:           https://github.com/activerecord-hackery/ransack
+[rails-i18n-ar]:     http://guides.rubyonrails.org/i18n.html#translations-for-active-record-models
+
