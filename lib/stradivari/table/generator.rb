@@ -36,7 +36,7 @@ module Stradivari
           when nil
             klass.human_attribute_name(@name)
           when Proc
-            t.call
+            view.instance_eval(&t)
           when false
             ""
           else
