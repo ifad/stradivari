@@ -55,51 +55,22 @@ module Stradivari
         end
 
         def header
-          lambda do |col, sort|
-            haml_tag :i, '', class: col.sortable_class(sort) if col.sortable?
-            haml_concat col.title
-          end
+          sortable_icon if sortable?
+          haml_concat title
         end
 
-        def sortable?
-          view.sortable.present?
-        end
-
-        def sortable
-          if (s = view.sortable).class.in?([String, Symbol])
-            s.to_s
-          else
-            @name.to_s
-          end
-        end
-
-        def sortable_class sort
-          "fa fa-sort".tap do |s_class|
-            if sort[:sort].to_s.in?([@name, sortable].map(&:to_s))
-              s_class << "-#{sort[:direction]}"
-            end
-          end
-        end
-
-        def html_opts sort
-          { class: "", data: {} }.tap do |html_opts|
+        def html_opts
+          @opts.fetch(:html, {}).tap do |html_opts|
             if sortable?
-              html_opts[:class] << " sortable"
-
-              html_opts[:data][:sort]      = sortable
-              html_opts[:data][:direction] = if sort[:sort].to_s.in?([@name, sortable].map(&:to_s))
+              html_opts[:class] = "#{html_opts[:class]} sortable"
+              html_opts[:data] ||= {}
+              html_opts[:data][:sort]      = sort_on
+              html_opts[:data][:direction] = if sorting_active?
                 html_opts[:class] << " active-column"
-
-                sort[:direction] == 'asc' ? 'desc' : 'asc' # Inversion on click
+                current_sorting_direction == 'asc' ? 'desc' : 'asc' # Inversion on click
               else
                 'asc'
               end
-            end
-
-            html_opts.merge! @opts.fetch(:html, {})
-
-            unless @name.in?([:select, :checkbox, :actions])
-              html_opts[:class] = "#{html_opts[:class]} #{@name} "
             end
           end
         end
@@ -107,6 +78,37 @@ module Stradivari
         protected
           def build object
             view.instance_exec(object, @name, @opts, &builder.render)
+          end
+
+        private
+          def sortable?
+            opts.key?(:sortable)
+          end
+
+          def current_sorting_column
+            view.sortable[:sort].to_s
+          end
+
+          def current_sorting_direction
+            view.sortable[:direction].to_s
+          end
+
+          def sorting_active?
+            current_sorting_column == sort_on
+          end
+
+          def sort_on
+            ((s = opts[:sortable]) === true ? @name : s).to_s
+          end
+
+          def sortable_icon
+            klass = "fa fa-sort".tap do |s_class|
+              if sorting_active?
+                s_class << "-#{current_sorting_direction}"
+              end
+            end
+
+            haml_tag :i, '', class: klass
           end
       end
 
@@ -146,7 +148,6 @@ module Stradivari
       end
 
       protected
-
         def generate_table
           html_opts         = @opts[:html].presence || {}
           html_opts[:class] = [ TABLE_OPTIONS[:class], @opts[:class] ].join(' ')
@@ -167,8 +168,8 @@ module Stradivari
           haml_tag :thead do
             haml_tag :tr do
               @columns.each do |col|
-                haml_tag :th, col.html_opts(@view.sortable) do
-                  @view.instance_exec(col, @view.sortable, &col.header)
+                haml_tag :th, col.html_opts do
+                  col.header
                 end
               end
             end
