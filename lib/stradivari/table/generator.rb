@@ -112,7 +112,6 @@ module Stradivari
           end
       end
 
-
       def initialize(view, data, *args)
         opts = args.extract_options!
 
@@ -123,8 +122,8 @@ module Stradivari
         @opts.reverse_merge! Stradivari::Table::Generator::TABLE_OPTIONS
       end
 
-      def column attr, opts = {}, &renderer
-        attr = attr.to_sym if attr
+      def column(*args, &renderer)
+        opts, attr = args.extract_options!, args.first
 
         opts.merge!(builder: Stradivari::Table::Builder::ActionBuilder) if attr == :actions
 
