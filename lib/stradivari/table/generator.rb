@@ -124,7 +124,7 @@ module Stradivari
       end
 
       def column attr, opts = {}, &renderer
-        attr = attr.to_sym
+        attr = attr.to_sym if attr
 
         opts.merge!(builder: Stradivari::Table::Builder::ActionBuilder) if attr == :actions
 
