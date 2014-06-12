@@ -125,15 +125,17 @@ module Stradivari
       def column(*args, &renderer)
         opts, attr = args.extract_options!, args.first
 
-        opts.merge!(builder: Stradivari::Table::Builder::ActionBuilder) if attr == :actions
+        if attr == :actions
+          opts.merge!(builder: Stradivari::Table::Builder::ActionBuilder)
+        end
 
         @columns << Column.new(self, attr, opts, renderer)
       end
 
-      def columns *columns
+      def columns(*columns)
         opts = columns.extract_options!
 
-        columns.map { |col| column(col, opts)}
+        columns.map {|col| column(col, opts)}
       end
 
       def to_s
