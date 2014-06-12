@@ -10,7 +10,6 @@ module Stradivari
       class Field < Tag
         include Stradivari::Concerns::TableBuilder
 
-        delegate :object, to: :@parent
         attr_reader :renderer
 
         def initialize(parent, label, opts, renderer)
@@ -27,16 +26,20 @@ module Stradivari
         end
 
         def content
-          value = if @renderer.present?
-            capture_haml { view.instance_exec(object, &@renderer) }
-          else
-            build
-          end
-
           force_presence(value)
         end
 
         protected
+          delegate :object, to: :@parent
+
+          def value(object = self.object)
+            if @renderer.present?
+              capture_haml { view.instance_exec(object, &@renderer) }
+            else
+              build
+            end
+          end
+
           def build
             view.instance_exec(object, @opts[:method].presence || @label, @opts, &builder.render)
           end
