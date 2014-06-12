@@ -7,9 +7,8 @@ module Stradivari
 
       attr_reader :opts
 
-      def initialize(*args, &block)
-        @parent = args.first
-        @opts   = args.extract_options!
+      def initialize(parent, opts)
+        @parent, @opts = parent, opts
       end
 
       protected
@@ -26,28 +25,27 @@ module Stradivari
         end
     end
 
-    def self.parse(view, *args, &block)
-      self.new(view, *args).tap do |generator|
-        generator.instance_exec(*args, &block)
-      end
-    end
-
-    def initialize(view, data, opts = {})
+    def initialize(view, data, *pass)
+      # ActionView
       @view = view
+
+      # Opaque, generator-specific data
       @data = data
-      @opts = opts
+
+      # Generator options
+      @opts = pass.extract_options!
     end
 
-    attr_reader :view, :opts
+    attr_reader :view, :data, :opts
 
     delegate :params, :t, :capture_haml, :haml_tag, to: :@view
 
     def to_s
-      raise "To be implemented"
+      raise NotImplementedError
     end
 
     def klass
-      raise "To be implemented"
+      raise NotImplementedError
     end
 
   end

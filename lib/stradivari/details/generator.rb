@@ -10,10 +10,12 @@ module Stradivari
       class Field < Tag
         include Stradivari::Concerns::TableBuilder
 
-        def initialize(parent, object, label, opts, renderer)
+        delegate :object, to: :@parent
+        attr_reader :renderer
+
+        def initialize(parent, label, opts, renderer)
           super(parent, opts)
 
-          @object   = object
           @label    = label
           @renderer = renderer
 
@@ -26,7 +28,7 @@ module Stradivari
 
         def content
           value = if @renderer.present?
-            capture_haml { view.instance_exec(@object, &@renderer) }
+            capture_haml { view.instance_exec(object, &@renderer) }
           else
             build
           end
@@ -36,7 +38,7 @@ module Stradivari
 
         protected
           def build
-            view.instance_exec(@object, @opts[:method].presence || @label, @opts, &builder.render)
+            view.instance_exec(object, @opts[:method].presence || @label, @opts, &builder.render)
           end
 
           def name
@@ -44,18 +46,19 @@ module Stradivari
           end
       end
 
-      def initialize(view, data, *args)
-        opts = args.extract_options!
-
-        super(view, data, opts)
-
+      def initialize(view, object, *pass, &definition)
         @fields = []
 
-        @opts.reverse_merge! Details::Generator::DETAILS_OPTIONS
+        super(view, object, *pass)
+        opts.reverse_merge! Details::Generator::DETAILS_OPTIONS
+
+        instance_exec(object, *pass, &definition)
       end
 
+      alias object data
+
       def field(label, opts = {}, &renderer)
-        @fields.push Field.new(self, @data, label, opts, renderer)
+        @fields.push Field.new(self, label, opts, renderer)
       end
 
       def to_s

@@ -112,14 +112,13 @@ module Stradivari
           end
       end
 
-      def initialize(view, data, *args)
-        opts = args.extract_options!
-
-        super(view, data, opts)
-
+      def initialize(view, rows, *pass, &definition)
         @columns = []
 
-        @opts.reverse_merge! Stradivari::Table::Generator::TABLE_OPTIONS
+        super(view, rows, *pass)
+        opts.reverse_merge! Stradivari::Table::Generator::TABLE_OPTIONS
+
+        instance_exec(rows, *pass, &definition)
       end
 
       def column(*args, &renderer)

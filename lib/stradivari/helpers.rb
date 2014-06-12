@@ -5,23 +5,23 @@ module Stradivari
       extend ActiveSupport::Concern
 
       def table_for *args, &block
-        Stradivari::Table::Generator.parse(self, *args, &block).to_s
+        Stradivari::Table::Generator.new(self, *args, &block).to_s
       end
 
       def csv_for *args, &block
-        Stradivari::CSV::Generator.parse(self, *args, &block).to_s
+        Stradivari::CSV::Generator.new(self, *args, &block).to_s
       end
 
       def details_for *args, &block
-        Stradivari::Details::Generator.parse(self, *args, &block).to_s
+        Stradivari::Details::Generator.new(self, *args, &block).to_s
       end
 
       def filter_for *args, &block
-        Stradivari::Filter::Generator.parse(self, *args, &block).to_s
+        Stradivari::Filter::Generator.new(self, *args, &block).to_s
       end
 
       def tabs_for(*args, &block)
-        Stradivari::Tabs::Generator.parse(self, *args, &block).to_s
+        Stradivari::Tabs::Generator.new(self, *args, &block).to_s
       end
 
       def search_param(name)

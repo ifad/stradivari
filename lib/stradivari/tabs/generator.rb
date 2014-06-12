@@ -38,12 +38,12 @@ module Stradivari
         end
       end
 
-      def initialize(view, data, *args)
-        opts = args.extract_options!
-
-        super(view, data, opts)
-
+      def initialize(view, *pass, &definition)
         @tabs = []
+
+        super(view, nil, *pass)
+
+        instance_exec(*pass, &definition)
       end
 
       def tab(label, dom_id, content, opts = {}, &renderer)

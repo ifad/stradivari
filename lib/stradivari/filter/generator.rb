@@ -13,7 +13,7 @@ module Stradivari
 
       class Field < Tag
         def initialize(parent, scope, name, opts)
-          super
+          super(parent, opts)
 
           @scope  = scope
           @name   = name
@@ -47,15 +47,14 @@ module Stradivari
           end
       end
 
-      def initialize(view, data, *args)
-        opts = args.extract_options!
-
-        super(view, data, opts)
-
+      def initialize(view, klass, *pass, &definition)
         @fields = []
 
-        @opts.reverse_merge! Filter::Generator::FILTER_OPTIONS
-        @opts[:inline] = true if detached?
+        super(view, klass, *pass)
+        opts.reverse_merge! Filter::Generator::FILTER_OPTIONS
+        opts[:inline] = true if detached?
+
+        instance_exec(*pass, &definition)
       end
 
       def field scope, attr, opts = {}
