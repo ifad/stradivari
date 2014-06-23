@@ -77,7 +77,6 @@ module Stradivari
 
         protected
           def build object
-            return if !valid?(object)
             view.instance_exec(object, @name, @opts, &builder.render)
           end
 
@@ -129,7 +128,9 @@ module Stradivari
           opts.merge!(builder: Stradivari::Table::Builder::ActionBuilder)
         end
 
-        @columns << Column.new(self, attr, opts, renderer)
+        if (c = Column.new(self, attr, opts, renderer)).enabled?
+          @columns << c
+        end
       end
 
       def columns(*columns)

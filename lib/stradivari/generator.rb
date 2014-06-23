@@ -11,6 +11,18 @@ module Stradivari
         @parent, @opts = parent, opts
       end
 
+      def enabled?
+        enabled = true
+
+        if i = @opts.fetch(:if, nil)
+          enabled &= view.instance_exec(&i)
+        elsif u = @opts.fetch(:unless, nil)
+          enabled &= !view.instance_exec(&u)
+        end
+
+        enabled
+      end
+
       protected
         def force_presence(value)
           if @opts.fetch(:present, nil)
@@ -24,21 +36,6 @@ module Stradivari
           klass.columns_hash.fetch(name.to_s, nil).try(:type)
         end
 
-        def valid?(object)
-
-          valid = true
-
-          if i = @opts.fetch(:if, nil)
-            valid &= view.instance_exec(object, &i)
-          end
-
-          if u = opts.fetch(:unless, nil)
-            valid &= !view.instance_exec(object, &u)
-          end
-
-          valid
-
-        end
     end
 
     def initialize(view, data, *pass)
