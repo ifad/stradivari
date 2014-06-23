@@ -77,6 +77,7 @@ module Stradivari
 
         protected
           def build object
+            return if !valid?(object)
             view.instance_exec(object, @name, @opts, &builder.render)
           end
 

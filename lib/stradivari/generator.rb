@@ -23,6 +23,22 @@ module Stradivari
         def type
           klass.columns_hash.fetch(name.to_s, nil).try(:type)
         end
+
+        def valid?(object)
+
+          valid = true
+
+          if i = @opts.fetch(:if, nil)
+            valid &= view.instance_exec(object, &i)
+          end
+
+          if u = opts.fetch(:unless, nil)
+            valid &= !view.instance_exec(object, &u)
+          end
+
+          valid
+
+        end
     end
 
     def initialize(view, data, *pass)
