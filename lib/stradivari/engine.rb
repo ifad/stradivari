@@ -5,5 +5,11 @@ module Stradivari
         ActiveRecord::Base.extend Stradivari::Table::Models::ScopeSearch::Extensions
       end
     end
+
+    initializer 'stradivari.setup_helpers' do |app|
+      app.config.to_prepare do
+        ActionController::Base.send :helper, StradivariHelper
+      end
+    end
   end
 end
