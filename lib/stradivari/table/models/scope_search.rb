@@ -73,6 +73,7 @@ module Stradivari
           # Method to search for expressions beyond ransack
           #
           def extended_search params
+            params = params.deep_dup
             arel = self.all
             sort, dir = params.values_at(:sort, :direction)
 
