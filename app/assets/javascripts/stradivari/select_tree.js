@@ -253,7 +253,9 @@
     }
 
     counter.data(this.data_prefix + '-total', count);
-    counter.val(counter.val().replace(/\d+/, count));
+
+    var presenter = counter.val() ? counter.val : counter.text;
+    presenter.call(counter, presenter.call(counter).replace(/\d+/, count));
   }
 
   $(function() {
