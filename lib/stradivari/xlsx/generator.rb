@@ -28,7 +28,7 @@ module Stradivari
             bg_color: 'dddddd', fg_color: '000000',
             border: Axlsx::STYLE_THIN_BORDER
 
-          sheet.add_row @columns.map(&:title), styles: heading
+          sheet.add_row @columns.map(&:title), style: heading
         end
 
         def render_body(sheet)
