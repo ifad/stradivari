@@ -2,10 +2,6 @@ module Stradivari
   module CSV
     class Generator < Stradivari::Table::Generator
 
-      TABLE_OPTIONS = {
-        format: :html,
-      }
-
       class Column < Table::Generator::Column
         def to_s object
           if @renderer.present?
