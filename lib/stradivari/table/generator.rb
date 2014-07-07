@@ -154,6 +154,7 @@ module Stradivari
           html_opts         = @opts[:html].presence || {}
           html_opts[:class] = [ TABLE_OPTIONS[:class], @opts[:class] ].uniq.join(' ')
           html_opts[:name]  = @opts[:name]
+          html_opts[:id]    = @opts[:id]
 
           haml_tag :table, html_opts do
             render_header if @opts[:header_visible]
