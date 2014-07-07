@@ -152,7 +152,7 @@ module Stradivari
       protected
         def generate_table
           html_opts         = @opts[:html].presence || {}
-          html_opts[:class] = [ TABLE_OPTIONS[:class], @opts[:class] ].join(' ')
+          html_opts[:class] = [ TABLE_OPTIONS[:class], @opts[:class] ].uniq.join(' ')
           html_opts[:name]  = @opts[:name]
 
           haml_tag :table, html_opts do
