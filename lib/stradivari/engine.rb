@@ -11,5 +11,9 @@ module Stradivari
         ActionController::Base.send :helper, StradivariHelper
       end
     end
+
+    initializer 'stradivari.setup_mime_types' do |app|
+      Mime::Type.register 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', :xlsx
+    end
   end
 end

@@ -14,6 +14,8 @@ module Stradivari
   autoload :Helpers,    'stradivari/helpers'
   autoload :Controller, 'stradivari/controller'
 
+  autoload :XLSX,       'stradivari/xlsx'
+
   module Concerns
     autoload :TableBuilder, 'stradivari/concerns/table_builder'
   end

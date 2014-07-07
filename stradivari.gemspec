@@ -15,9 +15,10 @@ This Gem combines HAML and Bootstrap 3 to provide you easy generators for:
 
 - HTML Tables
 - CSV Tables
+- XLS Tables
 - Tabbed layouts
 - Definition Lists
-- Filter forms  
+- Filter forms
   }
   spec.homepage      = "https://github.com/ifad/stradivari"
   spec.license       = "MIT"
@@ -33,4 +34,5 @@ This Gem combines HAML and Bootstrap 3 to provide you easy generators for:
   spec.add_runtime_dependency 'pg_search'
   spec.add_runtime_dependency 'ransack'
   spec.add_runtime_dependency 'haml',     [">= 3.1", "< 5.0"]
+  spec.add_runtime_dependency 'axlsx'
 end

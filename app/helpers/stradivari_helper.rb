@@ -7,6 +7,10 @@ module StradivariHelper
     Stradivari::CSV::Generator.new(self, *args, &block).to_s
   end
 
+  def xlsx_for *args, &block
+    Stradivari::XLSX::Generator.new(self, *args, &block).to_s
+  end
+
   def details_for *args, &block
     Stradivari::Details::Generator.new(self, *args, &block).to_s
   end

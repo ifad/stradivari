@@ -28,6 +28,7 @@ generators for:
 
 - HTML Tables
 - CSV Tables
+- XLS Tables
 - Tabbed layouts
 - Definition Lists
 - Filter forms
@@ -81,6 +82,10 @@ Yhe I18n'ed title can be overriden passing the `:title` option to the
 `column` generator, as shown above.
 
 ### CSV
+
+TODO
+
+### XLS
 
 TODO
 
