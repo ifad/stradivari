@@ -39,7 +39,7 @@ module StradivariHelper
     data[:select_tree_parent]      = options[:parent]      if options[:parent]
     data[:select_tree_count_total] = options[:count_total] if options[:count_total]
 
-    check_box_tag(name, value, checked, data: data)
+    check_box_tag(name, value, checked, data: data, id: options[:name])
   end
 
 end
