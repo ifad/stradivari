@@ -128,7 +128,7 @@ module Stradivari
           opts.merge!(builder: Stradivari::Table::Builder::ActionBuilder)
         end
 
-        if (c = Column.new(self, attr, opts, renderer)).enabled?
+        if (c = self.class.const_get(:Column).new(self, attr, opts, renderer)).enabled?
           @columns << c
         end
       end

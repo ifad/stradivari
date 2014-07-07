@@ -6,7 +6,7 @@ module Stradivari
         format: :html,
       }
 
-      class Column
+      class Column < Table::Generator::Column
         def to_s object
           if @renderer.present?
             capture_haml { view.instance_exec(object, &@renderer) }
