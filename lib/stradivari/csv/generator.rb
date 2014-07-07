@@ -12,7 +12,7 @@ module Stradivari
             capture_haml { view.instance_exec(object, &@renderer) }
           else
             build(object)
-          end
+          end.to_s.strip
         end
       end
 
