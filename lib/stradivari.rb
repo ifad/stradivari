@@ -1,12 +1,6 @@
 require 'stradivari/version'
 require 'stradivari/engine'
 
-require 'stradivari/details'
-require 'stradivari/filter'
-require 'stradivari/tabs'
-require 'stradivari/table'
-require 'stradivari/csv'
-
 module Stradivari
 
   autoload :Builder,    'stradivari/builder'
@@ -14,6 +8,12 @@ module Stradivari
   autoload :Helpers,    'stradivari/helpers'
   autoload :Controller, 'stradivari/controller'
 
+  autoload :Details,    'stradivari/details'
+  autoload :Table,      'stradivari/table'
+  autoload :Tabs,       'stradivari/tabs'
+  autoload :Filter,     'stradivari/filter'
+
+  autoload :CSV,        'stradivari/csv'
   autoload :XLSX,       'stradivari/xlsx'
 
   module Concerns
