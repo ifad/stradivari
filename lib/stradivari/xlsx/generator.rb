@@ -13,7 +13,6 @@ module Stradivari
       end
 
       protected
-
         def xlsx
           Axlsx::Package.new do |package|
             package.workbook.add_worksheet do |sheet|
@@ -28,15 +27,21 @@ module Stradivari
             bg_color: 'dddddd', fg_color: '000000',
             border: Axlsx::STYLE_THIN_BORDER
 
-          sheet.add_row @columns.map(&:title), style: heading
+          sheet.add_row @columns.map(&:title),
+            types: [:string] * @columns.size,
+            style: heading
         end
 
         def render_body(sheet)
           @data.each do |object|
-            sheet.add_row(@columns.map {|col| col.to_s(object) })
+            sheet.add_row(@columns.map {|col| col.to_s(object) }, types: types)
           end
         end
 
+      private
+        def types
+          @_types ||= @columns.map {|c| c.opts.fetch(:type, nil)}
+        end
     end
   end
 end
