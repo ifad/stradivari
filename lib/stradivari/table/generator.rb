@@ -3,20 +3,13 @@ module Stradivari
     class Generator < Stradivari::Generator
 
       TABLE_OPTIONS = {
-        class: "table table-hover",
-        format: :html,
+        class:   "table table-hover",
+        format:  :html,
         no_data: "There is no data.",
+
         header_visible: true,
-        body_visible: true,
+        body_visible:   true,
         footer_visible: true,
-        table_row: {
-          class: ""
-        },
-        children_row: {
-          parent_class: 'parent-row',
-          child_class: 'child-row',
-          free_class: 'free-row'
-        }
       }
 
       class Column < Tag
@@ -182,15 +175,27 @@ module Stradivari
         def render_body
           haml_tag :tbody do
             @data.each do |object|
-              haml_tag :tr, id: "#{object.class.model_name.to_s.underscore}_row_#{object.id}" do
-                @columns.each do |col|
-                  html = col.opts[:html].presence || {}
+              if @opts[:child_method] && (childs = object.send(@opts[:child_method])).present?
+                render_row(object, :parent)
 
-                  html[:class] = "#{html[:class]} #{col.name} #{'action-builder' if col.name == :actions}"
-
-                  haml_tag(:td, col.to_s(object), html)
+                childs.each do |child|
+                  render_row(child, :child)
                 end
+              else
+                render_row(object, :free)
               end
+            end
+          end
+        end
+
+        def render_row(object, klass)
+          haml_tag :tr, id: "#{object.class.model_name.to_s.underscore}_row_#{object.id}", class: klass do
+            @columns.each do |col|
+              html = col.opts[:html].presence || {}
+
+              html[:class] = "#{html[:class]} #{col.name} #{'action-builder' if col.name == :actions}"
+
+              haml_tag(:td, col.to_s(object), html)
             end
           end
         end
