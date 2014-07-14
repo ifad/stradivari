@@ -5,7 +5,15 @@ module Stradivari
     class Generator < CSV::Generator
 
       class Column < CSV::Generator::Column
-        # Like parent
+        def to_s(object)
+          if @renderer.present?
+            capture_haml { view.instance_exec(object, &@renderer) }
+          elsif opts.fetch(:type, nil)
+            object.public_send(@name)
+          else
+            build(object)
+          end
+        end
       end
 
       def to_s
