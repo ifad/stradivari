@@ -12,7 +12,9 @@ module Stradivari
           @renderer = renderer
         end
 
-        delegate :blank?, to: :@content
+        def blank?
+          @content.blank? && !opts.fetch(:present, false)
+        end
 
         def nav(opts = {})
           klass = 'active' if opts.fetch(:active, false)
@@ -33,7 +35,8 @@ module Stradivari
           klass << ' active' if opts.fetch(:active, false)
 
           haml_tag :div, class: klass, id: @dom_id do
-            view.instance_exec(@content, &@renderer)
+            renderer = @content.blank? ? opts.fetch(:blank) : @renderer
+            view.instance_exec(@content, &renderer)
           end
         end
       end
@@ -56,9 +59,10 @@ module Stradivari
 
       def to_s
         tabs = @tabs.reject(&:blank?)
+        blank = @blank || lambda { }
 
         renderer = if tabs.blank?
-          @blank || lambda { }
+          blank
         else
           lambda do
             flavor = @opts.fetch(:flavor, 'tabs')
@@ -74,8 +78,8 @@ module Stradivari
 
             # Content
             haml_tag :div, class: 'tab-content' do
-              active.content(active: true)
-              others.each {|tab| tab.content}
+              active.content(active: true, blank: blank)
+              others.each {|tab| tab.content(blank: blank)}
             end
           end
         end
