@@ -182,13 +182,13 @@ module Stradivari
                   render_row(child, :child)
                 end
               else
-                render_row(object, :free)
+                render_row(object)
               end
             end
           end
         end
 
-        def render_row(object, klass)
+        def render_row(object, klass = nil)
           haml_tag :tr, id: "#{object.class.model_name.to_s.underscore}_row_#{object.id}", class: klass do
             @columns.each do |col|
               html = col.opts[:html].presence || {}
