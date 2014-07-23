@@ -10,10 +10,13 @@ module Stradivari
           xlsx.concat "\x00".force_encoding('BINARY')*4
         end
 
+        filename = options.fetch(:filename, nil)
+        filename << '.xlsx' unless filename =~ /\.xlsx$/
+
         send_data xlsx, type: :xlsx,
           disposition: options.fetch(:disposition, 'attachment'),
           status:      options.fetch(:status,      200),
-          filename:    options.fetch(:filename,    nil)
+          filename:    filename
       end
     end
 
