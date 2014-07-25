@@ -229,7 +229,9 @@ module Stradivari
 
         def download
           capture_haml do
-            haml_tag :a, 'Download...', href: view.url_for(view.params.merge(format: :csv))
+            format = @opts[:downloadable] === true ? :csv : @opts[:downloadable]
+
+            haml_tag :a, 'Download...', href: view.url_for(view.params.merge(format: format))
           end
         end
 
