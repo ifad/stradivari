@@ -43,11 +43,21 @@ module Stradivari
 
         def render_body(sheet)
           @data.each do |object|
-            sheet.add_row(@columns.map {|col| col.to_s(object) }, types: types)
+            sheet.add_row(*render_row(object))
+
+            if childs = self.childs(object)
+              childs.each do |child|
+                sheet.add_row(*render_row(child))
+              end
+            end
           end
         end
 
       private
+        def render_row(object)
+          [ @columns.map {|col| col.to_s(object) }, types: types ]
+        end
+
         def types
           @_types ||= @columns.map {|c| c.opts.fetch(:type, nil)}
         end

@@ -179,7 +179,7 @@ module Stradivari
         def render_body
           haml_tag :tbody do
             @data.each do |object|
-              if @opts[:child_method] && (childs = object.send(@opts[:child_method])).present?
+              if childs = self.childs(object)
                 render_row(object, :parent)
 
                 childs.each do |child|
@@ -189,6 +189,12 @@ module Stradivari
                 render_row(object)
               end
             end
+          end
+        end
+
+        def childs(object)
+          if @opts[:child_method] && (childs = object.send(@opts[:child_method])).present?
+            childs
           end
         end
 

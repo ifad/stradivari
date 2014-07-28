@@ -24,8 +24,14 @@ module Stradivari
           ::CSV.generate do |csv|
             csv << render_file_header
 
-            @data.map do |object|
+            @data.each do |object|
               csv << render_file_row(object)
+
+              if childs = self.childs(object)
+                childs.each do |child|
+                  csv << render_file_row(child)
+                end
+              end
             end
           end
         end
