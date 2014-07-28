@@ -132,6 +132,10 @@ module Stradivari
         columns.map {|col| column(col, opts)}
       end
 
+      def footer(opts = {}, &block)
+        @custom_footer = opts.merge(block: block)
+      end
+
       def to_s
         renderer = lambda { @data.present? ? generate_table : generate_no_data }
 
@@ -208,6 +212,13 @@ module Stradivari
               haml_tag :tr do
                 haml_tag :td, colspan: @columns.count do
                   haml_tag :div, download, class: 'download pull-left' if @opts[:downloadable]
+
+                  if @custom_footer
+                    haml_tag :div, class: "pull-left #{@custom_footer[:class]}" do
+                      @view.instance_exec(&@custom_footer[:block])
+                    end
+                  end
+
                   haml_tag :div, counters, class: 'counters pull-right'
                   haml_tag :div, '', class: 'clearfix'
                 end
