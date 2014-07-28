@@ -63,6 +63,17 @@ module Stradivari
 
         renderer = if tabs.blank?
           blank
+        elsif @opts.fetch(:printable, false)
+          lambda do
+            nav_opts = {badge: @opts.fetch(:counters, true)}
+            tabs.each do |tab|
+              haml_tag(:h5) do
+                haml_tag(:ul, class: 'list-unstyled') { tab.nav(nav_opts) }
+              end
+              haml_tag(:div) { tab.content(blank: blank) }
+            end
+          end
+
         else
           lambda do
             flavor = @opts.fetch(:flavor, 'tabs')
