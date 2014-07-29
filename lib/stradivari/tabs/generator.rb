@@ -7,7 +7,7 @@ module Stradivari
           super(parent, opts)
 
           @label    = label
-          @dom_id   = dom_id
+          @dom_id   = [dom_id, rand(0xffffffff)].join('-')
           @content  = content
           @renderer = renderer
         end
