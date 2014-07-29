@@ -6,7 +6,7 @@ module Stradivari
         filename = options.delete(:filename) || 'export'
         filename << '.xlsx' unless filename =~ /\.xlsx$/
 
-        xlsx = render_to_string(options)
+        xlsx = render_to_string(options.merge(formats: [:xlsx]))
 
         if xlsx[-1] == "\n" # HACK FIXME bypass HAML
           xlsx.slice! -1
