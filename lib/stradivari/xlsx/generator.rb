@@ -24,7 +24,7 @@ module Stradivari
         def xlsx
           Axlsx::Package.new do |package|
             package.use_shared_strings = true
-            package.workbook.add_worksheet do |sheet|
+            package.workbook.add_worksheet(name: opts.fetch(:sheet, nil)) do |sheet|
               render_header(sheet)
               render_body(sheet)
             end
