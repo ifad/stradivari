@@ -25,10 +25,22 @@ module Stradivari
           Axlsx::Package.new do |package|
             package.use_shared_strings = true
             package.workbook.add_worksheet(name: opts.fetch(:sheet, nil)) do |sheet|
-              render_header(sheet)
-              render_body(sheet)
+              render_data(sheet)
             end
           end
+        end
+
+        def render_data(sheet)
+          if @data.present?
+            render_header(sheet)
+            render_body(sheet)
+          else
+            render_no_data(sheet)
+          end
+        end
+
+        def render_no_data(sheet)
+          sheet.add_row([TABLE_OPTIONS[:no_data]])
         end
 
         def render_header(sheet)
