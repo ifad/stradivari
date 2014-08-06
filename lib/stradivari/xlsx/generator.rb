@@ -45,8 +45,8 @@ module Stradivari
           @data.each do |object|
             sheet.add_row(*render_row(object))
 
-            if childs = self.childs(object)
-              childs.each do |child|
+            if children = self.children(object)
+              children.each do |child|
                 sheet.add_row(*render_row(child))
               end
             end

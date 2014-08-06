@@ -27,8 +27,8 @@ module Stradivari
             @data.each do |object|
               csv << render_file_row(object)
 
-              if childs = self.childs(object)
-                childs.each do |child|
+              if children = self.children(object)
+                children.each do |child|
                   csv << render_file_row(child)
                 end
               end
