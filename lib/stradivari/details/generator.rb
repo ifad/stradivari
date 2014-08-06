@@ -61,7 +61,9 @@ module Stradivari
       alias object data
 
       def field(label, opts = {}, &renderer)
-        @fields.push Field.new(self, label, opts, renderer)
+        if (f = self.class.const_get(:Field).new(self, label, opts, renderer)).enabled?
+          @fields << f
+        end
       end
 
       def to_s

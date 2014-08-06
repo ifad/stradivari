@@ -61,7 +61,9 @@ module Stradivari
         attr  = attr.to_sym
         scope = scope.to_sym
 
-        @fields << Field.new(self, scope, attr, opts)
+        if (f = self.class.const_get(:Field).new(self, scope, attr, opts)).enabled?
+          @fields << f
+        end
       end
 
       Builder::Implementations.each do |name, _|

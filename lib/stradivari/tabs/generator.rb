@@ -50,7 +50,9 @@ module Stradivari
       end
 
       def tab(label, dom_id, content, opts = {}, &renderer)
-        @tabs.push Tab.new(self, label, dom_id, content, opts, renderer)
+        if (t = self.class.const_get(:Tab).new(self, label, dom_id, content, opts, renderer)).enabled?
+          @tabs << t
+        end
       end
 
       def blank(&block)
