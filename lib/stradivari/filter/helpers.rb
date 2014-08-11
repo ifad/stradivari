@@ -29,6 +29,18 @@ module Stradivari
         end
       end
 
+      def self.render_title(name, title, opts)
+        lambda do
+          if Builder::priority(opts) == :low && !opts[:active_field]
+            title << ' ' << capture_haml do
+              haml_tag :span, 'show', class: 'presentable'
+            end
+          end
+
+          haml_concat(label opts[:namespace], name, title.html_safe)
+        end
+      end
+
     end
   end
 end

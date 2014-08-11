@@ -26,6 +26,17 @@ module Stradivari
         def active?(params, name)
           value(params, name).present?
         end
+
+        def prepare_classes(opts, classes = "")
+          classes << " #{priority(opts)}-priority"
+          classes << " closed" if priority(opts) == :low && !opts[:active_field]
+          classes
+        end
+
+        def priority(opts = {})
+          opts.fetch :priority, :normal # :low, :normal, :high
+        end
+
       end
     end
 

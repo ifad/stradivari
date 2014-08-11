@@ -34,7 +34,7 @@ module Stradivari
         end
 
         def to_s
-          view.instance_exec(@name, @opts.merge(value: value), &builder.render)
+          view.instance_exec(@name, @opts.merge(value: value, active_field: active?), &builder.render)
         end
 
         protected

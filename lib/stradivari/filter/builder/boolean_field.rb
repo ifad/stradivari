@@ -11,9 +11,10 @@ module Stradivari
 
           haml_tag :div, class: "form-group" do
             if opts.fetch(:tristate, false)
-              haml_concat label(opts[:namespace], attr, title)
-              instance_exec(&Helpers.radios_for_collection([['Yes', 'true'], ['No', 'false']], attr, opts))
-
+              instance_exec(&Helpers::render_title(attr, title, opts))
+              haml_tag :div, class: Builder::prepare_classes(opts) do
+                instance_exec(&Helpers.radios_for_collection([['Yes', 'true'], ['No', 'false']], attr, opts))
+              end
             else
               haml_tag :div, class: 'checkbox' do
                 haml_tag :label do

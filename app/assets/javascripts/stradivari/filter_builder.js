@@ -31,6 +31,14 @@ $(function() {
       $(this).parents('fieldset').find('input').attr('name', 'q[' + this.value + ']');
     });
 
+  $('form.filter-form, form.form-detached').
+    on('click', '.presentable', function(event) {
+      event.preventDefault();
+
+      $(this).parents('.form-group').find('.closed').show();
+      $(this).hide();
+    });
+
   function processDetachedForm(detached) {
     var form = $('#' + detached.data('link'));
     mergeForms(form, detached);
