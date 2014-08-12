@@ -10,4 +10,11 @@ $(function() {
     }
 
   });
+
+  $('table.table').on('click', '.downloadable_event', function(event) {
+    event.preventDefault();
+    var $form = $(this).parents('table.table');
+
+    $form.trigger('stradivari:download', {element: this});
+  });
 });
