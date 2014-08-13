@@ -33,7 +33,7 @@ module Stradivari
         lambda do
           if Builder::priority(opts) == :low && !opts[:active_field]
             title << ' ' << capture_haml do
-              haml_tag :span, 'show', class: 'presentable'
+              haml_tag :span, 'Expand', class: 'presentable'
             end
           end
 

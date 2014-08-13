@@ -33,7 +33,7 @@ module Stradivari
 
                 checked.each {|label, value| cb(name, label, value, true, opts) }
                 if checked.present?
-                  haml_tag :span, 'add more', class: 'presentable'
+                  haml_tag :span, 'Add More', class: 'presentable'
                   haml_tag :div, class: 'closed' do
                     haml_tag :hr
                     unchecked.each {|label, value| cb(name, label, value, false, opts)}
