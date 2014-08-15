@@ -34,9 +34,23 @@ $(function() {
   $('form.filter-form, form.form-detached').
     on('click', '.presentable', function(event) {
       event.preventDefault();
+      $this = $(this);
 
-      $(this).parents('.form-group').find('.closed').show();
-      $(this).hide();
+      switch($this.html()) {
+        case "Expand":
+          $this.html("Close");
+          break;
+        case "Close":
+          $this.html("Expand");
+          break;
+        case "Add More":
+          $this.html("Narrow");
+          break;
+        case "Narrow":
+          $this.html("Add More");
+          break;
+      }
+      $this.parents('.form-group').find('.closed').toggle();
     });
 
   function processDetachedForm(detached) {

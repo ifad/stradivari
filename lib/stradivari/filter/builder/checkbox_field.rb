@@ -22,18 +22,19 @@ module Stradivari
           collection = opts[:collection]
           collection = collection.call if collection.respond_to?(:call)
 
+          # Display checked items first
+          checked, unchecked = collection.partition {|_, value| values.include?(value.to_s)}
+          opts[:collapsed_field] = true if type == :multi_line && checked.present?
+
           haml_tag :div, class: 'form-group' do
             instance_exec(&Helpers::render_title(name, title, opts))
 
             classes = Builder::prepare_classes(opts, (type == :single_line ? 'form-inline' : 'multi-line'))
             haml_tag :div, class: classes do
               if type == :multi_line
-                # Display checked items first
-                checked, unchecked = collection.partition {|_, value| values.include?(value.to_s)}
 
                 checked.each {|label, value| cb(name, label, value, true, opts) }
                 if checked.present?
-                  haml_tag :span, 'Add More', class: 'presentable'
                   haml_tag :div, class: 'closed' do
                     haml_tag :hr
                     unchecked.each {|label, value| cb(name, label, value, false, opts)}

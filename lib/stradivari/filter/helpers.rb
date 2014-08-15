@@ -31,9 +31,10 @@ module Stradivari
 
       def self.render_title(name, title, opts)
         lambda do
-          if Builder::priority(opts) == :low && !opts[:active_field]
+          if (Builder::priority(opts) == :low && !opts[:active_field]) ||
+             (opts.fetch(:type, :single_line) == :multi_line && opts.fetch(:collapsed_field, false))
             title << ' ' << capture_haml do
-              haml_tag :span, 'Expand', class: 'presentable'
+              haml_tag :span, (opts[:active_field] ? 'Add More' : 'Expand'), class: 'presentable'
             end
           end
 
