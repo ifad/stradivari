@@ -34,24 +34,47 @@ $(function() {
   $('form.filter-form, form.form-detached').
     on('click', '.presentable', function(event) {
       event.preventDefault();
-      $this = $(this);
+      var $this            = $(this);
+      var $formGroup       = $this.parents('.form-group');
+      var $closedContainer = $formGroup.find('.closed');
 
-      switch($this.html()) {
-        case "Expand":
-          $this.html("Close");
-          break;
-        case "Close":
-          $this.html("Expand");
-          break;
-        case "Add More":
-          $this.html("Narrow");
-          break;
-        case "Narrow":
-          $this.html("Add More");
-          break;
+      updateToggleTitle($this);
+
+      if ($closedContainer.length != 0) {
+        $closedContainer.toggle();
+      } else {
+        var $selected = $formGroup.find('.radio.checked');
+        var $radioSelection = $formGroup.find('.radio');
+
+        if ($selected.length != 0) {
+          $selected.removeClass('checked');
+          $radioSelection.css('display','inline-block');
+        } else {
+          $radioSelection.hide();
+          $selected = $formGroup.find('.radio label input[type="radio"]:checked').parents('.radio');
+          $selected.addClass('checked').css('display','inline-block');
+        }
       }
-      $this.parents('.form-group').find('.closed').toggle();
+
+
     });
+
+  function updateToggleTitle($this) {
+    switch($this.html()) {
+      case "Expand":
+        $this.html("Close");
+        break;
+      case "Close":
+        $this.html("Expand");
+        break;
+      case "Add More":
+        $this.html("Narrow");
+        break;
+      case "Narrow":
+        $this.html("Add More");
+        break;
+    }
+  }
 
   function processDetachedForm(detached) {
     var form = $('#' + detached.data('link'));
