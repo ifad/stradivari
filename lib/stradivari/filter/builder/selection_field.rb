@@ -10,7 +10,7 @@ module Stradivari
           title      = opts.fetch(:title, attr.to_s.humanize)
           attr       = opts[:is_scoped] ? attr : [attr, 'eq'].join('_')
 
-          opts[:collapsed_field] = true if opts[:value].present?
+          opts[:collapsed_field] = true if opts[:value].present? & collection.kind_of?(Array) && collection.size <= 5
 
           haml_tag :div, class: 'form-group' do
             instance_exec(&Helpers::render_title(attr, title, opts))
