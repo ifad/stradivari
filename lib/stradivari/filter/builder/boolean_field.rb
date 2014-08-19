@@ -18,10 +18,10 @@ module Stradivari
                 instance_exec(&Helpers.radios_for_collection([['Yes', 'true'], ['No', 'false']], attr, opts))
               end
             else
-              haml_tag :div, class: 'checkbox' do
+              haml_tag :div, class: 'checkbox single-value' do
                 haml_tag :label do
-                  haml_concat check_box(opts[:namespace], attr, {checked: opts[:value].present?}, 'true', nil)
                   haml_concat title
+                  haml_concat check_box(opts[:namespace], attr, {checked: opts[:value].present?}, 'true', nil)
                 end
               end
             end
