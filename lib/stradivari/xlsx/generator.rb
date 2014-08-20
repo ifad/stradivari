@@ -46,7 +46,7 @@ module Stradivari
         def render_header(sheet)
           heading = sheet.styles.add_style sz: 15,
             bg_color: 'dddddd', fg_color: '000000',
-            border: Axlsx::STYLE_THIN_BORDER
+            border: Axlsx::STYLE_THIN_BORDER, font_name: 'Verdana'
 
           sheet.add_row @columns.map(&:title),
             types: [:string] * @columns.size,
@@ -54,12 +54,14 @@ module Stradivari
         end
 
         def render_body(sheet)
+          body_style = sheet.style.add_style font_name: 'Verdana', sz: 10
+
           @data.each do |object|
-            sheet.add_row(*render_row(object))
+            sheet.add_row(*render_row(object), style: body_style)
 
             if children = self.children(object)
               children.each do |child|
-                sheet.add_row(*render_row(child))
+                sheet.add_row(*render_row(child), style: body_style)
               end
             end
           end
