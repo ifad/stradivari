@@ -54,14 +54,14 @@ module Stradivari
         end
 
         def render_body(sheet)
-          body_style = sheet.style.add_style font_name: 'Verdana', sz: 10
+          @body_style = sheet.styles.add_style font_name: 'Verdana', sz: 10
 
           @data.each do |object|
-            sheet.add_row(*render_row(object), style: body_style)
+            sheet.add_row(*render_row(object))
 
             if children = self.children(object)
               children.each do |child|
-                sheet.add_row(*render_row(child), style: body_style)
+                sheet.add_row(*render_row(child))
               end
             end
           end
@@ -69,7 +69,7 @@ module Stradivari
 
       private
         def render_row(object)
-          [ @columns.map {|col| col.to_s(object) }, types: types ]
+          [ @columns.map {|col| col.to_s(object) }, types: types, style: @body_style ]
         end
 
         def types
