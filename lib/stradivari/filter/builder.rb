@@ -8,7 +8,8 @@ module Stradivari
         number:     'NumberField',
         boolean:    'BooleanField',
         checkbox:   'CheckboxField',
-        search:     'SearchField'
+        search:     'SearchField',
+        custom:     'CustomField'
       }
 
       Implementations.each do |id, name|

@@ -12,11 +12,23 @@ module Stradivari
       }
 
       class Field < Tag
-        def initialize(parent, scope, name, opts)
+        def initialize(parent, scope, name, opts, &renderer)
           super(parent, opts)
 
-          @scope  = scope
-          @name   = name
+          @scope    = scope
+          @name     = name
+
+          if renderer.present?
+            @renderer = renderer
+
+            raise ArgumentError, "To use custom field you need to provide active attribute block inside options" unless opts.has_key?(:active)
+
+            @active = if (active_block = @opts.fetch(:active, nil))
+              view.instance_exec(&active_block)
+            else
+              false
+            end
+          end
 
           @opts.merge!(
             namespace: NAMESPACE,
@@ -26,7 +38,7 @@ module Stradivari
         end
 
         def active?
-          builder.active?(params, @name)
+          @active || builder.active?(params, @name)
         end
 
         def value
@@ -34,7 +46,8 @@ module Stradivari
         end
 
         def to_s
-          view.instance_exec(@name, @opts.merge(value: value, active_field: active?), &builder.render)
+          render_block = @renderer.present? ? @renderer : builder.render
+          view.instance_exec(@name, @opts.merge(value: value, active_field: active?), &render_block)
         end
 
         protected
@@ -57,18 +70,18 @@ module Stradivari
         instance_exec(*pass, &definition)
       end
 
-      def field scope, attr, opts = {}
+      def field scope, attr, opts = {}, &renderer
         attr  = attr.to_sym
         scope = scope.to_sym
 
-        if (f = self.class.const_get(:Field).new(self, scope, attr, opts)).enabled?
+        if (f = self.class.const_get(:Field).new(self, scope, attr, opts, &renderer)).enabled?
           @fields << f
         end
       end
 
       Builder::Implementations.each do |name, _|
-        define_method name do |attr, opts = {}|
-          field(name, attr, opts)
+        define_method name do |attr, opts = {}, &renderer|
+          field(name, attr, opts, &renderer)
         end
       end
 
