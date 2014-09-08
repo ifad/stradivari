@@ -249,7 +249,14 @@ module Stradivari
             format = @opts[:downloadable] === true ? :csv : @opts[:downloadable]
             classes = @opts[:downloadable_type] == :event ? "downloadable_event" : ""
 
-            haml_tag :a, 'Download...', href: view.url_for(view.params.merge(format: format)), class: classes
+            text = 'Export'
+            case format
+            when :csv  then text << ' to CSV'
+            when :xlsx then text << ' to Excel'
+            end
+            text << '...'
+
+            haml_tag :a, text, href: view.url_for(view.params.merge(format: format)), class: classes
           end
         end
 
