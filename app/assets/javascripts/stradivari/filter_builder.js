@@ -50,7 +50,13 @@ $(function() {
   function mergeForms(form, detached) {
     if (!form.data('merged')) {
       form.data('merged', true);
-      detached.find(':input:not(:submit,:button)').clone().hide().appendTo(form);
+      detached.find(':input:not(:submit,:button)').each(function() {
+        // We do this because on IE input.clone() does not preserve
+        // the val() not even on text inputs.
+        var input = $(this), clone = input.clone();
+        clone.val(input.val());
+        clone.hide().appendTo(form);
+      });
 
       fieldOverrideSorting(form);
     }
