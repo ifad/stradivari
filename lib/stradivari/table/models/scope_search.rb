@@ -52,7 +52,7 @@ module Stradivari
               # If a block is passed, then call it passing the original query
               # and the resulting search scope - allowing customization of
               # results.
-              define_singleton_method(name) do |query, options = {}|
+              define_singleton_method(name) do |query, options = {}, &block|
                 search = public_send("#{name}_search", query)
 
                 search = where(search.where_values) if options[:no_rank]
