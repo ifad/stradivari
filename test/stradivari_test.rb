@@ -14,7 +14,6 @@ class StradivariTest < Haml::TestCase
     @foos = build_list(:foo, 25)
     @user = build(:user)
     @user.posts = build_list(:post, 20, user: @user)
-    p @user.posts
   end
 
   def render(text, options = {})
@@ -45,11 +44,6 @@ class StradivariTest < Haml::TestCase
     @base.instance_variable_set("@posts", @user.posts)
     assert_renders_correctly "stradivari_posts"
   end
-
-  # def test_user_template
-  #   @base.instance_variable_set("@user", @user)
-  #   assert_renders_correctly "stradivari_user"
-  # end
 
   def test_html_with_no_data
     assert_equal(<<HTML, render(<<HAML, :action_view))
