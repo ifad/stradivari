@@ -1,0 +1,9 @@
+= table_for @foos, header_visible: true, body_visible: true, footer_visible: true, downloadable: true do
+  - column :id
+  - column :name, presence: true, html: {:class => "custom th class"}
+  - column :text_field do |foo|
+    - if foo.text_field == "4"
+      %strong This is a special Foo!
+    - else
+      = foo.text_field
+  - column :string_field, title: "Here we go"

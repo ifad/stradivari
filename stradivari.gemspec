@@ -30,6 +30,13 @@ This Gem combines HAML and Bootstrap 3 to provide you easy generators for:
 
   spec.add_development_dependency "bundler", "~> 1.5"
   spec.add_development_dependency "rake"
+  spec.add_development_dependency "sqlite3"
+  spec.add_development_dependency "rails", ">= 3.2.0"
+  #spec.add_development_dependency "rbench"
+  spec.add_development_dependency "appraisal", "~> 1.0.0"
+  spec.add_development_dependency "minitest-spec-rails"
+  spec.add_development_dependency "nokogiri", "~> 1.6.0"
+  spec.add_development_dependency "factory_girl_rails", "~> 4.0"  
 
   spec.add_runtime_dependency 'pg_search'
   spec.add_runtime_dependency 'ransack'
