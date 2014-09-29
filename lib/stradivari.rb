@@ -5,7 +5,6 @@ module Stradivari
 
   autoload :Builder,    'stradivari/builder'
   autoload :Generator,  'stradivari/generator'
-  autoload :Helpers,    'stradivari/helpers'
   autoload :Controller, 'stradivari/controller'
 
   autoload :Details,    'stradivari/details'
