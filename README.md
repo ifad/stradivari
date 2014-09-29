@@ -83,6 +83,7 @@ Yhe I18n'ed title can be overriden passing the `:title` option to the
 
 ### CSV
 
+```haml
 = csv_for @foos do
   - column :id
   - column :boolean_field
@@ -90,9 +91,11 @@ Yhe I18n'ed title can be overriden passing the `:title` option to the
   - column :text_field
   - column :string_field, title: "Here we go"
   - column :created_at
+```
 
 ### XLS
 
+```haml
 = xlsx_for @foos do
   - column :id
   - column :boolean_field
@@ -100,6 +103,7 @@ Yhe I18n'ed title can be overriden passing the `:title` option to the
   - column :text_field
   - column :string_field, title: "Here we go"
   - column :created_at
+```
 
 ### Tabs
 
@@ -115,6 +119,7 @@ TODO
 
 ### Definition Lists
 
+```haml
 = details_for @foos[1] do
   - field :id
   - field :boolean_field, title: "custom title"
@@ -122,6 +127,7 @@ TODO
   - field :text_field
   - field :string_field, title: "Here we go"
   - field :created_at
+```
 
 ## Tests
 
