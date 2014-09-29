@@ -58,6 +58,9 @@ GEM
     htmlentities (4.3.2)
     i18n (0.6.11)
     json (1.8.1)
+    kaminari (0.14.1)
+      actionpack (>= 3.0.0)
+      activesupport (>= 3.0.0)
     mail (2.6.1)
       mime-types (>= 1.16, < 3)
     mime-types (2.3)
@@ -124,6 +127,7 @@ DEPENDENCIES
   appraisal (~> 1.0.0)
   bundler (~> 1.5)
   factory_girl_rails (~> 4.0)
+  kaminari
   minitest-spec-rails
   nokogiri (~> 1.6.0)
   rails (~> 4.1.0)
