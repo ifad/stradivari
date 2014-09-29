@@ -11,9 +11,11 @@ class StradivariTest < Haml::TestCase
     FactoryGirl.reload
     setup_dummy_schema
     @base = create_base
-    @foos = build_list(:foo, 25)
-    @user = build(:user)
-    @user.posts = build_list(:post, 20, user: @user)
+    create_list(:foo, 25)
+    @foos = Foo.all 
+    @user = create(:user)
+    create_list(:post, 20, user: @user)
+    @posts = Post.where(user_id: @user)
   end
 
   def render(text, options = {})
@@ -41,7 +43,7 @@ class StradivariTest < Haml::TestCase
   end
 
   def test_posts_template
-    @base.instance_variable_set("@posts", @user.posts)
+    @base.instance_variable_set("@posts", @posts)
     assert_renders_correctly "stradivari_posts"
   end
 
