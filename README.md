@@ -63,7 +63,8 @@ end
 You'd have in your `app/views/foo/index.html.haml`:
 
 ```haml
-= table_for @foos [:sortable, header_visible: (true|false), body_visible: (true|false), footer_visible: (true|false), downloadable: (:xlsx|:csv)] do
+= table_for @foos [header_visible: (true|false), body_visible: (true|false), 
+footer_visible: (true|false), downloadable: (:xlsx|:csv)] do
   - column :id
   - column :awesomeness, presence: true
   - column :something_special do |foo|
