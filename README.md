@@ -132,7 +132,11 @@ TODO
 
 ## Tests
 
-TODO! Yes, **really** TODO. Wanna help? Please send a pull req!
+```
+$ appraisal install
+$ appraisal rake spec
+```
+
 
 ## License
 
