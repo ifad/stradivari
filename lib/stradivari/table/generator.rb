@@ -143,10 +143,7 @@ module Stradivari
       end
 
       def klass
-        @klass ||= begin
-          return @data.klass if @data.respond_to? :klass
-          @data.try(:first).class
-        end
+        @klass ||= @data.try(:klass) || @data.try(:first).class
       end
 
       protected

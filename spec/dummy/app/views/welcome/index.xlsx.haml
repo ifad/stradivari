@@ -1,0 +1,7 @@
+= xlsx_for @foos do
+  - column :id
+  - column :boolean_field
+  - column :name, presence: true, html: {:class => "custom th class"}
+  - column :text_field
+  - column :string_field, title: "Here we go"
+  - column :created_at

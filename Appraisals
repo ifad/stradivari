@@ -1,17 +1,9 @@
-appraise "3.2" do
-  gem 'rails', '~> 3.2.0'
+appraise "4.0" do
+  gem "rails", "~> 4.0.0"
   gemspec :path => "../.."
 end
 
-appraise "4.0" do
-  gem 'rails', '~> 4.0.0'
-  gemspec :path => '../..'
-end
-
 appraise "4.1.x" do
-  gem 'rails', '~> 4.1.0'
-  gemspec :path => '../..'
+  gem "rails", "~> 4.1.0"
+  gemspec :path => "../.."
 end
-
-gem 'sqlite3'
-gem "factory_girl_rails", "~> 4.0"

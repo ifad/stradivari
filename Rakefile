@@ -1,15 +1,15 @@
-require "rake/clean"
-require "rake/testtask"
-require "bundler/gem_tasks"
-
-task :default => :test
-
-CLEAN.replace %w(pkg doc coverage .yardoc test/haml vendor)
-
-Rake::TestTask.new do |t|
-  t.libs << 'lib' << 'test'
-  files = Dir["test/*_test.rb"]
-  t.test_files = files
-  t.warning = false
-  t.verbose = false
+#!/usr/bin/env rake
+begin
+  require "bundler/setup"
+rescue LoadError
+  puts "You must `gem install bundler` and `bundle install` to run rake tasks"
 end
+
+require "bundler/gem_tasks"
+require "rspec/core/rake_task"
+
+desc "Run all specs in spec directory"
+
+RSpec::Core::RakeTask.new(:spec)
+
+task :default => :spec

@@ -1,0 +1,4 @@
+= csv_for @posts, header_visible: true, body_visible: true, footer_visible: true, downloadable: true do
+  - column :id
+  - column :title, presence: true, html: {:class => "custom th class"}
+  - column :body
