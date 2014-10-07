@@ -63,7 +63,8 @@ end
 You'd have in your `app/views/foo/index.html.haml`:
 
 ```haml
-= table_for @foos do
+= table_for @foos [header_visible: (true|false), body_visible: (true|false), 
+footer_visible: (true|false), downloadable: (:xlsx|:csv)] do
   - column :id
   - column :awesomeness, presence: true
   - column :something_special do |foo|
@@ -83,11 +84,27 @@ Yhe I18n'ed title can be overriden passing the `:title` option to the
 
 ### CSV
 
-TODO
+```haml
+= csv_for @foos do
+  - column :id
+  - column :boolean_field
+  - column :name, presence: true, html: {:class => "custom th class"}
+  - column :text_field
+  - column :string_field, title: "Here we go"
+  - column :created_at
+```
 
 ### XLS
 
-TODO
+```haml
+= xlsx_for @foos do
+  - column :id
+  - column :boolean_field
+  - column :name, presence: true, html: {:class => "custom th class"}
+  - column :text_field
+  - column :string_field, title: "Here we go"
+  - column :created_at
+```
 
 ### Tabs
 
@@ -103,7 +120,15 @@ TODO
 
 ### Definition Lists
 
-TODO
+```haml
+= details_for @foos[1] do
+  - field :id
+  - field :boolean_field, title: "custom title"
+  - field :name, presence: true, html: {:class => "custom dd class"}
+  - field :text_field
+  - field :string_field, title: "Here we go"
+  - field :created_at
+```
 
 ## Tests
 
