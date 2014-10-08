@@ -18,10 +18,3 @@ tmp
 .idea
 .DS_STORE
 *.log
-
-
-gemfiles/3.2.gemfile.lock
-
-gemfiles/4.0.gemfile.lock
-
-gemfiles/4.1.x.gemfile.lock
