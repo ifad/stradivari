@@ -1,5 +1,9 @@
+require 'factory_girl_rails'
+
 module StradiTest
   module Data
+    include FactoryGirl::Syntax::Methods
+
     def setup_dummy_schema
       ActiveRecord::Base.class_eval do
         connection.instance_eval do
@@ -18,6 +22,12 @@ module StradiTest
           end
         end
       end
+    end
+
+    def create_dummy_data
+      create_list(:foo, 50)
+      @user = create(:user)
+      create_list(:post, 50, user: @user)
     end
   end
 end

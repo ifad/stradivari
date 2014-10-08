@@ -1,12 +1,6 @@
 p "testing on Rails " << Rails::VERSION::STRING
 
 RSpec.describe "stradivari" do
-  before(:context) do
-    create_list(:foo, 25)
-    @user = create(:user)
-    create_list(:post, 20, user: @user)
-  end
-
   context 'test context' do
 
     it "renders index page in html format" do

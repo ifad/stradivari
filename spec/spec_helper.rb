@@ -3,7 +3,6 @@ ENV['RAILS_ENV'] ||= 'test'
 require 'dummy/init'
 require 'rspec/rails'
 require 'capybara/rspec'
-require 'factory_girl_rails'
 require 'haml'
 require 'stradivari'
 require 'support/data'
@@ -15,7 +14,6 @@ Rails.backtrace_cleaner.remove_silencers!
 
 RSpec.configure do |config|
   config.include Capybara::DSL
-  config.include FactoryGirl::Syntax::Methods
   config.include StradiTest::FileHelpers
 
   config.order = "random"
@@ -28,5 +26,8 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-  config.before(:suite) {setup_dummy_schema}
+  config.before(:suite) do 
+    setup_dummy_schema
+    create_dummy_data
+  end
 end
