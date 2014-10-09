@@ -10,7 +10,7 @@ Bundler.require(:default, Rails.env)
 module Dummy
   class Application < ::Rails::Application
     config.autoload_paths += %W( #{config.root}/spec/support/models)
-    p config.autoload_paths
+    config.paths.add "config/database", with: "#{config.root}/spec/support/config/database.yml"
     # Basic Engine
     config.root = File.join __FILE__, '..'
     config.cache_store = :memory_store
@@ -34,4 +34,7 @@ module Dummy
   end
 end
 
+
+
 Dummy::Application.initialize!
+

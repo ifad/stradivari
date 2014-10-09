@@ -1,6 +1,6 @@
 ENV['RAILS_ENV'] ||= 'test'
 
-require 'dummy/init'
+require 'support/init'
 require 'rspec/rails'
 require 'csv'
 require 'haml'

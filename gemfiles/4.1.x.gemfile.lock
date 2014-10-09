@@ -46,12 +46,6 @@ GEM
       nokogiri (>= 1.4.1)
       rubyzip (~> 1.0.0)
     builder (3.2.2)
-    capybara (2.4.3)
-      mime-types (>= 1.16)
-      nokogiri (>= 1.3.3)
-      rack (>= 1.0.0)
-      rack-test (>= 0.5.4)
-      xpath (~> 2.0)
     diff-lcs (1.2.5)
     erubis (2.7.0)
     factory_girl (4.4.0)
@@ -139,8 +133,6 @@ GEM
     tilt (1.4.1)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    xpath (2.0.0)
-      nokogiri (~> 1.3)
 
 PLATFORMS
   ruby
@@ -148,7 +140,6 @@ PLATFORMS
 DEPENDENCIES
   appraisal (~> 1.0.0)
   bundler (~> 1.5)
-  capybara
   factory_girl_rails
   kaminari
   nokogiri (~> 1.6.0)
