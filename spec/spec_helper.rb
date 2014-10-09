@@ -8,14 +8,11 @@ require 'stradivari'
 require 'support/data'
 require 'support/file_helpers'
 
-#require all files in support/
-
 include StradiTest::Data
 
 Rails.backtrace_cleaner.remove_silencers!
 
 RSpec.configure do |config|
-  #config.include Capybara::DSL
   config.include StradiTest::FileHelpers
 
   config.order = "random"
@@ -29,7 +26,6 @@ RSpec.configure do |config|
   end
 
   config.infer_base_class_for_anonymous_controllers = false
-
 
   config.before(:suite) do
     setup_dummy_schema
