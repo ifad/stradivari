@@ -9,7 +9,8 @@ Bundler.require(:default, Rails.env)
 
 module Dummy
   class Application < ::Rails::Application
-
+    config.autoload_paths += %W( #{config.root}/spec/support/models)
+    p config.autoload_paths
     # Basic Engine
     config.root = File.join __FILE__, '..'
     config.cache_store = :memory_store

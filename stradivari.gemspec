@@ -36,7 +36,6 @@ This Gem combines HAML and Bootstrap 3 to provide you easy generators for:
   spec.add_development_dependency "rspec-rails", "~> 3.1"
   spec.add_development_dependency "nokogiri", "~> 1.6.0"
   spec.add_development_dependency "kaminari"
-  spec.add_development_dependency "capybara"
   spec.add_development_dependency "factory_girl_rails"  
 
 
