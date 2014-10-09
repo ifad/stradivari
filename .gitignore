@@ -18,3 +18,4 @@ tmp
 .idea
 .DS_STORE
 *.log
+spec/actual_results/*
