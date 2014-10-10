@@ -7,7 +7,7 @@ require 'kaminari'
 
 Bundler.require(:default, Rails.env)
 
-module Dummy
+module TestApp
   class Application < ::Rails::Application
     config.autoload_paths += %W( #{config.root}/spec/support/models)
     # Basic Engine
@@ -33,4 +33,4 @@ module Dummy
   end
 end
 
-Dummy::Application.initialize!
+TestApp::Application.initialize!
