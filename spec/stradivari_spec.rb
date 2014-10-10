@@ -1,7 +1,6 @@
-class ApplicationController < ActionController::Base; end
-
 p "testing with Rails " << Rails::VERSION::STRING
 
+class ApplicationController < ActionController::Base; end
 RSpec.describe ApplicationController, :type => :controller do
 
   render_views
