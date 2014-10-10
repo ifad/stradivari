@@ -9,13 +9,12 @@ require 'stradivari'
 require 'support/data'
 require 'support/file_helpers'
 
-
-include StradiTest::Data
+include Stradivari::Spec::Data
 
 Rails.backtrace_cleaner.remove_silencers!
 
 RSpec.configure do |config|
-  config.include StradiTest::FileHelpers
+  config.include Stradivari::Spec::FileHelpers
 
   config.order = "random"
 
