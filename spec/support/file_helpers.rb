@@ -5,7 +5,7 @@ module StradiTest
     end
 
     def save_result(name, result)
-      File.open(File.dirname(__FILE__) + "/../actual_results/#{name}", 'w') { |file| file.write(result) }
+      Pathname.new(__FILE__).join('../../actual_results', name).open('w+') {|file| file.write(result) }
     end
   end
 end
