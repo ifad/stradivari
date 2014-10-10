@@ -1,11 +1,5 @@
 class ApplicationController < ActionController::Base; end
 
-#it's a sad world and i had to do this
-Rails.application.routes.draw do
-  resources :foos
-  get 'anonymous/index','anonymous/posts'
-end
-
 p "testing with Rails " << Rails::VERSION::STRING
 
 RSpec.describe ApplicationController, :type => :controller do

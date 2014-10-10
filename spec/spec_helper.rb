@@ -1,12 +1,14 @@
 ENV['RAILS_ENV'] ||= 'test'
 
 require 'support/init'
+require 'support/routes'
 require 'rspec/rails'
 require 'csv'
 require 'haml'
 require 'stradivari'
 require 'support/data'
 require 'support/file_helpers'
+
 
 include StradiTest::Data
 
