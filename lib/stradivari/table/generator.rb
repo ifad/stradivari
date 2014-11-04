@@ -201,7 +201,7 @@ module Stradivari
         def render_row(object, klass = nil)
           haml_tag :tr, id: "#{object.class.model_name.to_s.underscore}_row_#{object.id}", class: klass do
             @columns.each do |col|
-              html = col.opts[:html].presence || {}
+              html = (col.opts[:html].presence || {}).symbolize_keys
 
               html[:class] = "#{html[:class]} #{col.name} #{'action-builder' if col.name == :actions}"
 
