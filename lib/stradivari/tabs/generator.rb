@@ -16,8 +16,12 @@ module Stradivari
           @content.blank? && !opts.fetch(:present, false)
         end
 
+        def active?
+          @opts.fetch(:active, false)
+        end
+
         def nav(opts = {})
-          klass = 'active' if opts.fetch(:active, false)
+          klass = 'active' if active?
 
           haml_tag :li, class: klass do
             haml_tag :a, @opts.deep_merge(href: "##@dom_id", data: {toggle: :tab}) do
@@ -32,7 +36,7 @@ module Stradivari
 
         def content(opts = {})
           klass = 'tab-pane'
-          klass << ' active' if opts.fetch(:active, false)
+          klass << ' active' if active?
 
           haml_tag :div, class: klass, id: @dom_id do
             renderer = @content.blank? ? opts.fetch(:blank) : @renderer
@@ -50,8 +54,8 @@ module Stradivari
       end
 
       def tab(label, dom_id, content, opts = {}, &renderer)
-        if (t = self.class.const_get(:Tab).new(self, label, dom_id, content, opts, renderer)).enabled?
-          @tabs << t
+        if (tab = self.class.const_get(:Tab).new(self, label, dom_id, content, opts, renderer)).enabled?
+          @tabs << tab
         end
       end
 
@@ -81,18 +85,16 @@ module Stradivari
             flavor = @opts.fetch(:flavor, 'tabs')
             nav_opts = {badge: @opts.fetch(:counters, true)}
 
-            active, *others = tabs # TODO allow driving from the outside
+            tabs.first.opts[:active] = true if tabs.none? {|tab| tab.opts.fetch(:active, false)}
 
             # Navigation
             haml_tag :ul, class: "nav nav-#{flavor}" do
-              active.nav(nav_opts.merge(active: true))
-              others.each {|tab| tab.nav(nav_opts) }
+              tabs.each {|tab| tab.nav(nav_opts)}
             end
 
             # Content
             haml_tag :div, class: 'tab-content' do
-              active.content(active: true, blank: blank)
-              others.each {|tab| tab.content(blank: blank)}
+              tabs.each {|tab| tab.content(blank: blank)}
             end
           end
         end

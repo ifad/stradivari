@@ -108,7 +108,7 @@ Yhe I18n'ed title can be overriden passing the `:title` option to the
 ### Tabs
 
 ```haml
-= tabs_for @foos, flavor: (:tabs|:pills|:stacked) do |foos|
+= tabs_for @foos, flavor: (:tabs|:pills|:stacked), counters: (true|false) do |foos|
   - blank do
     .warning Nothing found
   - tab "Tab label", "tab_div_id", foos.scope do
