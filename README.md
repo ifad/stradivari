@@ -63,8 +63,7 @@ end
 You'd have in your `app/views/foo/index.html.haml`:
 
 ```haml
-= table_for @foos [header_visible: (true|false), body_visible: (true|false), 
-footer_visible: (true|false), downloadable: (:xlsx|:csv)] do
+= table_for @foos [header_visible: (true|false), body_visible: (true|false), footer_visible: (true|false), downloadable: (:xlsx|:csv)] do
   - column :id
   - column :awesomeness, presence: true
   - column :something_special do |foo|
@@ -108,7 +107,14 @@ Yhe I18n'ed title can be overriden passing the `:title` option to the
 
 ### Tabs
 
-TODO
+```haml
+= tabs_for @foos, flavor: (:tabs|:pills|:stacked) do |foos|
+  - blank do
+    .warning Nothing found
+  - tab "Tab label", "tab_div_id", foos.scope do
+    = render(partial: 'foos', locals: { foos: foos.scope })
+```
+
 
 ### Filter
 
@@ -131,11 +137,6 @@ TODO
 ```
 
 ## Tests
-
-```
-$ appraisal install
-$ appraisal rake spec
-```
 
 
 ## License
