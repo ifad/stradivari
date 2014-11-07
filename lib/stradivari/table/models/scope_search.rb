@@ -74,7 +74,7 @@ module Stradivari
           #
           def extended_search params
             params = params.deep_dup
-            arel = self.all
+            arel = self.stradivari_all
             sort, dir = params.values_at(:sort, :direction)
 
             # Process search scopes
