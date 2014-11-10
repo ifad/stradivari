@@ -95,9 +95,11 @@ module Stradivari
           end
 
           def sortable_icon
+            fa_icon =  "-#{opts[:sortable_icon]}" if opts.key?(:sortable_icon)
+
             klass = "fa fa-sort".tap do |s_class|
               if sorting_active?
-                s_class << "-#{current_sorting_direction}"
+                s_class << [fa_icon, "-#{current_sorting_direction}"].join
               end
             end
 
