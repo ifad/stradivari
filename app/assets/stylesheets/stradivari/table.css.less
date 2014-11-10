@@ -1,0 +1,133 @@
+@import "twitter/bootstrap/variables";
+
+table.table {
+  > thead > tr > th,
+  > tbody > tr > th,
+  > tfoot > tr > th,
+  > thead > tr > td,
+  > tbody > tr > td,
+  > tfoot > tr > td {
+    border-top: 0;
+  }
+
+  > thead > tr {
+    border-top: 1px solid #bbb;
+  }
+  > tfoot > tr {
+    border-bottom: 1px solid #bbb;
+  }
+  > tbody > tr {
+    border-top: 1px dashed #ddd; // This gives tables a very professional look.
+  }
+
+  thead {
+    background-color: #e7e7e7;
+
+    h4, h5, label {
+      margin: 0;
+    }
+
+    td, th {
+      white-space: nowrap;
+    }
+
+    th {
+      font-weight: 300;
+
+      &.active-column {
+        font-weight: 500;
+      }
+
+      &.sortable {
+        cursor: pointer;
+      }
+
+      &.sortable:hover, &.active-column {
+        background-color: @state-info-bg;
+      }
+    }
+  }
+
+  tbody {
+    td {
+      .alert {
+        margin: 0;
+      }
+
+      .drag-handle {
+        cursor: move;
+      }
+
+      &.action-builder {
+        white-space: nowrap;
+      }
+
+      ul.list-unstyled {
+        margin-bottom: 0;
+        li {
+          margin-bottom: 3px;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+
+    tr {
+      &.parent {
+                td { background-color: #e5f2ff }
+        &:hover td { background-color: darken(#e5f2ff, 10%) }
+      }
+
+      &.free {
+                td { background-color: #fefefe }
+        &:hover td { background-color: darken(#fefefe, 10%) }
+      }
+
+      &.child {
+                td { background-color: #f5faff }
+        &:hover td { background-color: darken(#f5faff, 10%) }
+      }
+    }
+  }
+
+  tfoot {
+    background-color: @state-info-bg;
+
+    .download {
+      &:before {
+        font-family: FontAwesome;
+        content: "\f019"
+      }
+
+      margin-right: 5px;
+    }
+
+    .export {
+      div {
+        display: inline-block;
+      }
+    }
+  }
+}
+
+table.selectable {
+  tr.selected {
+    td {
+      background-color: @state-info-bg;
+    }
+  }
+
+  tr.selected:hover {
+    td {
+      background-color: darken(@state-info-bg, 10%);
+    }
+  }
+
+  td.select {
+    width: 32px;
+    text-align: center;
+    padding: 2px;
+  }
+}
