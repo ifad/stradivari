@@ -79,30 +79,30 @@ $(function() {
   /** Inputs folding
    */
   $('form.filter-form, form.form-detached').
-  on('click', '.presentable', function(event) {
-    event.preventDefault();
-    var $this = $(this);
-    var $formGroup = $this.parents('.form-group');
-    var $closedContainer = $formGroup.find('.closed');
+    on('click', '.presentable', function(event) {
+      event.preventDefault();
+      var $this = $(this);
+      var $formGroup = $this.parents('.form-group');
+      var $closedContainer = $formGroup.find('.closed');
 
-    updateToggleTitle($this);
+      updateToggleTitle($this);
 
-    if ($closedContainer.length != 0) {
-      $closedContainer.toggle();
-    } else {
-      var $selected = $formGroup.find('.radio.checked');
-      var $radioSelection = $formGroup.find('.radio');
-
-      if ($selected.length != 0) {
-        $selected.removeClass('checked');
-        $radioSelection.css('display', 'inline-block');
+      if ($closedContainer.length != 0) {
+        $closedContainer.toggle();
       } else {
-        $radioSelection.hide();
-        $selected = $formGroup.find('.radio label input[type="radio"]:checked').parents('.radio');
-        $selected.addClass('checked').css('display', 'inline-block');
+        var $selected = $formGroup.find('.radio.checked');
+        var $radioSelection = $formGroup.find('.radio');
+
+        if ($selected.length != 0) {
+          $selected.removeClass('checked');
+          $radioSelection.css('display', 'inline-block');
+        } else {
+          $radioSelection.hide();
+          $selected = $formGroup.find('.radio label input[type="radio"]:checked').parents('.radio');
+          $selected.addClass('checked').css('display', 'inline-block');
+        }
       }
-    }
-  });
+    });
 
   function updateToggleTitle($this) {
     switch($this.html()) {
