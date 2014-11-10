@@ -46,6 +46,20 @@ Add to your Gemfile
 
     gem 'stradivari', github: 'ifad/stradivari'
 
+Add to your app/assets/javascripts/application.js
+
+    //= require stradivari
+
+Add to your app/controllers/application_controller.rb
+
+    include Stradivari::Controller
+
+Add to your config/initializers/stradivari.rb
+
+    module Stradivari
+    end
+
+
 ## Usage
 
 ### Table
@@ -117,6 +131,32 @@ Yhe I18n'ed title can be overriden passing the `:title` option to the
 
 
 ### Filter
+
+Stradivari uses Ransack to perform search queries. To enable filtering follow these steps
+
+In your model foo.rb
+
+    configure_scope_search dictionary: :dictionary_name
+
+    scope_search :by_bar do |bar|
+        where(bar: bar)
+    end
+
+This is an example search page
+
+    = filter_for Foo, detached: true do
+      - search :matching, title: 'Search'
+
+    = table_for @foos, downloadable: :xlsx do |foos|
+      - column :bar
+      - column :baz
+
+    = paginate @foos
+
+    - content_for :sidebar do
+      = filter_for Foo do
+        - checkbox :by_bar, collection: Foo.bars, priority: :low
+
 
 #### Model
 #### Controller
