@@ -2,9 +2,13 @@ module Stradivari
   module Table
     class Builder::DateBuilder < Builder
       def self.render
-        lambda do |object, attr, _|
+        lambda do |object, attr, opts|
           if (d=object.public_send(attr)).present?
-            I18n.l(d)
+            if f = opts.fetch(:format, nil)
+              d.strftime(f)
+            else
+              I18n.l(d)
+            end
           end
         end
       end
