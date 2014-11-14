@@ -158,6 +158,12 @@ This is an example search page
         - checkbox :by_bar, collection: Foo.bars, priority: :low
 
 
+## Prepending elements to the search form
+
+     - prepend(class: "options") do
+      %p This is a prepended text
+
+
 #### Model
 #### Controller
 #### View
@@ -177,6 +183,8 @@ TODO
 ```
 
 ## Tests
+
+
 
 
 ## License
