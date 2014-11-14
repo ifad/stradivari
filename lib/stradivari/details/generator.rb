@@ -36,11 +36,11 @@ module Stradivari
             if @renderer.present?
               capture_haml { view.instance_exec(object, &@renderer) }
             else
-              build
+              build(object)
             end
           end
 
-          def build
+          def build(object = self.object)
             view.instance_exec(object, @opts[:method].presence || @label, @opts, &builder.render)
           end
 
