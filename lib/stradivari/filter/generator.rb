@@ -17,17 +17,15 @@ module Stradivari
 
           @scope    = scope
           @name     = name
+          @active   = if (active_block = @opts.fetch(:active, nil))
+            view.instance_exec(&active_block)
+          else
+            false
+          end
 
           if renderer.present?
-            @renderer = renderer
-
             raise ArgumentError, "To use custom field you need to provide active attribute block inside options" unless opts.has_key?(:active)
-
-            @active = if (active_block = @opts.fetch(:active, nil))
-              view.instance_exec(&active_block)
-            else
-              false
-            end
+            @renderer = renderer
           end
 
           @opts.merge!(

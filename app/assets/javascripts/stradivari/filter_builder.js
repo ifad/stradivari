@@ -82,8 +82,8 @@ $(function() {
     on('click', '.presentable', function(event) {
       event.preventDefault();
       var $this = $(this);
-      var $formGroup = $this.parents('.form-group');
-      var $closedContainer = $formGroup.find('.closed');
+      var $formGroup = $this.parents('.form-group').first();
+      var $closedContainer = $formGroup.find('.closed').first();
 
       updateToggleTitle($this);
 
