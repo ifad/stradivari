@@ -69,7 +69,7 @@ module Stradivari
 
       private
         def render_row(object)
-          [ @columns.map {|col| col.to_s(object).strip }, types: types, style: @body_style ]
+          [ @columns.map {|col| col.to_s(object).to_s.strip }, types: types, style: @body_style ]
         end
 
         def types
