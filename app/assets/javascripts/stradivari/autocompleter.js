@@ -3,7 +3,7 @@ StradivariAutocompleter = function() {
   var bloodhounds = prepareTheBloodhounds($("[data-autocomplete]"));
   var datasets = prepareTheDatasets();
 
-  initializeTheBloodhounds(true);
+  initializeTheBloodhounds(false);
 
   autoCompleteField.typeahead({highlight: true}, datasets);
 
@@ -45,9 +45,8 @@ StradivariAutocompleter = function() {
 
   function initializeTheBloodhounds(clear_cache) {
     $.each(bloodhounds, function(_, bloodhound){
-      if(clear_cache){
+      if(clear_cache)
         bloodhound.clearPrefetchCache();
-        }
       bloodhound.initialize();
     })
   }
