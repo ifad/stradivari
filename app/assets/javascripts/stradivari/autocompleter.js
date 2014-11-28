@@ -4,7 +4,7 @@ window.Stradivari = (typeof Stradivari != "undefined") ? Stradivari : {};
 
 Stradivari.Autocompleter = function() {
   var autoCompleteField = $('input[data-stradivari="autocomplete"]')
-  var bloodhounds = prepareTheBloodhounds($("[data-autocomplete]"));
+  var bloodhounds = prepareTheBloodhounds($('label[data-stradivari="autocomplete"]'));
   var datasets = prepareTheDatasets();
 
   initializeTheBloodhounds(false);

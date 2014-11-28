@@ -40,7 +40,7 @@ module Stradivari
               haml_tag :span, (opts[:active_field] ? 'Add More' : 'Expand'), class: 'handle'
             end
           end
-          data = {data: {autocomplete: opts[:autocomplete]}} if opts[:autocomplete].present?
+          data = {data: {stradivari: "autocomplete"}} if opts[:autocomplete].present?
           haml_concat(label(opts[:namespace], name, title.html_safe, data))
         end
       end
