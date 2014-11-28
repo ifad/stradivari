@@ -1,5 +1,9 @@
-StradivariAutocompleter = function() {
-  var autoCompleteField = $("input.autocomplete")
+window.Stradivari = (typeof Stradivari != "undefined") ? Stradivari : {};
+
+
+
+Stradivari.Autocompleter = function() {
+  var autoCompleteField = $('input[data-stradivari="autocomplete"]')
   var bloodhounds = prepareTheBloodhounds($("[data-autocomplete]"));
   var datasets = prepareTheDatasets();
 
@@ -40,7 +44,6 @@ StradivariAutocompleter = function() {
       })
     })
     return datasets;
-
   }
 
   function initializeTheBloodhounds(clear_cache) {
@@ -58,11 +61,10 @@ StradivariAutocompleter = function() {
     filterForm.form.submit();
     })
   }
-
 }
 
 $(function() {
-  new StradivariAutocompleter();
+  new Stradivari.Autocompleter();
 })
 
 

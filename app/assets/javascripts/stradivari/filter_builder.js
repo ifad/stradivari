@@ -1,4 +1,7 @@
-StradivariForm = function () {
+window.Stradivari = (typeof Stradivari != "undefined") ? Stradivari : {};
+
+
+Stradivari.Form = function () {
   mergeForms = function(form, detached) {
     if (!form.data('merged')) {
       form.data('merged', true);
@@ -15,7 +18,7 @@ StradivariForm = function () {
     }
   }
 
-  fieldOverrideSorting = function(form) {
+  var fieldOverrideSorting = function(form) {
     var field_sorting = form.find('[data-sort]:first');
     var current_sorting = form.find('[name=sort]');
 
@@ -25,8 +28,8 @@ StradivariForm = function () {
   }
 };
 
-StradivariFilterForm = function() {
-  StradivariForm.call(this);
+Stradivari.FilterForm = function() {
+  Stradivari.Form.call(this);
 
   this.form = $('form.filter-form:not(.form-detached)');
 
@@ -55,7 +58,7 @@ StradivariFilterForm = function() {
     });
 
 
-  processFilterForm = function(form, options) {
+  var processFilterForm = function(form, options) {
     var detached = $('#' + form.data('link'));
     mergeForms(form, detached);
     if (options.submit)
@@ -64,25 +67,25 @@ StradivariFilterForm = function() {
 
 }
 
-StradivariFilterForm.prototype = {
+Stradivari.FilterForm.prototype = {
   form: null,
   getOptions: function(opt_name) {
     var jsonData = [];
     var elements = this.form.find($("[name*='[" + opt_name + "]']"));
 
     $.each(elements, function(_, elem) {
-      var jsonNode = {};
-      jsonNode["id"] = elem.value;
-      jsonNode["name"] = elem.parentNode.innerText.trim();
-      jsonData.push(jsonNode);
+      jsonData.push({
+        id   : elem.value,
+        name : elem.parentNode.innerText.trim()
+      });
     });
     return jsonData;
   }
 }
 
-StradivariDetachedForm = function() {
+Stradivari.DetachedForm = function() {
 
-  StradivariForm.call(this);
+  Stradivari.Form.call(this);
 
   var self = this;
   this.form = $('form.form-detached');
@@ -102,7 +105,7 @@ StradivariDetachedForm = function() {
     })
     ;
 
-  processDetachedForm = function(detached) {
+  var processDetachedForm = function(detached) {
     var form = $('#' + detached.data('link'));
     mergeForms(form, detached);
     form.submit();
@@ -110,7 +113,7 @@ StradivariDetachedForm = function() {
 }
 
 
-StradivariFoldableForm = function(form) {
+Stradivari.FoldableForm = function(form) {
 
   init = function(){
     form.
@@ -140,7 +143,7 @@ StradivariFoldableForm = function(form) {
       });
   }
 
-  updateToggleTitle = function($this) {
+  var updateToggleTitle = function($this) {
     switch ($this.html()) {
       case "Expand":
         $this.html("Close");
@@ -161,12 +164,12 @@ StradivariFoldableForm = function(form) {
 
 $(function() {
   if ($('form.form-detached')) {
-    detachedForm = new StradivariDetachedForm();
+    detachedForm = new Stradivari.DetachedForm();
   }
   if ($('form.filter-form')) {
     // we need filterForum instance for the autocomplete function
-    filterForm = new StradivariFilterForm();
-    new StradivariFoldableForm(filterForm.form);
+    filterForm = new Stradivari.FilterForm();
+    new Stradivari.FoldableForm(filterForm.form);
   }
 
   // all this to give focus to the input.focus element, positioning
