@@ -44,14 +44,13 @@ Stradivari.FilterForm = function() {
     }).
     on('click', '.clear', function(event) {
       event.preventDefault();
-      // Delete all parameters starting with q[
       _TABLE_.filterURLParameters(function(param) {
-        return param.indexOf('q[') != 0;
+        return param.indexOf(Stradivari.filterNamespace + '[') != 0;
       });
     }).
     on('change', '.number_field select', function(event) {
       event.preventDefault();
-      $(this).parents('fieldset').find('input').attr('name', 'q[' + this.value + ']');
+      $(this).parents('fieldset').find('input').attr('name', Stradivari.filterNamespace + '[' + this.value + ']');
     });
 
 
@@ -71,17 +70,17 @@ Stradivari.FilterForm.prototype = {
   form: null,
   getOptions: function(opt_name) {
     var jsonData = [];
-    var elements = this.form.find($("[name*='[" + opt_name + "]']"));
 
-    $.each(elements, function(_, elem) {
-      jsonData.push({
-        id   : elem.value,
-        name : elem.parentNode.innerText.trim()
-      });
+    this.form.find($("[name*='[" + opt_name + "]']")).each( function(){
+      var elem = $(this);
+      jsonData.push({ id: elem.val(), name: elem.parent().text().trim() });
     });
+
     return jsonData;
   }
 }
+
+
 
 Stradivari.DetachedForm =function() {
 
@@ -147,7 +146,7 @@ Stradivari.FoldableForm = function(form) {
   }
 
   var updateToggleTitle = function($this) {
-    switch ($this.html()) {
+    switch($this.html()) {
       case "Expand":
         $this.html("Close");
         break;
