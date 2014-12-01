@@ -8,7 +8,8 @@ module Stradivari
 
           haml_tag :div, class: 'form-group' do
             title = opts[:title] || "Search #{attr.to_s.humanize}"
-            input_options = { value: opts[:value], class: 'form-control', placeholder: title }
+            data = {stradivari: "autocomplete"} if opts[:autocomplete].present?
+            input_options = { value: opts[:value], class: "#{opts[:class]} form-control", placeholder: title, data: data }
 
             if sort = opts.fetch(:sort, nil)
               input_options[:data] = {sort: sort}

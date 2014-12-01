@@ -1,26 +1,44 @@
-$(function() {
+Stradivari.Form = function () {
+  mergeForms = function(form, detached) {
+    if (!form.data('merged')) {
+      form.data('merged', true);
+      detached.find(':input:not(:submit,:button)').each(function() {
+        // We do this because on IE input.clone() does not preserve
+        // the val() not even on text inputs.
+        var input = $(this),
+            clone = input.clone();
 
-  /** Detached form
-   */
-  $('form.form-detached').
+        clone.val(input.val());
+        clone.hide().appendTo(form);
+      });
+      fieldOverrideSorting(form);
+    }
+  }
+
+  var fieldOverrideSorting = function(form) {
+    var field_sorting = form.find('[data-sort]:first');
+    var current_sorting = form.find('[name=sort]');
+
+    if (field_sorting.val() && !current_sorting.val()) {
+      current_sorting.val(field_sorting.data('sort'));
+    }
+  }
+};
+
+Stradivari.FilterForm = function() {
+  Stradivari.Form.call(this);
+
+  this.form = Stradivari.FilterForm.form();
+
+  this.form.
     on('click', '.search', function(event) {
       event.preventDefault();
-      processDetachedForm($(this).parents('form'));
-    }).
-    on('submit', function(event) {
-      event.preventDefault();
-      processDetachedForm($(this));
-    });
-
-  $('form.filter-form').
-    on('click', '.search', function(event) {
-      event.preventDefault();
-      processFilterForm($(this).parents('form'), {
+      processFilterForm($(this.form), {
         submit: true
       });
     }).
     on('submit', function(event) {
-      processFilterForm($(this), {
+      processFilterForm($(this.form), {
         submit: false
       });
     }).
@@ -36,76 +54,100 @@ $(function() {
       $(this).parents('fieldset').find('input').attr('name', 'q[' + this.value + ']');
     });
 
-  function processDetachedForm(detached) {
+
+  var processFilterForm = function(form, options) {
+    var detached = $('#' + form.data('link'));
+    mergeForms(form, detached);
+    if (options.submit)
+      form.submit();
+  }
+}
+
+Stradivari.FilterForm.form = function(){
+  return $('form.filter-form:not(.form-detached)');
+}
+
+Stradivari.FilterForm.prototype = {
+  form: null,
+  getOptions: function(opt_name) {
+    var jsonData = [];
+    var elements = this.form.find($("[name*='[" + opt_name + "]']"));
+
+    $.each(elements, function(_, elem) {
+      jsonData.push({
+        id   : elem.value,
+        name : elem.parentNode.innerText.trim()
+      });
+    });
+    return jsonData;
+  }
+}
+
+Stradivari.DetachedForm =function() {
+
+  Stradivari.Form.call(this);
+
+  var self = this;
+  this.form = Stradivari.DetachedForm.form();
+
+  this.form.
+    on('click', '.search', function(event) {
+      event.preventDefault();
+      processDetachedForm($(this.form));
+    }).
+    on('submit', function(event) {
+      event.preventDefault();
+      processDetachedForm($(this.form));
+    }).
+    on('keydown', function(event) {
+      if (event.which == 13)
+        processDetachedForm($(this));
+    })
+    ;
+
+  var processDetachedForm = function(detached) {
     var form = $('#' + detached.data('link'));
     mergeForms(form, detached);
     form.submit();
   }
+}
 
-  function processFilterForm(form, options) {
-    var detached = $('#' + form.data('link'));
-    mergeForms(form, detached);
+Stradivari.DetachedForm.form = function(){
+  return $('form.form-detached');
+}
 
-    if (options.submit)
-      form.submit();
-  }
+Stradivari.FoldableForm = function(form) {
 
-  function mergeForms(form, detached) {
-    if (!form.data('merged')) {
-      form.data('merged', true);
-      detached.find(':input:not(:submit,:button)').each(function() {
-        // We do this because on IE input.clone() does not preserve
-        // the val() not even on text inputs.
-        var input = $(this),
-            clone = input.clone();
+  init = function(){
+    form.
+      on('click', '.handle', function(event) {
+        event.preventDefault();
+        var $this = $(this);
+        var $formGroup = $this.parents('.form-group').first();
+        var $closedContainer = $formGroup.find('.closed').first();
 
-        clone.val(input.val());
-        clone.hide().appendTo(form);
-      });
+        updateToggleTitle($this);
 
-      fieldOverrideSorting(form);
-    }
-  }
-
-  function fieldOverrideSorting(form) {
-    var field_sorting   = form.find('[data-sort]:first');
-    var current_sorting = form.find('[name=sort]');
-
-    if (field_sorting.val() && !current_sorting.val()) {
-      current_sorting.val(field_sorting.data('sort'));
-    }
-  }
-
-  /** Inputs folding
-   */
-  $('form.filter-form, form.form-detached').
-    on('click', '.presentable', function(event) {
-      event.preventDefault();
-      var $this = $(this);
-      var $formGroup = $this.parents('.form-group').first();
-      var $closedContainer = $formGroup.find('.closed').first();
-
-      updateToggleTitle($this);
-
-      if ($closedContainer.length != 0) {
-        $closedContainer.toggle();
-      } else {
-        var $selected = $formGroup.find('.radio.checked');
-        var $radioSelection = $formGroup.find('.radio');
-
-        if ($selected.length != 0) {
-          $selected.removeClass('checked');
-          $radioSelection.css('display', 'inline-block');
+        if ($closedContainer.length != 0) {
+          $closedContainer.toggle();
         } else {
-          $radioSelection.hide();
-          $selected = $formGroup.find('.radio label input[type="radio"]:checked').parents('.radio');
-          $selected.addClass('checked').css('display', 'inline-block');
-        }
-      }
-    });
+          var $selected = $formGroup.find('.radio.checked');
+          var $radioSelection = $formGroup.find('.radio');
 
-  function updateToggleTitle($this) {
-    switch($this.html()) {
+          if ($selected.length != 0) {
+            $selected.removeClass('checked');
+            $radioSelection.css('display', 'inline-block');
+          } else {
+            $radioSelection.hide();
+            $selected = $formGroup.find('.radio label input[type="radio"]:checked').parents('.radio');
+            $selected.addClass('checked').css('display', 'inline-block');
+          }
+        }
+      });
+  }
+
+  var updateToggleTitle = function($this) {
+    switch ($this.html()) {
       case "Expand":
         $this.html("Close");
         break;
@@ -120,4 +162,6 @@ $(function() {
         break;
     }
   }
-});
+  return(init());
+}
+

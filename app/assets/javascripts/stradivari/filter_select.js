@@ -31,7 +31,6 @@
     this.template  = new Template(options.template);
     this.target    = options.target;
     this.formatter = options.formatter;
-
     this.bind();
   }
 
