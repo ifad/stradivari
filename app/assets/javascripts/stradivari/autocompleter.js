@@ -1,16 +1,10 @@
-window.Stradivari = (typeof Stradivari != "undefined") ? Stradivari : {};
-
-
-
 Stradivari.Autocompleter = function() {
   var autoCompleteField = $('input[data-stradivari="autocomplete"]')
   var bloodhounds = prepareTheBloodhounds($('label[data-stradivari="autocomplete"]'));
   var datasets = prepareTheDatasets();
 
   initializeTheBloodhounds(false);
-
   autoCompleteField.typeahead({highlight: true}, datasets);
-
   attachSelectEvent();
 
   function prepareTheBloodhounds(labels) {
@@ -21,7 +15,7 @@ Stradivari.Autocompleter = function() {
       var bloodhound = new Bloodhound({
           datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
           queryTokenizer: Bloodhound.tokenizers.whitespace,
-          local: filterForm.getOptions(dataset_name)
+          local: Stradivari.filterForm.getOptions(dataset_name)
         })
       bloodhound.dataset_name = dataset_name;
       bloodhound.label = $(label).find(".text").html();
@@ -58,16 +52,9 @@ Stradivari.Autocompleter = function() {
     autoCompleteField.on("typeahead:selected", function(e, selected, dataset){
     $("#q_" + dataset + "_" + selected.id.toLowerCase()).prop('checked', true);
     this.value = '';
-    filterForm.form.submit();
+    Stradivari.filterForm.form.submit();
     })
   }
 }
-
-$(function() {
-  new Stradivari.Autocompleter();
-})
-
-
-
 
 

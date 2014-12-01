@@ -1,6 +1,3 @@
-window.Stradivari = (typeof Stradivari != "undefined") ? Stradivari : {};
-
-
 Stradivari.Form = function () {
   mergeForms = function(form, detached) {
     if (!form.data('merged')) {
@@ -31,7 +28,7 @@ Stradivari.Form = function () {
 Stradivari.FilterForm = function() {
   Stradivari.Form.call(this);
 
-  this.form = $('form.filter-form:not(.form-detached)');
+  this.form = Stradivari.FilterForm.form();
 
   this.form.
     on('click', '.search', function(event) {
@@ -64,7 +61,10 @@ Stradivari.FilterForm = function() {
     if (options.submit)
       form.submit();
   }
+}
 
+Stradivari.FilterForm.form = function(){
+  return $('form.filter-form:not(.form-detached)');
 }
 
 Stradivari.FilterForm.prototype = {
@@ -83,12 +83,12 @@ Stradivari.FilterForm.prototype = {
   }
 }
 
-Stradivari.DetachedForm = function() {
+Stradivari.DetachedForm =function() {
 
   Stradivari.Form.call(this);
 
   var self = this;
-  this.form = $('form.form-detached');
+  this.form = Stradivari.DetachedForm.form();
 
   this.form.
     on('click', '.search', function(event) {
@@ -112,6 +112,9 @@ Stradivari.DetachedForm = function() {
   }
 }
 
+Stradivari.DetachedForm.form = function(){
+  return $('form.form-detached');
+}
 
 Stradivari.FoldableForm = function(form) {
 
@@ -162,25 +165,3 @@ Stradivari.FoldableForm = function(form) {
   return(init());
 }
 
-$(function() {
-  if ($('form.form-detached')) {
-    detachedForm = new Stradivari.DetachedForm();
-  }
-  if ($('form.filter-form')) {
-    // we need filterForum instance for the autocomplete function
-    filterForm = new Stradivari.FilterForm();
-    new Stradivari.FoldableForm(filterForm.form);
-  }
-
-  // all this to give focus to the input.focus element, positioning
-  // the cursor after the last character
-  setTimeout(function() {
-    var focusField = $('input.focus:not([readonly])')
-    focusField.focus();
-    focusField[0].setSelectionRange(focusField.val().length, focusField.val().length);
-  });
-});
-
-
-/** Inputs folding
- */

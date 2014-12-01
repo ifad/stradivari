@@ -1,3 +1,4 @@
+//= require stradivari/base
 //= require stradivari/helpers
 //= require stradivari/filter_select
 //= require stradivari/filter_builder
