@@ -15,9 +15,10 @@ $.extend(Stradivari, {
       new Stradivari.FoldableForm(Stradivari.filterForm.form);
     }
 
+<% if defined? Twitter::Typeahead %>
     /* Initialize autocompleter */
     Stradivari.autocompleter = new Stradivari.Autocompleter();
-
+<% end %>
     // all this to give focus to the input.focus element, positioning
     // the cursor after the last character
     setTimeout(function() {

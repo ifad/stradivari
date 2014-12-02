@@ -29,7 +29,7 @@ Stradivari.Autocompleter = function() {
 
   initializeTheBloodhounds(false);
   autoCompleteField.typeahead({highlight: true}, datasets);
-  attachSelectEvent();
+  attachEvents();
 
   function prepareTheBloodhounds(labels) {
     var bloodHoundsPack = [];
@@ -71,12 +71,13 @@ Stradivari.Autocompleter = function() {
     })
   }
 
-  function attachSelectEvent(){
-    autoCompleteField.on("typeahead:selected", function(e, selected, dataset){
-    $("#" + Stradivari.filterNamespace + "_" + dataset + "_" + selected.id.toLowerCase()).prop('checked', true);
-    this.value = '';
-    Stradivari.filterForm.form.submit();
-    })
+  function attachEvents(){
+    autoCompleteField
+      .on("typeahead:selected", function(e, selected, dataset){
+        $("#" + Stradivari.filterNamespace + "_" + dataset + "_" + selected.id.toLowerCase()).prop('checked', true);
+        this.value = '';
+        Stradivari.filterForm.form.submit();
+      })
   }
 }
 

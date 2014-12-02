@@ -182,9 +182,33 @@ TODO
   - field :created_at
 ```
 
+### Stradivari Autocompleter
+
+If you want to use the Stradivari Autocomplete, please add
+[twitter-typeahead-rails](https://github.com/yourabi/twitter-typeahead-rails) to your project
+
+The stradivari Autocompleter uses both the detached form and the form filters
+
+It will use the keys in the filters to generate a list of autocomplete terms
+in the detached form
+
+When you select a term from the autocomplete list, the corresponding filter is
+automagically selected in the filter list
+
+
+To enable it, put the autocomplete:true option in the detached form search field
+
+  - search :matching, title: 'Search', class: "focus", autocomplete: true
+
+The class "focus" is used to give default focus to the search field
+
+Then, on the checkbox fields in the filter, use the autocomplete: true option
+to tell to the Stradivari to grab that list and use it in the Autocompleter
+
+- checkbox :foo, collection: Foo.foos, priority: :low, title: "Foo", autocomplete: true
+
+
 ## Tests
-
-
 
 
 ## License
