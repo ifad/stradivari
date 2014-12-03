@@ -21,14 +21,14 @@ module Stradivari
       end
 
       def default_sort_direction
-        "asc"
+        "ASC"
       end
 
       def sort_column
         if params[:sort].present? &&
           (sorting_object_class._ransackers[params[:sort]].present? ||
           sorting_object_class.column_names.include?(params[:sort]) ||
-          sorting_object_class.respond_to?(['sort_by', params[:sort], 'asc'].join('_')) ||
+          sorting_object_class.respond_to?(['sort_by', params[:sort], 'ASC'].join('_')) ||
           sorting_object_class.reflections.keys.any? {|related| params[:sort].include? related.to_s })
 
           params[:sort]
@@ -40,11 +40,11 @@ module Stradivari
       end
 
       def sort_direction
-        %w[asc desc].include?(params[:direction]) ? params[:direction] : default_sort_direction
+        params[:direction] =~ /^(asc|desc)$/i ? params[:direction] : default_sort_direction
       end
 
       def sortable
-        { sort: sort_column, direction: sort_direction }
+        { sort: sort_column, direction: sort_direction.downcase }
       end
 
       def ransack_options
