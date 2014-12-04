@@ -7,7 +7,6 @@ Stradivari.Form = function () {
         // the val() not even on text inputs.
         var input = $(this),
             clone = input.clone();
-        debugger
         clone
           .val(input.val())
           .hide()
