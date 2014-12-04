@@ -21,7 +21,7 @@ module Stradivari
       end
 
       def default_sort_direction
-        "asc"
+        "ASC"
       end
 
       def sort_column
@@ -40,11 +40,11 @@ module Stradivari
       end
 
       def sort_direction
-        %w[asc desc].include?(params[:direction]) ? params[:direction] : default_sort_direction
+        params[:direction] =~ /^(asc|desc)$/i ? params[:direction] : default_sort_direction
       end
 
       def sortable
-        { sort: sort_column, direction: sort_direction }
+        { sort: sort_column, direction: sort_direction.downcase }
       end
 
       def ransack_options

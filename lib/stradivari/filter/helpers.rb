@@ -34,12 +34,14 @@ module Stradivari
         lambda do
           if (Builder::priority(opts) == :low && !opts[:active_field]) ||
              (opts[:active_field] && opts.fetch(:collapsed_field, false))
+            title = content_tag(:span, title, class: "text")
+
             title << ' ' << capture_haml do
-              haml_tag :span, (opts[:active_field] ? 'Add More' : 'Expand'), class: 'presentable'
+              haml_tag :span, (opts[:active_field] ? 'Add More' : 'Expand'), class: 'handle'
             end
           end
-
-          haml_concat(label opts[:namespace], name, title.html_safe)
+          data = {data: {stradivari: "autocomplete"}} if opts[:autocomplete].present?
+          haml_concat(label(opts[:namespace], name, title.html_safe, data))
         end
       end
 
