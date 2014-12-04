@@ -7,9 +7,11 @@ Stradivari.Form = function () {
         // the val() not even on text inputs.
         var input = $(this),
             clone = input.clone();
-
-        clone.val(input.val());
-        clone.hide().appendTo(form);
+        debugger
+        clone
+          .val(input.val())
+          .hide()
+          .appendTo(form);
       });
       fieldOverrideSorting(form);
     }
