@@ -20,10 +20,8 @@
 *
 **/
 
-
-
 Stradivari.Autocompleter = function() {
-  var autoCompleteField = $('input[data-stradivari="autocomplete"]')
+  var autoCompleteField = $('input[data-stradivari="autocomplete"]');
   var bloodhounds = prepareTheBloodhounds($('label[data-stradivari="autocomplete"]'));
   var datasets = prepareTheDatasets();
 
@@ -73,9 +71,10 @@ Stradivari.Autocompleter = function() {
 
   function attachEvents(){
     autoCompleteField
-      .on("typeahead:selected", function(e, selected, dataset){
+      .on("typeahead:selected typeahead:autocompleted", function(e, selected, dataset){
         $("#" + Stradivari.filterNamespace + "_" + dataset + "_" + selected.id.toLowerCase()).prop('checked', true);
-        this.value = '';
+        $(this).removeAttr("placeholder");
+        $(this).val('');
         Stradivari.filterForm.form.submit();
       })
   }
