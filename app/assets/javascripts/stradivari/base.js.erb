@@ -22,9 +22,11 @@ $.extend(Stradivari, {
     // all this to give focus to the input.focus element, positioning
     // the cursor after the last character
     setTimeout(function() {
-      var focusField = $('input.focus:not([readonly])')
-      focusField.focus();
-      focusField[0].setSelectionRange(focusField.val().length, focusField.val().length);
+      var focusField = $('input.focus:not([readonly])');
+      if (focusField.length > 0){
+        focusField.focus();
+        focusField[0].setSelectionRange(focusField.val().length, focusField.val().length);
+      }
     });
   }
 })
