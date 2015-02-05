@@ -6,5 +6,6 @@ module Stradivari::Filter
   autoload :Builder,   'stradivari/filter/builder'
 
   NAMESPACE = :q
+  CONTEXT   = :context
 
 end

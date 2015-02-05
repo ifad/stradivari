@@ -46,7 +46,8 @@ Stradivari.FilterForm = function() {
     on('click', '.clear', function(event) {
       event.preventDefault();
       _TABLE_.filterURLParameters(function(param) {
-        return param.indexOf(Stradivari.filterNamespace + '[') != 0;
+        return param.indexOf(Stradivari.filterNamespace + '[') != 0 &&
+          param.indexOf(Stradivari.filterContext + '[') != 0;
       });
     }).
     on('change', '.number_field select', function(event) {
