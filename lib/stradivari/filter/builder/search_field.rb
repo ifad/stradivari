@@ -8,12 +8,19 @@ module Stradivari
 
           haml_tag :div, class: 'form-group' do
             title = opts[:title] || "Search #{attr.to_s.humanize}"
-            data = {stradivari: "autocomplete"} if opts[:autocomplete].present?
-            input_options = { value: opts[:value], class: "#{opts[:class]} form-control", placeholder: title, data: data }
+
+            data = {}
+
+            if opts.fetch(:autocomplete, false)
+              data[:stradivari] = "autocomplete"
+            end
 
             if sort = opts.fetch(:sort, nil)
-              input_options[:data] = {sort: sort}
+              data[:sort] = sort
             end
+
+            input_options = { value: opts[:value], class: "#{opts[:class]} form-control", placeholder: title, data: data }
+
 
             if opts[:skip_button]
               instance_exec(&Helpers::render_title(attr, title.clone, opts))
