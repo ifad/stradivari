@@ -34,10 +34,6 @@ module Stradivari
           classes
         end
 
-        def priority(opts = {})
-          opts.fetch :priority, :normal # :low, :normal, :high
-        end
-
       end
     end
 

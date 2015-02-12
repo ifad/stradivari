@@ -43,14 +43,50 @@ module Stradivari
           builder.value(params, @name)
         end
 
+        def name
+          @name
+        end
+
+        def ransack_attr(clause = nil)
+          return name if clause.nil? || scoped?
+
+          [name, clause].join('_')
+        end
+
+        def title
+          @opts.fetch(:title, @name.to_s.humanize)
+        end
+
+        def scoped?
+          @opts[:is_scoped]
+        end
+
+        def priority
+          @opts.fetch(:priority, :normal) # :low, :normal, :high
+        end
+
+        def collapsed=(flag)
+          @collapsed = !!flag
+        end
+
+        def collapsed?
+          @collapsed
+        end
+
+        def describe
+          ret = "#{title}"
+          if opts[:collection]
+          end
+        end
+
         def to_s
           render_block = @renderer.present? ? @renderer : builder.render
-          view.instance_exec(@name, @opts.merge(value: value, active_field: active?), &render_block)
+          view.instance_exec(self, &render_block)
         end
 
         protected
           def builder
-            @_bulder ||= @opts[:builder] || Builder::Implementations.fetch(@scope)
+            @_builder ||= @opts[:builder] || Builder::Implementations.fetch(@scope)
           end
 
           def params
@@ -130,6 +166,18 @@ module Stradivari
         @data
       end
 
+      def active_fields
+        partitioned_fields.first
+      end
+
+      def inactive_fields
+        partitioned_fields.last
+      end
+
+      def partitioned_fields
+        @_partitioned_fields ||= @fields.partition(&:active?)
+      end
+
       protected
 
         def wrapping(&block)
@@ -149,7 +197,7 @@ module Stradivari
         end
 
         def generate_active_fields
-          if (active_fields = @fields.select(&:active?)).count > 0
+          if active_fields.present?
             haml_tag :div, class: (inline? ? '' : 'panel-heading') do
               active_fields.each(&:to_s)
             end
@@ -157,7 +205,7 @@ module Stradivari
         end
 
         def generate_inactive_fields
-          if (inactive_fields = @fields.reject(&:active?)).count > 0
+          if inactive_fields.present?
             haml_tag :div, class: (inline? ? '' : 'panel-body') do
               inactive_fields.each(&:to_s)
             end

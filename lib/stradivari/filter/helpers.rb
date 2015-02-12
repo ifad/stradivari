@@ -30,7 +30,7 @@ module Stradivari
         end
       end
 
-      def self.render_title(name, title, opts)
+      def self.render_title(field, name)
         lambda do
           if (Builder::priority(opts) == :low && !opts[:active_field]) ||
              (opts[:active_field] && opts.fetch(:collapsed_field, false))

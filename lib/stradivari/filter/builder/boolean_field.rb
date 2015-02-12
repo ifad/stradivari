@@ -5,15 +5,14 @@ module Stradivari
     class Builder::BooleanField < Builder
 
       def self.render
-        lambda do |attr, opts|
-          title = opts.fetch(:title, attr.to_s.humanize)
-          attr  = opts[:is_scoped] ? attr : [attr, 'eq'].join('_')
+        lambda do |field|
+          attr = field.ransack_attr('eq')
 
-          opts[:collapsed_field] = true if opts[:value].present?
+          field.collapsed = true if field.value.present?
 
           haml_tag :div, class: "form-group" do
             if opts.fetch(:tristate, false)
-              instance_exec(&Helpers::render_title(attr, title, opts))
+              instance_exec(&Helpers::render_title(field, attr))
               haml_tag :div, class: Builder::prepare_classes(opts) do
                 instance_exec(&Helpers.radios_for_collection([['Yes', 'true'], ['No', 'false']], attr, opts))
               end
