@@ -116,6 +116,10 @@ module Stradivari
         instance_exec(rows, *pass, &definition)
       end
 
+      def row &block
+        @row = block
+      end
+
       def column(*args, &renderer)
         opts, attr = args.extract_options!, args.first
 
@@ -201,7 +205,13 @@ module Stradivari
         end
 
         def render_row(object, klass = nil)
-          haml_tag :tr, id: "#{object.class.model_name.to_s.underscore}_row_#{object.id}", class: klass do
+          attributes = {}.tap do |attributes|
+            attributes[:class] = klass
+            attributes[:id] = "#{object.class.model_name.to_s.underscore}_row_#{object.id}"
+            @row.call(attributes, object) if @row # allow developer to add custom attributes to the <tr>
+          end
+          
+          haml_tag :tr, attributes do
             @columns.each do |col|
               html = (col.opts[:html].presence || {}).symbolize_keys
 
