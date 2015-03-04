@@ -7,7 +7,7 @@ module Stradivari
           super(parent, opts)
 
           @label    = label
-          @dom_id   = dom_id
+          @dom_id   = self.class.css_friendly(dom_id)
           @content  = content
           @renderer = renderer
         end
@@ -43,6 +43,12 @@ module Stradivari
             view.instance_exec(@content, &renderer)
           end
         end
+
+        # If the dom_id has css selector characters in them, it will muck up any search,
+        # so this method converts the dom_id to a less dangerous form.
+        def self.css_friendly dom_id
+          dom_id.gsub( /[\[\]:.]/, '_' )
+        end
       end
 
       def initialize(view, *pass, &definition)
@@ -65,7 +71,7 @@ module Stradivari
 
       def to_s
         tabs = @tabs.reject(&:blank?)
-        blank = @blank || lambda { }
+        blank = @blank || Proc.new { }
 
         renderer = if tabs.blank?
           blank
