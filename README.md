@@ -78,6 +78,9 @@ You'd have in your `app/views/foo/index.html.haml`:
 
 ```haml
 = table_for @foos [header_visible: (true|false), body_visible: (true|false), footer_visible: (true|false), downloadable: (:xlsx|:csv)] do
+  - row do |attributes,foo|
+    attributes[:class] << " foo_#{foo.foo_type}"
+    attributes['data-foo-id'] = foo.id
   - column :id
   - column :awesomeness, presence: true
   - column :something_special do |foo|
@@ -92,8 +95,15 @@ This will generate the table head, body and foot markup, cycling over
 the `@foos` AR collection. Column headings take attribute names using
 `t()`, fitting nicely in [Rails' I18n for Active Record][rails-i18n-ar].
 
-Yhe I18n'ed title can be overriden passing the `:title` option to the
+The I18n'ed title can be overriden passing the `:title` option to the
 `column` generator, as shown above.
+
+If you wish to set custom attributes on the table row itself, the ```row```
+ block will pass you a hash of the row attributes and the current object 
+(`@foos[n]`). You may add or alter the hash contents and these will be 
+set on the row element. A good use case for this would be if you wanted
+to bind a click handler to the row and needed to record the `foo.id` for
+an action specific to that object.
 
 ### CSV
 
