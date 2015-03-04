@@ -125,10 +125,15 @@ Yhe I18n'ed title can be overriden passing the `:title` option to the
 = tabs_for @foos, flavor: (:tabs|:pills|:stacked), counters: (true|false) do |foos|
   - blank do
     .warning Nothing found
-  - tab "Tab label", "tab_div_id", foos.scope do
+  - tab "Tab label", "tab_div_id", foos.scope, present: (false|true)  do
     = render(partial: 'foos', locals: { foos: foos.scope })
 ```
+When a tab scope is empty, Stradivari will by default not show the tab. You can force the tab to show
+with the ```present: true``` option.
 
+The blank block is rendered in two cases. The first, if the tabs_for scope is empty and there are no
+tabs with option ```present: true```. The second, if a tab has this option, but its personal scope is
+empty.
 
 ### Filter
 
