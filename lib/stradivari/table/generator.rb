@@ -120,6 +120,10 @@ module Stradivari
         @row = block
       end
 
+      def no_data &block
+        @no_data = block
+      end
+
       def column(*args, &renderer)
         opts, attr = args.extract_options!, args.first
 
@@ -167,7 +171,11 @@ module Stradivari
         end
 
         def generate_no_data
-          haml_tag :div, @opts[:no_data], class: 'no-data alert alert-warning'
+          if @no_data
+            haml_tag :div, class: 'no-data alert alert-warning', &@no_data
+          else
+            haml_tag :div, @opts[:no_data], class: 'no-data alert alert-warning'
+          end
         end
 
         def render_header

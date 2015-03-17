@@ -105,6 +105,20 @@ set on the row element. A good use case for this would be if you wanted
 to bind a click handler to the row and needed to record the `foo.id` for
 an action specific to that object.
 
+If there is no data, the table will be replaced with a div saying
+`There is no data.` You can change this in one of two ways - specify a
+different message as the no_data option:
+```haml
+= table_for @foos, no_data: 'There is nothing to see here'
+```
+or, provide a `no_data` block which will be rendered in place:
+```haml
+= table_for @foos do
+  - no_data do
+    There are no entries.
+    %a.btn.btn-default{ href:'#' } Create
+```
+
 ### CSV
 
 ```haml
