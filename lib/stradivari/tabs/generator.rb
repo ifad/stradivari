@@ -23,8 +23,11 @@ module Stradivari
         def nav(opts = {})
           klass = 'active' if active?
 
+          attributes = @opts.except(:if)
+          attributes.deep_merge!(href: "##@dom_id", data: {toggle: :tab})
+
           haml_tag :li, class: klass do
-            haml_tag :a, @opts.deep_merge(href: "##@dom_id", data: {toggle: :tab}) do
+            haml_tag :a, attributes do
               haml_concat @label
 
               if opts.fetch(:badge) && @content.respond_to?(:count)
