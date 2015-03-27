@@ -152,12 +152,16 @@ or, provide a `no_data` block which will be rendered in place:
   - tab "Tab label", "tab_div_id", foos.scope, present: (false|true)  do
     = render(partial: 'foos', locals: { foos: foos.scope })
 ```
+
 When a tab scope is empty, Stradivari will by default not show the tab. You can force the tab to show
 with the ```present: true``` option.
 
-The blank block is rendered in two cases. The first, if the tabs_for scope is empty and there are no
+The blank block is rendered in two cases. The first, if the `tabs_for` scope is empty and there are no
 tabs with option ```present: true```. The second, if a tab has this option, but its personal scope is
 empty.
+
+Tabs can be conditionally rendered using the `if:` option and passing a `lambda` to it. If it evaluates
+to a falsish value, the tab is hidden. The block is executed in the view context.
 
 ### Filter
 
