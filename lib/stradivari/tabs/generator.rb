@@ -23,8 +23,9 @@ module Stradivari
         def nav(opts = {})
           klass = 'active' if active?
 
-          attributes = @opts.except(:if)
+          attributes = @opts.except(:if, :url)
           attributes.deep_merge!(href: "##@dom_id", data: {toggle: :tab})
+          attributes[:data][:url] = @opts[:url]
 
           haml_tag :li, class: klass do
             haml_tag :a, attributes do

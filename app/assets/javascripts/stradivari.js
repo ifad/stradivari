@@ -5,3 +5,4 @@
 //= require stradivari/table_builder
 //= require stradivari/select_tree
 //= require stradivari/autocompleter
+//= require stradivari/tabs

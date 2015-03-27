@@ -163,6 +163,15 @@ empty.
 Tabs can be conditionally rendered using the `if:` option and passing a `lambda` to it. If it evaluates
 to a falsish value, the tab is hidden. The block is executed in the view context.
 
+Tab content can be optionally loaded from a remote URL by passing the `url:` option. If you need to use
+Rails' route helpers, you have to reach to them through the `view` object, e.g.:
+
+```
+tabs_for @foos do
+  - tab :bar, url: view.bars_path do
+    .loading Loading...
+```
+
 ### Filter
 
 Stradivari uses Ransack to perform search queries. To enable filtering follow these steps
