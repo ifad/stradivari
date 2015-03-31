@@ -10,7 +10,7 @@ jQuery(function() {
 
     var target = $(loader.attr('href')); // It's an #anchor
 
-    $.ajax({ 
+    $.ajax({
         url: loader.data('url'),
         beforeSend: function() {
           loader.trigger('stradivari:tab:loading');
