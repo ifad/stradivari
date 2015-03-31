@@ -172,6 +172,51 @@ tabs_for @foos do
     .loading Loading...
 ```
 
+When retrieving data from a remote URL, Stradivari will emit events at key lifecycle points:
+
+Event Name             | Extra Parameters | When
+---------------------- | ---------------- | ---------------------------------------
+stradivari:tab:loading | none             | Before the AJAX send
+stradivari:tab:loaded  | none             | After a successful response is received 
+stradivari:tab:failed  | none             | After a failed response is received     
+
+These events will be emitted on the tab link that was clicked to initiate the remote load.
+This is useful if there are actions that must be performed before or after the remote data
+is loaded. For example, here is a simple example enabling pagination of a table loaded in
+the remote request:
+
+The HAML:
+
+```haml
+= tabs_for @foos do |foos|
+  - tab "Tab label", "tab_div_id", foos.scope, present: true, url: '/foos' do
+    .loading Loading...
+```
+
+The partial ```/foos```:
+
+```haml
+= table_for @foos do |foos|
+  - column :bar
+  - column :baz
+= paginate, remote: true
+```
+
+And finally, some javascript to bind the paginators correctly when the partial loads:
+
+```javascript
+function bindPaginators(tab_pane) {
+  $('nav.pagination a',tab_pane).on('ajax:success', function(e,data) {
+    $(tab_pane).html(data);
+    bindPaginators(tab_pane);
+  });
+
+$('[data-toggle=tab']).on('stradivari:tab:loaded', function(evt) {
+  var tab_id = $(this).attr('href'); // href of the <a> element is "#tab_div_id"
+  bindPaginators( $(tab_id) ); // $('#tab_div_id')
+});
+```
+
 ### Filter
 
 Stradivari uses Ransack to perform search queries. To enable filtering follow these steps
