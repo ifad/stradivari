@@ -199,7 +199,7 @@ The partial ```/foos```:
 = table_for @foos do |foos|
   - column :bar
   - column :baz
-= paginate, remote: true
+= paginate @foos, remote: true
 ```
 
 And finally, some javascript to bind the paginators correctly when the partial loads:
