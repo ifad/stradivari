@@ -289,7 +289,7 @@ Let's then define a posts list table with some filters.
       - search :title
       - search :body
       - date_range :created_at
-      - search :by_title_or_description
+      - search :by_author_name
 ```
 
 Behind the scenes, Stradivari builds an appropriate Ransack predicate for each
@@ -298,8 +298,8 @@ tweaks, [see the source for now for more information][src-filter-builder].
 
 In this case, the `title` and `body` attribute will generate a `title_cont`
 Ransack predicate that will be translated to a `SQL LIKE` operator, while the
-`by_title_or_description` field will pass along the user provided input to the
-corresponding `scope_search` defined method on the `Post` model.
+`by_author_name` field will pass along the user provided input to the
+corresponding `scope_search` method defined on the `Post` model.
 
 #### Controller
 
