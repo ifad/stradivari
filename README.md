@@ -219,43 +219,190 @@ $('[data-toggle=tab']).on('stradivari:tab:loaded', function(evt) {
 
 ### Filter
 
-Stradivari uses Ransack to perform search queries. To enable filtering follow these steps
+Stradivari uses Ransack to perform search queries. Ransack provides a mapper
+that transforms form parameters into an ActiveRecord Relation query, using
+_predicates_ such as `id_eq` or `name_cont`. For details about Ransack's
+predicates syntax, [please have a look here][ransack-basic-searching].
 
-In your model foo.rb
+To compose the search query for a model, Stradivari extends ActiveRecord with
+an `extended_search` method that is available in your models.
 
-    configure_scope_search dictionary: :dictionary_name
+The user-provided search query is available in your controller through the
+`ransack_options` method.
 
-    scope_search :by_bar do |bar|
-        where(bar: bar)
-    end
+Stradivari provides a set of filter builders that you can (should) use to
+create your filter forms.
 
-This is an example search page
-
-    = filter_for Foo, detached: true do
-      - search :matching, title: 'Search'
-
-    = table_for @foos, downloadable: :xlsx do |foos|
-      - column :bar
-      - column :baz
-
-    = paginate @foos
-
-    - content_for :sidebar do
-      = filter_for Foo do
-        - checkbox :by_bar, collection: Foo.bars, priority: :low
-
-
-## Prepending elements to the search form
-
-     - prepend(class: "options") do
-      %p This is a prepended text
-
+TODO: Stradivari is based on a (as of 04/2015) legacy version of Ransack,
+extending it to add functions that are now available upstream - so this
+should be fixed.
 
 #### Model
-#### Controller
+
+Given this data model:
+
+    # db/schema.rb
+    create_table :posts do |t|
+      t.integer :author_id
+      t.string  :title
+      t.text    :body
+      t.timestamps
+    end
+
+By default, with no changes to the model, you can already search on all model
+fields using Ransack features. Supposing you also have a specific scope you
+want to search on, you can define it in your model:
+
+    # app/models/post.rb
+    class Post < ActiveRecord::Base
+      belongs_to :author
+
+      scope_search :by_author_name do |user_provided_input|
+        joins(:author).where("authors.name LIKE ?", user_provided_input)
+      end
+    end
+
+`Post.by_author_name` behaves like every other ActiveRecord scope, and it is
+also marked accessible through user-provided search queries. *Always be
+careful with user provided input*. Stradivari or ActiveRecord can't protect
+you from shooting yourself in the foot if you want to. Follow the Robustness
+principle: _Be conservative in what you do, be liberal in what you accept_.
+
 #### View
 
+Let's then define a posts list table with some filters.
+
+```haml
+    / app/views/posts/index.html.haml
+
+    = table_for @posts do
+      - column :author do |post|
+        = post.author.name
+      - column :title
+      - column :body do |post|
+        = truncate(post.body, length: 140)
+      - column :created_at
+      - column :updated_at
+
+    = filter_for Post do
+      - selection :author_id, collection: Author.all
+      - search :title
+      - search :body
+      - date_range :created_at
+      - search :by_title_or_description
+```
+
+Behind the scenes, Stradivari builds an appropriate Ransack predicate for each
+builder, and builds the search form. Each builder has its own options and
+tweaks, [see the source for now for more information][src-filter-builder].
+
+In this case, the `title` and `body` attribute will generate a `title_cont`
+Ransack predicate that will be translated to a `SQL LIKE` operator, while the
+`by_title_or_description` field will pass along the user provided input to the
+corresponding `scope_search` defined method on the `Post` model.
+
+#### Controller
+
+Start by adding `Stradivari::Controller` to your `ApplicationController`
+
+    # app/controllers/application_controller.rb
+    module ApplicationController
+      include Stradivari::Controller
+    end
+
+Then, in your `PostsController`
+
+    # app/controllers/posts_controller.rb
+    class PostsController < ApplicationController
+      def index
+        @posts = Post.extended_search(ransack_options)
+      end
+    end
+
+`@posts` is an `ActiveRecord::Relation` that can be further manipulated,
+paginated, etc. `.extended_search` can also be called on an already existing
+`ActiveRecord::Relation` - it is not required for it to be the first call.
+
+The return value of `.ransack_options` is an Hash and can be manipulated as
+you see fit.
+
+#### Sorting
+
+To enable sorting support, currently Stradivari has a constraint on one model
+per controller. If you manage multiple models with the same controller (and
+you shouldn't ;-) then you can use sorting functions only on one of them.
+
+The model must be defined in your controller by overriding the
+`sorting_object_class` method.
+
+    # app/controllers/posts_controller
+    class PostsController
+      # [ ... ]
+      protected
+
+      def sorting_object_class
+        Post
+      end
+    end
+
+Default sort column and direction are, respectively, `id` and `ASC`. To
+override them, you can override the `default_sort_column` and
+`default_sort_direction` methods.
+
+If we would want to display most recent posts first, for example, we could
+use:
+
+    # app/controllers/posts_controller
+    class PostsController
+      def default_sort_column
+        'created_at'
+      end
+
+      def default_sort_direction
+        'DESC'
+      end
+    end
+
+Ransack provides basic sorting options for column names. The `title` column in
+the above example can be made sortable in the rendered table by adding the
+`sortable: true` option:
+
+    = table_for @posts do
+      - column :title, sortable: true
+
+For more complex sorting schemes, e.g. if we want to sort on the associated
+author name, we have to define the sorting semantics in the model first.
+
+Stradivari looks up a `scope` in the model named after the column with a
+`sort_by` prefix and `asc` or `desc` as suffix. In this example, this would
+be:
+
+    class Post < ActiveRecord::Base
+      scope :sort_by_author_asc,  -> { joins(:author).order('authors.name ASC') }
+      scope :sort_by_author_desc, -> { joins(:author).order('authors.name DESC') }
+    end
+
+    = table_for @posts do
+      - column :author, sortable: true do |post|
+        = post.author.name
+
+You can pass to the `sortable` option the scope name you want to use, e.g. if
+you called the above scope `sort_by_person_asc`, you would have needed to
+specify `sortable: person`. This is useful when reusing these scopes for
+multiple purposes.
+
+#### Detached form
+
 TODO
+
+#### Full-text search
+
+TODO
+
+#### Prepending elements to the search form
+
+    - prepend(class: "options") do
+      %p This is a prepended text
 
 ### Definition Lists
 
@@ -319,12 +466,13 @@ impact in making the world a better place.
 
   -- vjt  Mon Jun  9 20:21:42 CEST 2014
 
-[logo]:              http://upload.wikimedia.org/wikipedia/commons/c/cd/Antonio_stradivari.jpg
-[Bootstrap 3]:       https://github.com/twbs/bootstrap
-[Active Admin]:      https://github.com/gregbell/active_admin
-[HAML]:              https://github.com/haml/haml
-[PgSearch]:          https://github.com/Casecommons/pg_search
-[Ransack]:           https://github.com/activerecord-hackery/ransack
-[rails-i18n-ar]:     http://guides.rubyonrails.org/i18n.html#translations-for-active-record-models
-
+[logo]:                    http://upload.wikimedia.org/wikipedia/commons/c/cd/Antonio_stradivari.jpg
+[Bootstrap 3]:             https://github.com/twbs/bootstrap
+[Active Admin]:            https://github.com/gregbell/active_admin
+[HAML]:                    https://github.com/haml/haml
+[PgSearch]:                https://github.com/Casecommons/pg_search
+[Ransack]:                 https://github.com/activerecord-hackery/ransack
+[rails-i18n-ar]:           http://guides.rubyonrails.org/i18n.html#translations-for-active-record-models
+[ransack-basic-searching]: https://github.com/activerecord-hackery/ransack/wiki/Basic-Searching
+[src-filter-builder]:      https://github.com/ifad/stradivari/tree/master/lib/filter/builder
 
