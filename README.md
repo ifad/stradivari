@@ -99,8 +99,8 @@ The I18n'ed title can be overriden passing the `:title` option to the
 `column` generator, as shown above.
 
 If you wish to set custom attributes on the table row itself, the ```row```
- block will pass you a hash of the row attributes and the current object 
-(`@foos[n]`). You may add or alter the hash contents and these will be 
+ block will pass you a hash of the row attributes and the current object
+(`@foos[n]`). You may add or alter the hash contents and these will be
 set on the row element. A good use case for this would be if you wanted
 to bind a click handler to the row and needed to record the `foo.id` for
 an action specific to that object.
@@ -177,8 +177,8 @@ When retrieving data from a remote URL, Stradivari will emit events at key lifec
 Event Name             | Extra Parameters | When
 ---------------------- | ---------------- | ---------------------------------------
 stradivari:tab:loading | none             | Before the AJAX send
-stradivari:tab:loaded  | none             | After a successful response is received 
-stradivari:tab:failed  | none             | After a failed response is received     
+stradivari:tab:loaded  | none             | After a successful response is received
+stradivari:tab:failed  | none             | After a failed response is received
 
 These events will be emitted on the tab link that was clicked to initiate the remote load.
 This is useful if there are actions that must be performed before or after the remote data
