@@ -335,7 +335,7 @@ you shouldn't ;-) then you can use sorting functions only on one of them.
 The model must be defined in your controller by overriding the
 `sorting_object_class` method.
 
-    # app/controllers/posts_controller
+    # app/controllers/posts_controller.rb
     class PostsController
       # [ ... ]
       protected
@@ -352,7 +352,7 @@ override them, you can override the `default_sort_column` and
 If we would want to display most recent posts first, for example, we could
 use:
 
-    # app/controllers/posts_controller
+    # app/controllers/posts_controller.rb
     class PostsController
       def default_sort_column
         'created_at'
@@ -451,7 +451,7 @@ MIT
 
 ## Copyright
 
-&copy; IFAD 2014
+&copy; IFAD 2014-2015
 
 ## Mission Statement
 
