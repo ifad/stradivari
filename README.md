@@ -162,7 +162,7 @@ Each style is a hash of Axlsx styling parameters. Here is a subset of the Axslx 
 parameters that are probably most useful to you:
 
 Parameter     | Example value            | Description
-------------- | ------------------------ | ---------------------------------------
+:------------ | :----------------------- | :--------------------------------------
 :sz           | 10                       | Font size (point size)
 :font_name    | 'Verdana'                | Font to use
 :bg_color     | 'c6c6c6c6'               | Background colour of cell (RGB 6-hex code)
@@ -208,7 +208,7 @@ tabs_for @foos do
 When retrieving data from a remote URL, Stradivari will emit events at key lifecycle points:
 
 Event Name             | Extra Parameters | When
----------------------- | ---------------- | ---------------------------------------
+:--------------------- | :--------------- | :--------------------------------------
 stradivari:tab:loading | none             | Before the AJAX send
 stradivari:tab:loaded  | none             | After a successful response is received 
 stradivari:tab:failed  | none             | After a failed response is received     
