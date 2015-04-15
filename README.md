@@ -143,6 +143,39 @@ or, provide a `no_data` block which will be rendered in place:
   - column :created_at
 ```
 
+You can alter the XLS heading and body styles in the header:
+
+```haml
+= xlsx_for @foos, heading_style: { font_name: 'Verdana', sz: 15, bg_color: 'c6c6c6' } do
+  - column :id
+  - column text_field
+```
+
+You can also alter the style of each column:
+
+```haml
+= xlsx_for @foos do
+  - column :id, style: { size: 8, alignment: { horizontal: :right } }
+```
+
+Each style is a hash of Axlsx styling parameters. Here is a subset of the Axslx style
+parameters that are probably most useful to you:
+
+Parameter     | Example value            | Description
+:------------ | :----------------------- | :--------------------------------------
+:sz           | 10                       | Font size (point size)
+:font_name    | 'Verdana'                | Font to use
+:bg_color     | 'c6c6c6c6'               | Background colour of cell (RGB 6-hex code)
+:fg_color     | '00000000'               | Foreground colour of cell (RGB 6-hex code)
+:alignment    | { horizontal: :center }  | Centred cell alignment
+:alignment    | { vertical: :center }    | Vertically centred cell alignment
+:alignment    | { wrap_text: true }      | Wrap overflowing text
+:b            | true                     | Bold text
+:i            | true                     | Italic text
+:u            | :double                  | Underline
+:strike       | true                     | Strike-through text
+:border       | Axlsx::STYLE_THIN_BORDER | Add border to cells
+
 ### Tabs
 
 ```haml
@@ -175,7 +208,7 @@ tabs_for @foos do
 When retrieving data from a remote URL, Stradivari will emit events at key lifecycle points:
 
 Event Name             | Extra Parameters | When
----------------------- | ---------------- | ---------------------------------------
+:--------------------- | :--------------- | :--------------------------------------
 stradivari:tab:loading | none             | Before the AJAX send
 stradivari:tab:loaded  | none             | After a successful response is received
 stradivari:tab:failed  | none             | After a failed response is received
