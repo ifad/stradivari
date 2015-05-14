@@ -20,7 +20,7 @@ module Stradivari
           @opts.fetch(:active, false)
         end
 
-        def nav(opts = {})
+        def nav(global_opts = {})
           klass = 'active' if active?
 
           attributes = @opts.except(:if, :url)
@@ -30,10 +30,7 @@ module Stradivari
           haml_tag :li, class: klass do
             haml_tag :a, attributes do
               haml_concat @label
-
-              if opts.fetch(:badge) && @content.respond_to?(:count)
-                haml_tag :span, @content.count, class: 'badge alert-info'
-              end
+              counter global_opts
             end
           end
         end
@@ -46,6 +43,21 @@ module Stradivari
             renderer = @content.blank? ? opts.fetch(:blank) : @renderer
             view.instance_exec(@content, &renderer)
           end
+        end
+
+        def counter(global_opts = {})
+          # @opts are this tab's options, while global_opts are options coming
+          # from the tabs generator.
+          counter = if @opts.key?(:counter)
+            @opts.fetch(:counter, nil)
+          else
+            global_opts.fetch(:counters, true)
+          end
+
+          return unless counter
+
+          count = @content.respond_to?(:count) ? @content.count : counter
+          haml_tag :span, count, class: 'badge alert-info'
         end
 
         # If the dom_id has css selector characters in them, it will muck up any search,
@@ -81,10 +93,9 @@ module Stradivari
           blank
         elsif @opts.fetch(:printable, false)
           lambda do
-            nav_opts = {badge: @opts.fetch(:counters, true)}
             tabs.each do |tab|
               haml_tag(:h5) do
-                haml_tag(:ul, class: 'list-unstyled') { tab.nav(nav_opts) }
+                haml_tag(:ul, class: 'list-unstyled') { tab.nav(@opts) }
               end
               haml_tag(:div) { tab.content(blank: blank) }
             end
@@ -93,13 +104,12 @@ module Stradivari
         else
           lambda do
             flavor = @opts.fetch(:flavor, 'tabs')
-            nav_opts = {badge: @opts.fetch(:counters, true)}
 
             tabs.first.opts[:active] = true if tabs.none? {|tab| tab.opts.fetch(:active, false)}
 
             # Navigation
             haml_tag :ul, class: "nav nav-#{flavor}" do
-              tabs.each {|tab| tab.nav(nav_opts)}
+              tabs.each {|tab| tab.nav(@opts) }
             end
 
             # Content
