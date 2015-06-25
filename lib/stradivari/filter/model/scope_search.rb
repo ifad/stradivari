@@ -1,4 +1,3 @@
-require 'active_support/concern'
 require 'pg_search'
 require 'ransack'
 
@@ -7,10 +6,10 @@ module Stradivari
     module Model
 
       module ScopeSearch
-        extend ActiveSupport::Concern
-
-        included do
-          include PgSearch
+        def self.included(base)
+          base.module_eval do
+            include PgSearch
+          end
         end
 
         module ClassMethods
