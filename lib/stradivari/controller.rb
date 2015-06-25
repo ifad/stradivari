@@ -47,8 +47,13 @@ module Stradivari
         { sort: sort_column, direction: sort_direction.downcase }
       end
 
-      def ransack_options
+      def stradivari_filter_options
         sortable.merge(params[Filter::NAMESPACE].presence || {})
+      end
+      alias ransack_options stradivari_filter_options
+
+      def stradivari_filter(model)
+        model.stradivari_filter(stradivari_filter_options)
       end
 
   end

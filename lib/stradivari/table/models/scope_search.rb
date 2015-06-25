@@ -72,8 +72,8 @@ module Stradivari
           #
           # Method to search for expressions beyond ransack
           #
-          def extended_search params
-            params = params.deep_dup
+          def stradivari_filter(stradivari_filter_options)
+            params = stradivari_filter_options.deep_dup
             arel = self.stradivari_all
             sort, dir = params.values_at(:sort, :direction)
 
@@ -115,8 +115,8 @@ module Stradivari
               # results by relevance.
               arel.ransack(ransack_params).result
             end
-
           end
+          alias extended_search stradivari_filter
 
         end
 
