@@ -2,7 +2,7 @@ module Stradivari
   class Railtie < ::Rails::Engine
     initializer 'stradivari.active_record' do |app|
       ActiveSupport.on_load(:active_record) do
-        ActiveRecord::Base.extend Stradivari::Filter::Model::ScopeSearch::Extensions
+        ActiveRecord::Base.include Stradivari::Filter::Model::ScopeSearch
 
         case ActiveRecord::VERSION::MAJOR
         when 3

@@ -14,10 +14,17 @@ module Stradivari
         end
 
         module ClassMethods
+          def configure_scope_search options = {}
+            self.scope_search_dictionary = options[:dictionary] || :english
+          end
+
           def scope_search_dictionary=(d)
             @_scope_search_dictionary = d
           end
 
+          ##
+          # Defines a search scope, callable from the query string.
+          #
           def scope_search(name, options = { }, &block)
             if options[:type] == :full_text
               options[:type] = :string
@@ -33,47 +40,8 @@ module Stradivari
             ransacker name, options
           end
 
-          private
-            def full_text_search(name, options, &block)
-              # Set up pg search
-              #
-              pg_search_scope "#{name}_search",
-                :against => :unused, # Only tsvector columns allowed
-                :using => {
-                  :tsearch => {
-                    :prefix => true,
-                    :dictionary => options[:dictionary] || @_scope_search_dictionary || :english,
-                    :tsvector_column => 'tsv'
-                  }
-                }
-
-              # Create a class method accepting an additional set of options,
-              # wrapping the pg_search scope. This enables the `:no_rank`
-              # option that disables ranking, and just does the filtering
-              # on the tsvector column.
-              #
-              # If a block is passed, then call it passing the original query
-              # and the resulting search scope - allowing customization of
-              # results.
-              define_singleton_method(name) do |query, options = {}, &block|
-                search = public_send("#{name}_search", query)
-
-                search = where(search.where_values) if options[:no_rank]
-                search = block.call(query, search)  if block
-
-                search
-              end
-            end
-        end
-
-        module Extensions
-          def configure_scope_search options = {}
-            include Stradivari::Filter::Model::ScopeSearch
-
-            self.scope_search_dictionary = options[:dictionary] || :english
-          end
-          #
-          # Method to search for expressions beyond ransack
+          ##
+          # Runs a Stradivari search on the given filter options hash.
           #
           def stradivari_filter(stradivari_filter_options)
             params = stradivari_filter_options.deep_dup
@@ -120,6 +88,38 @@ module Stradivari
             end
           end
           alias extended_search stradivari_filter
+
+          private
+            def full_text_search(name, options, &block)
+              # Set up pg search
+              #
+              pg_search_scope "#{name}_search",
+                :against => :unused, # Only tsvector columns allowed
+                :using => {
+                  :tsearch => {
+                    :prefix => true,
+                    :dictionary => options[:dictionary] || @_scope_search_dictionary || :english,
+                    :tsvector_column => 'tsv'
+                  }
+                }
+
+              # Create a class method accepting an additional set of options,
+              # wrapping the pg_search scope. This enables the `:no_rank`
+              # option that disables ranking, and just does the filtering
+              # on the tsvector column.
+              #
+              # If a block is passed, then call it passing the original query
+              # and the resulting search scope - allowing customization of
+              # results.
+              define_singleton_method(name) do |query, options = {}, &block|
+                search = public_send("#{name}_search", query)
+
+                search = where(search.where_values) if options[:no_rank]
+                search = block.call(query, search)  if block
+
+                search
+              end
+            end
         end
       end
 
