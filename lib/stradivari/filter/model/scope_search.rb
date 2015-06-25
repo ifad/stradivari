@@ -20,13 +20,17 @@ module Stradivari
           alias configure_scope_search stradivari_filter_options
 
           ##
-          # Copy search options on inheritance
+          # Copy search options and scopes registry on inheritance
           #
           def inherited(subclass)
             super
 
             subclass.stradivari_filter_options(
               self.stradivari_filter_options
+            )
+
+            subclass.stradivari_scopes.update(
+              self.stradivari_scopes
             )
           end
 
@@ -35,19 +39,20 @@ module Stradivari
           #
           def stradivari_scope(name, options = { }, &block)
             if options[:type] == :full_text
-              options[:type] = :string
-              full_text_search(name, options, &block)
+              full_text_search name, options, &block
             else
               scope name, block
             end
 
-            if options[:type] == :boolean
-              options.merge!(:validator => lambda { |val| [ true, false ].include?(val) })
-            end
-
-            ransacker name, options
+            stradivari_scopes.store(name, options)
           end
           alias scope_search stradivari_scope
+
+          ##
+          #
+          def stradivari_scopes
+            @_stradivari_scopes ||= {}
+          end
 
           ##
           # Runs a Stradivari search on the given filter options hash.
@@ -62,7 +67,7 @@ module Stradivari
               if v.blank?
                 true # Don't bother processing blank values
 
-              elsif (scope = arel._ransackers[k])
+              elsif (scope = stradivari_scopes.fetch(k, nil))
                 # Process it through a named scope
                 value = scope.type == :boolean ? v == 'true' : v
                 arel = arel.public_send(scope.name, value)
