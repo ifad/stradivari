@@ -1,11 +1,8 @@
-require 'pg_search'
-require 'ransack'
+module Stradivari
 
-module Stradivari::Table
-  autoload :Builder,   'stradivari/table/builder'
-  autoload :Generator, 'stradivari/table/generator'
-
-  module Models
-    autoload :ScopeSearch, 'stradivari/table/models/scope_search'
+  module Table
+    autoload :Builder,   'stradivari/table/builder'
+    autoload :Generator, 'stradivari/table/generator'
   end
+
 end

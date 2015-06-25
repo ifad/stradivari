@@ -1,8 +1,11 @@
 require 'active_support/concern'
+require 'pg_search'
+require 'ransack'
 
 module Stradivari
-  module Table
-    module Models
+  module Filter
+    module Model
+
       module ScopeSearch
         extend ActiveSupport::Concern
 
@@ -65,7 +68,7 @@ module Stradivari
 
         module Extensions
           def configure_scope_search options = {}
-            include Stradivari::Table::Models::ScopeSearch
+            include Stradivari::Filter::Model::ScopeSearch
 
             self.scope_search_dictionary = options[:dictionary] || :english
           end
@@ -117,10 +120,9 @@ module Stradivari
             end
           end
           alias extended_search stradivari_filter
-
         end
-
       end
+
     end
   end
 end

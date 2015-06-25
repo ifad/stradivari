@@ -1,14 +1,13 @@
 module Stradivari
   module Filter
-    module Models
-      module Rails4
+    module Model
 
+      module Rails3
         def stradivari_all
-          all
+          scoped
         end
-
       end
+
     end
   end
 end
-
