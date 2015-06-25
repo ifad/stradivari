@@ -14,18 +14,27 @@ module Stradivari
         end
 
         module ClassMethods
-          def configure_scope_search options = {}
-            self.scope_search_dictionary = options[:dictionary] || :english
+          def stradivari_filter_options(options)
+            @_stradivari_filter_options = options
+            @_stradivari_filter_options
           end
+          alias configure_scope_search stradivari_filter_options
 
-          def scope_search_dictionary=(d)
-            @_scope_search_dictionary = d
+          ##
+          # Copy search options on inheritance
+          #
+          def inherited(subclass)
+            super
+
+            subclass.stradivari_filter_options(
+              self.stradivari_filter_options
+            )
           end
 
           ##
           # Defines a search scope, callable from the query string.
           #
-          def scope_search(name, options = { }, &block)
+          def stradivari_scope(name, options = { }, &block)
             if options[:type] == :full_text
               options[:type] = :string
               full_text_search(name, options, &block)
@@ -39,6 +48,7 @@ module Stradivari
 
             ransacker name, options
           end
+          alias scope_search stradivari_scope
 
           ##
           # Runs a Stradivari search on the given filter options hash.
@@ -91,6 +101,9 @@ module Stradivari
 
           private
             def full_text_search(name, options, &block)
+              dictionary = options[:dictionary] || stradivari_search_options.fetch(:dictionary, :english)
+              column     = options[:column]     || stradivari_search_options.fetch(:column, 'tsv')
+
               # Set up pg search
               #
               pg_search_scope "#{name}_search",
@@ -98,8 +111,8 @@ module Stradivari
                 :using => {
                   :tsearch => {
                     :prefix => true,
-                    :dictionary => options[:dictionary] || @_scope_search_dictionary || :english,
-                    :tsvector_column => 'tsv'
+                    :dictionary => dictionary,
+                    :tsvector_column => column,
                   }
                 }
 
