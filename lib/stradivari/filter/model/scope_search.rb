@@ -9,6 +9,7 @@ module Stradivari
         def self.included(base)
           base.module_eval do
             include PgSearch
+            extend ClassMethods
           end
         end
 
