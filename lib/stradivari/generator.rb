@@ -23,6 +23,19 @@ module Stradivari
         enabled
       end
 
+      def title
+        case t = opts[:title]
+        when nil
+          klass.human_attribute_name(name)
+        when Proc
+          view.instance_eval(&t)
+        when false
+          ""
+        else
+          t
+        end
+      end
+
       protected
         def force_presence(value)
           if @opts.fetch(:present, nil)

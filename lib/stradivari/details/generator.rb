@@ -22,7 +22,7 @@ module Stradivari
         end
 
         def label
-          @opts[:title].presence || klass.human_attribute_name(@label)
+          title
         end
 
         def content
