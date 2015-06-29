@@ -24,19 +24,6 @@ module Stradivari
 
         attr_reader :opts, :name
 
-        def title
-          case t = @opts[:title]
-          when nil
-            klass.human_attribute_name(@name)
-          when Proc
-            view.instance_eval(&t)
-          when false
-            ""
-          else
-            t
-          end
-        end
-
         def to_s object
           value = if @renderer.present?
             capture_haml { view.instance_exec(object, &@renderer) }
@@ -215,10 +202,10 @@ module Stradivari
         def render_row(object, klass = nil)
           attributes = {}.tap do |attributes|
             attributes[:class] = klass
-            attributes[:id] = "#{object.class.model_name.to_s.underscore}_row_#{object.id}"
+            attributes[:id] = "#{object.class.name.underscore}_row_#{object.id}"
             @row.call(attributes, object) if @row # allow developer to add custom attributes to the <tr>
           end
-          
+
           haml_tag :tr, attributes do
             @columns.each do |col|
               html = (col.opts[:html].presence || {}).symbolize_keys

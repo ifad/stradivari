@@ -258,10 +258,10 @@ _predicates_ such as `id_eq` or `name_cont`. For details about Ransack's
 predicates syntax, [please have a look here][ransack-basic-searching].
 
 To compose the search query for a model, Stradivari extends ActiveRecord with
-an `extended_search` method that is available in your models.
+a `stradivari_filter` method that is available in your models.
 
 The user-provided search query is available in your controller through the
-`ransack_options` method.
+`stradivari_filter_options` method.
 
 Stradivari provides a set of filter builders that you can (should) use to
 create your filter forms.
@@ -290,7 +290,7 @@ want to search on, you can define it in your model:
     class Post < ActiveRecord::Base
       belongs_to :author
 
-      scope_search :by_author_name do |user_provided_input|
+      stradivari_scope :by_author_name do |user_provided_input|
         joins(:author).where("authors.name LIKE ?", user_provided_input)
       end
     end
@@ -332,7 +332,7 @@ tweaks, [see the source for now for more information][src-filter-builder].
 In this case, the `title` and `body` attribute will generate a `title_cont`
 Ransack predicate that will be translated to a `SQL LIKE` operator, while the
 `by_author_name` field will pass along the user provided input to the
-corresponding `scope_search` method defined on the `Post` model.
+corresponding `stradivari_scope` method defined on the `Post` model.
 
 #### Controller
 
@@ -348,16 +348,33 @@ Then, in your `PostsController`
     # app/controllers/posts_controller.rb
     class PostsController < ApplicationController
       def index
-        @posts = Post.extended_search(ransack_options)
+        @posts = stradivari_filter(Post)
       end
     end
 
 `@posts` is an `ActiveRecord::Relation` that can be further manipulated,
-paginated, etc. `.extended_search` can also be called on an already existing
-`ActiveRecord::Relation` - it is not required for it to be the first call.
+paginated, etc.
 
-The return value of `.ransack_options` is an Hash and can be manipulated as
-you see fit.
+`stradivari_filter` is both the name of a controller helper, that accepts
+an ActiveRecord object (either a model or a Relation) and that invokes the
+search machinery, using as parameters the hash representation of the `q`
+query string parameter.
+
+Stradivari defines also a `.stradivari_filter` method on your models, that
+behaves like a standard Active Record scope. It accepts and hash, that are
+the search parameters. You can pass your own hash, or you can get it from
+the query string using `stradivari_filter_options`.
+
+The following two calls are identical:
+
+    stradivari_filter(Post)
+    Post.stradivari_filter(stradivari_filter_options)
+
+The latter is useful if you want to massage the filter options yourself,
+or if you want to have a pure scopes chain - matter of taste.
+
+The return value of `.stradivari_filter_options` is an Hash and can be
+manipulated as you see fit.
 
 #### Sorting
 

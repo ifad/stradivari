@@ -30,8 +30,7 @@ module Stradivari
 
           @opts.merge!(
             namespace: NAMESPACE,
-            is_column: klass.columns_hash[@name.to_s].present?,
-            is_scoped: klass._ransackers[@name.to_s].present?
+            is_scoped: klass.stradivari_scopes[@name.to_sym].present?
           )
         end
 
@@ -85,7 +84,7 @@ module Stradivari
 
       def to_s
         renderer = lambda do
-          id = @opts.fetch(:id, "filter_fields_for_#{ActiveModel::Naming.singular(klass)}")
+          id = @opts.fetch(:id, "filter_fields_for_#{klass.name.singularize.underscore}")
           form_classes = 'filter-form '
           form_classes << 'form-detached ' if detached?
 

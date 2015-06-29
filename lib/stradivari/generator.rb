@@ -23,7 +23,28 @@ module Stradivari
         enabled
       end
 
+      def title
+        case t = opts[:title]
+        when nil
+          human_attribute_name
+        when Proc
+          view.instance_eval(&t)
+        when false
+          ""
+        else
+          t
+        end
+      end
+
       protected
+        def human_attribute_name
+          if klass.respond_to?(:human_attribute_name)
+            klass.human_attribute_name(name)
+          else
+            name.to_s.titleize
+          end
+        end
+
         def force_presence(value)
           if @opts.fetch(:present, nil)
             value.presence || t(:empty).html_safe
@@ -33,7 +54,7 @@ module Stradivari
         end
 
         def type
-          klass.columns_hash.fetch(name.to_s, nil).try(:type)
+          klass.stradivari_type(name)
         end
 
     end
