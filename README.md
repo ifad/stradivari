@@ -290,7 +290,7 @@ want to search on, you can define it in your model:
     class Post < ActiveRecord::Base
       belongs_to :author
 
-      scope_search :by_author_name do |user_provided_input|
+      stradivari_scope :by_author_name do |user_provided_input|
         joins(:author).where("authors.name LIKE ?", user_provided_input)
       end
     end
@@ -332,7 +332,7 @@ tweaks, [see the source for now for more information][src-filter-builder].
 In this case, the `title` and `body` attribute will generate a `title_cont`
 Ransack predicate that will be translated to a `SQL LIKE` operator, while the
 `by_author_name` field will pass along the user provided input to the
-corresponding `scope_search` method defined on the `Post` model.
+corresponding `stradivari_scope` method defined on the `Post` model.
 
 #### Controller
 
