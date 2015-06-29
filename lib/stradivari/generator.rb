@@ -26,7 +26,7 @@ module Stradivari
       def title
         case t = opts[:title]
         when nil
-          klass.human_attribute_name(name)
+          human_attribute_name
         when Proc
           view.instance_eval(&t)
         when false
@@ -37,6 +37,14 @@ module Stradivari
       end
 
       protected
+        def human_attribute_name
+          if klass.respond_to?(:human_attribute_name)
+            klass.human_attribute_name(name)
+          else
+            name.titleize
+          end
+        end
+
         def force_presence(value)
           if @opts.fetch(:present, nil)
             value.presence || t(:empty).html_safe
