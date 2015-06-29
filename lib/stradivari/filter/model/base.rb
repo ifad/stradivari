@@ -14,7 +14,10 @@ module Stradivari
             @_stradivari_filter_options = options if options
             @_stradivari_filter_options
           end
-          alias configure_scope_search stradivari_filter_options
+          def configure_scope_search(*args)
+            $stderr.puts "#{name}.configure_scope_search is deprecated. Please use .stradivari_filter_options (called from #{caller[0]})"
+            stradivari_filter_options(*args)
+          end
 
           ##
           # Copy search options and scopes registry on inheritance
@@ -38,7 +41,10 @@ module Stradivari
             scope(name, block)
             stradivari_scopes.store(name.to_sym, options)
           end
-          alias scope_search stradivari_scope
+          def scope_search(*args, &block)
+            $stderr.puts "#{name}.scope_search is deprecated. Please use .stradivari_scope (called from #{caller[0]})"
+            stradivari_scope(*args, &block)
+          end
 
           ##
           # Keeps the registry of defined stradivari scopes
@@ -60,7 +66,10 @@ module Stradivari
           def stradivari_filter(stradivari_filter_options)
             raise NotImplementedError
           end
-          alias extended_search stradivari_filter
+          def extended_search(*args)
+            $stderr.puts "#{name}.extended_search is deprecated. Please use .stradivari_filter (called from #{caller[0]})"
+            stradivari_filter(*args)
+          end
 
         end
       end
