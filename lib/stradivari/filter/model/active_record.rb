@@ -27,7 +27,7 @@ module Stradivari
         end
 
         module ClassMethods
-          def stradivari_scope(name, options, &block)
+          def stradivari_scope(name, options = {}, &block)
             if options[:type] == :full_text
               full_text_search name, options, &block
               stradivari_scopes.store(name.to_sym, options)

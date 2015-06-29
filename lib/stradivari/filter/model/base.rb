@@ -41,9 +41,9 @@ module Stradivari
             scope(name, block)
             stradivari_scopes.store(name.to_sym, options)
           end
-          def scope_search(name, options = {}, &block)
+          def scope_search(*args, &block)
             $stderr.puts "#{name}.scope_search is deprecated. Please use .stradivari_scope (called from #{caller[0]})"
-            stradivari_scope(name, options, &block)
+            stradivari_scope(*args, &block)
           end
 
           ##
