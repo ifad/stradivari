@@ -41,7 +41,7 @@ module Stradivari
           if klass.respond_to?(:human_attribute_name)
             klass.human_attribute_name(name)
           else
-            name.titleize
+            name.to_s.titleize
           end
         end
 
