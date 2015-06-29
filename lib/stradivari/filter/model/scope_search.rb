@@ -106,8 +106,8 @@ module Stradivari
 
           private
             def full_text_search(name, options, &block)
-              dictionary = options[:dictionary] || stradivari_search_options.fetch(:dictionary, :english)
-              column     = options[:column]     || stradivari_search_options.fetch(:column, 'tsv')
+              dictionary = options[:dictionary] || stradivari_filter_options.fetch(:dictionary, :english)
+              column     = options[:column]     || stradivari_filter_options.fetch(:column, 'tsv')
 
               # Set up pg search
               #
