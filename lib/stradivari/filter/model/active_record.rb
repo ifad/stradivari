@@ -50,7 +50,7 @@ module Stradivari
               if v.blank?
                 true # Don't bother processing blank values
 
-              elsif (scope = stradivari_scopes.fetch(k, nil))
+              elsif (scope = stradivari_scopes.fetch(k.to_sym, nil))
                 # Process it through a named scope
                 value = scope.type == :boolean ? v == 'true' : v
                 arel = arel.public_send(scope.name, value)
