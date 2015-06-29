@@ -39,6 +39,7 @@ module Stradivari
           #
           def stradivari_scope(name, options = {}, &block)
             scope(name, block)
+            options[:type] ||= :string
             stradivari_scopes.store(name.to_sym, options)
           end
           def scope_search(*args, &block)
