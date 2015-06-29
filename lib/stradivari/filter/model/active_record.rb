@@ -5,67 +5,41 @@ module Stradivari
   module Filter
     module Model
 
-      module ScopeSearch
+      module ActiveRecord
         def self.included(base)
           base.module_eval do
-            include PgSearch
+            # Load the appropriate stradivari_all adapter
+            #
+            case (ver = ::ActiveRecord::VERSION::MAJOR)
+            when 3 then extend Rails3
+            when 4 then extend Rails4
+            else
+              raise Error, "Unsupported Active Record version (#{ver})"
+            end
+
+            # Add agnostic module API
+            include Base
             extend ClassMethods
+
+            # Add PG Full Text Search adapter
+            include ::PgSearch
           end
         end
 
         module ClassMethods
-          def stradivari_filter_options(options = nil)
-            @_stradivari_filter_options = options if options
-            @_stradivari_filter_options
-          end
-          alias configure_scope_search stradivari_filter_options
-
-          ##
-          # Copy search options and scopes registry on inheritance
-          #
-          def inherited(subclass)
-            super
-
-            subclass.stradivari_filter_options(
-              self.stradivari_filter_options
-            )
-
-            subclass.stradivari_scopes.update(
-              self.stradivari_scopes
-            )
-          end
-
-          ##
-          # Defines a search scope, callable from the query string.
-          #
-          def stradivari_scope(name, options = { }, &block)
+          def stradivari_scope(name, options, &block)
             if options[:type] == :full_text
               full_text_search name, options, &block
+              stradivari_scopes.store(name.to_sym, options)
             else
-              scope name, block
+              super
             end
-
-            stradivari_scopes.store(name, options)
-          end
-          alias scope_search stradivari_scope
-
-          ##
-          # Keeps the registry of defined stradivari scopes
-          #
-          def stradivari_scopes
-            @_stradivari_scopes ||= {}
           end
 
-          ##
-          # Returns the normalized type for the given column name
-          #
           def stradivari_type(column_name)
             columns_hash.fetch(column_name.to_s, nil).try(:type)
           end
 
-          ##
-          # Runs a Stradivari search on the given filter options hash.
-          #
           def stradivari_filter(stradivari_filter_options)
             params = stradivari_filter_options.deep_dup
             arel = self.stradivari_all
@@ -110,7 +84,6 @@ module Stradivari
               arel.ransack(ransack_params).result
             end
           end
-          alias extended_search stradivari_filter
 
           private
             def full_text_search(name, options, &block)
