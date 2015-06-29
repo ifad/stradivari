@@ -215,7 +215,7 @@ module Stradivari
         def render_row(object, klass = nil)
           attributes = {}.tap do |attributes|
             attributes[:class] = klass
-            attributes[:id] = "#{object.class.model_name.to_s.underscore}_row_#{object.id}"
+            attributes[:id] = "#{object.class.name.underscore}_row_#{object.id}"
             @row.call(attributes, object) if @row # allow developer to add custom attributes to the <tr>
           end
           
