@@ -37,13 +37,13 @@ module Stradivari
           ##
           # Defines a search scope, callable from the query string.
           #
-          def stradivari_scope(name, options = { }, &block)
+          def stradivari_scope(name, options = {}, &block)
             scope(name, block)
             stradivari_scopes.store(name.to_sym, options)
           end
-          def scope_search(*args, &block)
+          def scope_search(name, options = {}, &block)
             $stderr.puts "#{name}.scope_search is deprecated. Please use .stradivari_scope (called from #{caller[0]})"
-            stradivari_scope(*args, &block)
+            stradivari_scope(name, options, &block)
           end
 
           ##
