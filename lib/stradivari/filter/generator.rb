@@ -31,7 +31,7 @@ module Stradivari
           @opts.merge!(
             namespace: NAMESPACE,
             is_column: klass.columns_hash[@name.to_s].present?,
-            is_scoped: klass._ransackers[@name.to_s].present?
+            is_scoped: klass.stradivari_scopes[@name.to_sym].present?
           )
         end
 
