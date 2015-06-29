@@ -6,6 +6,12 @@ module Stradivari
       end
     end
 
+    initializer 'stradivari.hawk' do |app|
+      if defined?(::Hawk)
+        Hawk::Model::Base.include Stradivari::Filter::Model::Hawk
+      end
+    end
+
     initializer 'stradivari.setup_helpers' do |app|
       app.config.to_prepare do
         ActionController::Base.send :helper, StradivariHelper
