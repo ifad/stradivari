@@ -33,7 +33,7 @@ module Stradivari
         end
 
         def type
-          klass.columns_hash.fetch(name.to_s, nil).try(:type)
+          klass.stradivari_type(name)
         end
 
     end

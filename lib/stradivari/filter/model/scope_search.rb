@@ -50,9 +50,17 @@ module Stradivari
           alias scope_search stradivari_scope
 
           ##
+          # Keeps the registry of defined stradivari scopes
           #
           def stradivari_scopes
             @_stradivari_scopes ||= {}
+          end
+
+          ##
+          # Returns the normalized type for the given column name
+          #
+          def stradivari_type(column_name)
+            columns_hash.fetch(column_name.to_s, nil).try(:type)
           end
 
           ##
