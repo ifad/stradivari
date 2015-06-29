@@ -14,8 +14,8 @@ module Stradivari
         end
 
         module ClassMethods
-          def stradivari_filter_options(options)
-            @_stradivari_filter_options = options
+          def stradivari_filter_options(options = nil)
+            @_stradivari_filter_options = options if options
             @_stradivari_filter_options
           end
           alias configure_scope_search stradivari_filter_options
