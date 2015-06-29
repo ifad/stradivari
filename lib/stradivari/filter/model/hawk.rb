@@ -17,9 +17,8 @@ module Stradivari
 
           def stradivari_filter(stradivari_filter_options)
             params = stradivari_filter_options.dup
-            params.delete_if {|k,v| v.blank?}
 
-            where(stradivari_filter_options)
+            where(params.delete_if {|k,v| v.blank?})
           end
         end
       end
