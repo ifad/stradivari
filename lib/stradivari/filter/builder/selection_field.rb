@@ -16,7 +16,7 @@ module Stradivari
             instance_exec(&Helpers::render_title(attr, title, opts))
 
             haml_tag :div, class: Builder::prepare_classes(opts) do
-              if collection.kind_of?(Array) && collection.size <= 5
+              if collection.kind_of?(Array) && collection.size <= opts.fetch(:radios_count, 5)
                 instance_exec(&Helpers.radios_for_collection(collection, attr, opts))
               else
                 haml_concat select(opts[:namespace], attr, collection, {selected: opts[:value], include_blank: 'Any'}, {class: 'form-control'})
