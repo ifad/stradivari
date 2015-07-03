@@ -25,7 +25,7 @@ Stradivari.Autocompleter = function() {
   var bloodhounds = prepareTheBloodhounds($('label[data-stradivari="autocomplete"]'));
   var datasets = prepareTheDatasets();
 
-  initializeTheBloodhounds(false);
+  initializeTheBloodhounds(true);
   autoCompleteField.typeahead({highlight: true}, datasets);
   attachEvents();
 
@@ -47,7 +47,6 @@ Stradivari.Autocompleter = function() {
 
   function prepareTheDatasets() {
     var datasets = [];
-
     $.each(bloodhounds, function(_, bloodhound){
       datasets.push({
         name: bloodhound.dataset_name,
@@ -71,8 +70,8 @@ Stradivari.Autocompleter = function() {
 
   function attachEvents(){
     autoCompleteField
-      .on("typeahead:selected typeahead:autocompleted", function(e, selected, dataset){
-        $("#" + Stradivari.filterNamespace + "_" + dataset + "_" + selected.id.toLowerCase()).prop('checked', true);
+      .on("typeahead:selected typeahead:autocompleted", function(e, selected){
+        $("#" + Stradivari.filterNamespace + "_" + selected.dataset + "_" + selected.id.toLowerCase()).prop('checked', true);
         $(this).removeAttr("placeholder");
         $(this).val('');
         Stradivari.filterForm.form.submit();

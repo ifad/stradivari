@@ -75,7 +75,7 @@ Stradivari.FilterForm.prototype = {
 
     this.form.find($("[name*='[" + opt_name + "]']")).each( function(){
       var elem = $(this);
-      jsonData.push({ id: elem.val(), name: elem.parent().text().trim() });
+      jsonData.push({ id: elem.val(), name: elem.parent().text().trim(), dataset: opt_name });
     });
 
     return jsonData;
