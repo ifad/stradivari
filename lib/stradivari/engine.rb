@@ -10,7 +10,7 @@ module Stradivari
     initializer 'stradivari.hawk' do |app|
       if defined?(::Hawk)
         Hawk::Model::Base.include Stradivari::Filter::Model::Hawk
-        ActiveRecord::Base.include Stradivari::Table::Model::Hawk
+        Hawk::Model::Base.include Stradivari::Table::Model::Hawk
       end
     end
 
