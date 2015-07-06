@@ -218,8 +218,7 @@ module Stradivari
         end
 
         def render_footer
-          if @data.is_a?(ActiveRecord::Relation) &&
-             @data.respond_to?(:current_page)
+          if data.respond_to?(:current_page)
 
             haml_tag :tfoot do
               haml_tag :tr do

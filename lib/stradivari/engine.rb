@@ -4,13 +4,17 @@ module Stradivari
       ActiveSupport.on_load(:active_record) do
         ActiveRecord::Base.instance_eval do
           include Stradivari::Filter::Model::ActiveRecord
+          include Stradivari::Table::Model::ActiveRecord
         end
       end
     end
 
     initializer 'stradivari.hawk' do |app|
       if defined?(::Hawk)
-        Hawk::Model::Base.include Stradivari::Filter::Model::Hawk
+        Hawk::Model::Base.instance_eval do
+          include Stradivari::Filter::Model::Hawk
+          include Stradivari::Table::Model::Hawk
+        end
       end
     end
 
