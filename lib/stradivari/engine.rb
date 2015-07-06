@@ -2,7 +2,9 @@ module Stradivari
   class Railtie < ::Rails::Engine
     initializer 'stradivari.active_record' do |app|
       ActiveSupport.on_load(:active_record) do
-        ActiveRecord::Base.include Stradivari::Filter::Model::ActiveRecord
+        ActiveRecord::Base.instance_eval do
+          include Stradivari::Filter::Model::ActiveRecord
+        end
       end
     end
 
