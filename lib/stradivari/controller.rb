@@ -25,12 +25,7 @@ module Stradivari
       end
 
       def sort_column
-        if params[:sort].present? &&
-          (sorting_object_class.stradivari_scopes[params[:sort].to_sym].present? ||
-          sorting_object_class.column_names.include?(params[:sort]) ||
-          sorting_object_class.respond_to?(['sort_by', params[:sort], 'asc'].join('_')) ||
-          sorting_object_class.reflections.keys.any? {|related| params[:sort].include? related.to_s })
-
+        if params[:sort].present? && sorting_object_class.sortable_by?(params[:sort])
           params[:sort]
         elsif params[:sort] == 'nil'
           nil
