@@ -112,22 +112,24 @@ table.table {
   }
 }
 
-table.selectable {
+table.selectable tbody {
   tr.selected {
     td {
       background-color: @state-info-bg;
     }
-  }
 
-  tr.selected:hover {
-    td {
-      background-color: darken(@state-info-bg, 10%);
+    &:hover {
+      td {
+        background-color: darken(@state-info-bg, 10%);
+      }
     }
   }
 
-  td.select {
-    width: 32px;
-    text-align: center;
-    padding: 2px;
+  tr {
+    td.select {
+      width: 32px;
+      text-align: center;
+      padding: 2px;
+    }
   }
 }
