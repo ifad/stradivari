@@ -12,7 +12,7 @@ module Stradivari
         end
 
         module ClassMethods
-          def sortable_by? sort_key
+          def sortable_by?(sort_key)
             super ||
             self.column_names.include?(sort_key) ||
             self.reflections.keys.any? { |related| sort_key.include?(related.to_s) }

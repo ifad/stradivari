@@ -10,7 +10,7 @@ module Stradivari
         end
 
         module ClassMethods
-          def sortable_by? sort_key
+          def sortable_by?(sort_key)
             self.stradivari_scopes[sort_key.to_sym].present? ||
             self.respond_to?(['sort_by', sort_key, 'asc'].join('_'))
           end
