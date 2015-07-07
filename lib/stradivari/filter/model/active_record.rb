@@ -92,23 +92,19 @@ module Stradivari
 
               # Set up pg search
               #
-              pg_search_scope "#{name}_search",
+              pg_search_scope "_#{name}",
                 against: :unused, # Only tsvector columns allowed
                 using: { tsearch: { prefix: true, dictionary: dictionary, tsvector_column: column } }
 
               # Create a class method accepting an additional set of options,
-              # wrapping the pg_search scope. This enables the `:no_rank`
-              # option that disables ranking, and just does the filtering
-              # on the tsvector column.
+              # wrapping the pg_search scope.
               #
               # If a block is passed, then call it passing the original query
               # and the resulting search scope - allowing customization of
               # results.
               define_singleton_method(name) do |query, options = {}, &block|
-                search = public_send("#{name}_search", query)
-
-                search = where(search.where_values) if options[:no_rank]
-                search = block.call(query, search)  if block
+                search = public_send("_#{name}", query)
+                search = block.call(query, search) if block
 
                 search
               end
