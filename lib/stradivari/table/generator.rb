@@ -169,9 +169,7 @@ module Stradivari
           haml_tag :thead do
             haml_tag :tr do
               @columns.each do |col|
-                haml_tag :th, col.html_opts do
-                  col.header
-                end
+                haml_tag(:th, col.html_opts) { col.header }
               end
             end
           end
