@@ -40,9 +40,11 @@ module Stradivari
         end
 
         def html_opts
-          @opts.fetch(:html, {}).tap do |html_opts|
+          @_html_opts ||= @opts.fetch(:html, {}).tap do |html_opts|
+            html_opts[:class] = html_opts.fetch(:class, self.name)
+
             if sortable?
-              html_opts[:class] = "#{html_opts[:class]} sortable"
+              html_opts[:class] = [html_opts[:class], 'sortable'].join(' ')
               html_opts[:data] ||= {}
               html_opts[:data][:sort]      = sort_on
               html_opts[:data][:direction] = if sorting_active?
@@ -51,6 +53,10 @@ module Stradivari
               else
                 'asc'
               end
+            end
+
+            if self.name == :actions # FIXME REMOVE
+              html_opts[:class] = [html_opts[:class], 'action-builder'].join(' ')
             end
           end
         end
@@ -206,11 +212,7 @@ module Stradivari
 
           haml_tag :tr, attributes do
             @columns.each do |col|
-              html = (col.opts[:html].presence || {}).symbolize_keys
-
-              html[:class] = "#{html[:class]} #{col.name} #{'action-builder' if col.name == :actions}"
-
-              haml_tag(:td, col.to_s(object), html)
+              haml_tag(:td, col.to_s(object), col.html_opts)
             end
           end
         end
