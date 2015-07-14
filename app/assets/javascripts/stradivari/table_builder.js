@@ -1,5 +1,5 @@
 $(function() {
-  $('table.table').on('click', '.sortable', function(event) {
+  $('table.table').on('click', 'th.sortable', function(event) {
     event.preventDefault();
 
     with($(this).data()) {
