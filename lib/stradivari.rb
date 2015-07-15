@@ -3,6 +3,8 @@ require 'stradivari/engine'
 
 module Stradivari
 
+  autoload :Error,      'stradivari/error'
+
   autoload :Builder,    'stradivari/builder'
   autoload :Generator,  'stradivari/generator'
   autoload :Helpers,    'stradivari/helpers'

@@ -14,7 +14,7 @@ module Stradivari
             when 3 then extend Rails3
             when 4 then extend Rails4
             else
-              raise Error, "Unsupported Active Record version (#{ver})"
+              raise Stradivari::Error, "Unsupported Active Record version (#{ver})"
             end
 
             # Add agnostic module API
