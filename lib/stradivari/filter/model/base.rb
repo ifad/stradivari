@@ -37,8 +37,12 @@ module Stradivari
           ##
           # Defines a search scope, callable from the query string.
           #
-          def stradivari_scope(name, options = {}, &block)
-            scope(name, block)
+          def stradivari_scope(name, options = {}, callable = nil, &block)
+            if callable && block
+              raise Stradivari::Error, "Can't give a block both via parameter and syntax"
+            end
+
+            scope(name, block || callable)
             options[:type] ||= :string
             stradivari_scopes.store(name.to_sym, options)
           end
