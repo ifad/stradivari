@@ -38,6 +38,8 @@ module Stradivari
           # Defines a search scope, callable from the query string.
           #
           def stradivari_scope(name, options = {}, callable = nil, &block)
+            callable ||= options if options.is_a?(Proc)
+
             if callable && block
               raise Stradivari::Error, "Can't give a block both via parameter and syntax"
             end
