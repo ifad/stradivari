@@ -503,6 +503,10 @@ MIT
 
 &copy; IFAD 2014-2015
 
+## Denominazione d'Origine Controllata
+
+This software is Made in Italy :it: :smile:.
+
 ## Mission Statement
 
 Organizations that allow you to write Open Source code are just awesome. It's
