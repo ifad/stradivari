@@ -37,14 +37,10 @@ module Stradivari
           ##
           # Defines a search scope, callable from the query string.
           #
-          def stradivari_scope(name, options = {}, callable = nil, &block)
-            callable ||= options if options.is_a?(Proc)
+          def stradivari_scope(name, *args, &block)
+            callable, options = stradivari_scope_options(*args, &block)
 
-            if callable && block
-              raise Stradivari::Error, "Can't give a block both via parameter and syntax"
-            end
-
-            scope(name, block || callable)
+            scope(name, callable)
             options[:type] ||= :string
             stradivari_scopes.store(name.to_sym, options)
           end
@@ -52,6 +48,18 @@ module Stradivari
             $stderr.puts "#{name}.scope_search is deprecated. Please use .stradivari_scope (called from #{caller[0]})"
             stradivari_scope(*args, &block)
           end
+
+          def stradivari_scope_options(*args, &block)
+            options  = args.extract_options!
+            callable = args.first
+
+            if callable && block
+              raise Stradivari::Error, "Can't give a block both via parameter and syntax"
+            end
+
+            return callable || block, options
+          end
+          private :stradivari_scope_options
 
           ##
           # Keeps the registry of defined stradivari scopes
