@@ -13,7 +13,10 @@ module Stradivari
     protected
 
       def sorting_object_class
-        raise "You need to override this method to use sorting on the controller"
+        controller_name.singularize.camelize.constantize
+
+      rescue NameError
+        raise Error, "Can't infer the associated model name for controller `#{controller_name}`. You need to define a `sorting_object_class` method on it to use sorting"
       end
 
       def default_sort_column

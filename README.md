@@ -382,8 +382,10 @@ To enable sorting support, currently Stradivari has a constraint on one model
 per controller. If you manage multiple models with the same controller (and
 you shouldn't ;-) then you can use sorting functions only on one of them.
 
-The model must be defined in your controller by overriding the
-`sorting_object_class` method.
+The model can be defined in your controller by overriding the
+`sorting_object_class` method. By default, Stradivari will try to infer the
+model name from the controller name, e.g. a PostsController will try to find a
+Post model, but if this fail then it's up to you to define it. Example:
 
     # app/controllers/posts_controller.rb
     class PostsController
