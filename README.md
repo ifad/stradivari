@@ -415,6 +415,13 @@ use:
       end
     end
 
+Alternatively, you can define sort parameters using the `stradivari_filter`
+DSL method:
+
+    stradivari_filter Post,
+      default_sorting:   'created_at',
+      default_direction: 'DESC'
+
 Ransack provides basic sorting options for column names. The `title` column in
 the above example can be made sortable in the rendered table by adding the
 `sortable: true` option:

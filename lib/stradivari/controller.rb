@@ -10,8 +10,23 @@ module Stradivari
       helper_method :sortable
     end
 
-    protected
+    module ClassMethods
+      def stradivari_filter(model, options = {})
+        module_eval do
+          define_method(:sorting_object_class) { model }
 
+          if (col = options.fetch(:default_sorting, nil))
+            define_method(:default_sort_column) { col }
+          end
+
+          if (dir = options.fetch(:default_direction, nil))
+            define_method(:default_sort_direction) { dir }
+          end
+        end
+      end
+    end
+
+    protected
       def sorting_object_class
         controller_name.singularize.camelize.constantize
 
