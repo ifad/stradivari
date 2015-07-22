@@ -22,7 +22,11 @@ module Stradivari
             input_options = { value: opts[:value], class: "#{opts[:class]} form-control", placeholder: title, data: data }
 
 
-            if opts[:skip_button]
+            if opts.key?(:skip_button)
+              $stderr.puts "The skip_button option to search filter field is deprecated. Please use button: true/false. Button is now disabled by default. (called from #{caller[0]})"
+            end
+
+            if opts[:skip_button] || !!opts.fetch(:button, nil)
               instance_exec(&Helpers::render_title(attr, title.clone, opts))
               haml_tag :div, class: Builder::prepare_classes(opts) do
                 haml_concat text_field(opts[:namespace], attr, input_options)
