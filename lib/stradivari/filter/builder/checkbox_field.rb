@@ -22,6 +22,10 @@ module Stradivari
           collection = opts[:collection]
           collection = collection.call if collection.respond_to?(:call)
 
+          unless collection.each.first.is_a?(Array)
+            collection.map! {|item| [ item, item ] }
+          end
+
           # Display checked items first
           checked, unchecked = collection.partition {|_, value| values.include?(value.to_s)}
           opts[:collapsed_field] = true if type == :multi_line && checked.present?
