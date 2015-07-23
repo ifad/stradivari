@@ -12,7 +12,7 @@ module Stradivari
         module ClassMethods
           def stradivari_filter_options(options = nil)
             @_stradivari_filter_options = options if options
-            @_stradivari_filter_options
+            @_stradivari_filter_options || {}
           end
           def configure_scope_search(*args)
             $stderr.puts "#{name}.configure_scope_search is deprecated. Please use .stradivari_filter_options (called from #{caller[0]})"
