@@ -32,11 +32,11 @@ jQuery(function() {
 
   // activate tab if tab id is specified in the url stradi_tabs[] parameter
   // clicking the tab link works even with ajax tabs
-  var stradivari_tabs = _TABLE_.parseURLParameters(location.href)["stradi_tabs[]"];
+  var stradivari_tabs = _TABLE_.parseURLParameters(location.href)["stradi_tabs"];
 
   if ( stradivari_tabs != undefined ) {
     $.each(stradivari_tabs, function(i, tab_id){
-      var tab = $("[data-toggle='tab'][href='" + tab_id + "']").first();
+      var tab = $("[data-toggle='tab'][href='#" + tab_id + "']").first();
       if (tab != undefined) tab.click();
     })
   }
