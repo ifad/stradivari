@@ -29,4 +29,11 @@ jQuery(function() {
         loader.trigger('stradivari:tab:failed');
       });
   })
+
+  // activate tab if tab id is specified in the url#anchor
+  // clicking the tab link works even with ajax tabs
+  if (window.location.hash != "") {
+    $("[data-toggle='tab'][href='" + window.location.hash + "']")
+      .each( function(i, el) { el.click() } );
+  }
 });
