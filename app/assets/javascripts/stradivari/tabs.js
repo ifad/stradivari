@@ -3,7 +3,6 @@
  */
 jQuery(function() {
   $('.nav.nav-tabs, .nav.nav-pills').on('click', '[data-url]', function(event) {
-    debugger
     var loader = $(this);
 
     if (loader.data().hasOwnProperty('loaded'))
@@ -34,5 +33,5 @@ jQuery(function() {
   // activate tab if tab id is specified in the url#anchor
   // no ifs required, and clicking the tab link works even with ajax tabs
   $("[data-toggle='tab'][href='" + window.location.hash + "']")
-    .each( function(i, el){ el.click() } );  
+    .each( function(i, el){ el.click() } );
 });
