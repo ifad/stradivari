@@ -51,6 +51,9 @@ window._TABLE_ = (function() {
       var decode = function (str) {return decodeURIComponent( str.replace(decodeRE, " ") );};
       var query = uri.split('?')[1]
       var params = {}, e;
+
+      if (query == undefined) return false;
+
       while ( e = re.exec(query) ) {
           var k = decode( e[1] ), v = decode( e[2] );
           if (k.substring(k.length - 2) === '[]') {
