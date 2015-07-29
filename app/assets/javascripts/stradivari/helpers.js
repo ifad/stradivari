@@ -18,9 +18,9 @@ window._TABLE_ = (function() {
     );
   };
 
-
-  var decodeURIComponentWithSpaces = function(param) {
-    return decodeURIComponent( param.replace(/\+/g, " ") );
+  var decodeURIComponentAndSpaces = function(str) {
+    str = str.replace(/\+/g, ' ');
+    return window.decodeURIComponent(str);
   };
 
   // API
@@ -51,21 +51,23 @@ window._TABLE_ = (function() {
     // in: http://mysite.com?stradi_tabs[]=bar&stradi_tabs[]=baz&foo=bar
     // out: {stradi_tabs: ['bar', 'baz'], foo: "bar"}
     parseURLParameters: function(uri) {
-      var re = /([^&=]+)=?([^&]*)/g;
-      var query = uri.split('?')[1]
-      var params = {}, e;
+      var re     = /([^&=]+)=?([^&]*)/g;
+      var query  = uri.split('?')[1]
+      var params = {};
 
-      if (query == undefined) return false;
+      if (query) {
+        var e;
 
-      while ( e = re.exec(query) ) {
-          var k = decodeURIComponentWithSpaces( e[1] );
-          var v = decodeURIComponentWithSpaces( e[2] );
+        while (e = re.exec(query)) {
+          var k = decodeURIComponentAndSpaces(e[1]),
+              v = decodeURIComponentAndSpaces(e[2]);
 
           if (k.substring(k.length - 2) === '[]') {
-              k = k.substring(0, k.length - 2);
-              (params[k] || (params[k] = [])).push(v);
+            k = k.substring(0, k.length - 2);
+            (params[k] || (params[k] = [])).push(v);
           }
           else params[k] = v;
+        }
       }
       return params;
     }
