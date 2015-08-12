@@ -63,7 +63,7 @@ module Stradivari
         # If the dom_id has css selector characters in them, it will muck up any search,
         # so this method converts the dom_id to a less dangerous form.
         def self.css_friendly dom_id
-          dom_id.gsub( /[\[\]:.]/, '_' )
+          dom_id.gsub( /[\[\]:.,]/, '_' )
         end
       end
 
