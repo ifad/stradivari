@@ -250,6 +250,34 @@ $('[data-toggle=tab']).on('stradivari:tab:loaded', function(evt) {
 });
 ```
 
+#### Dislocated tabs
+
+The tabbed examples above place some constraints on how you lay out the tabs. It
+groups both the nav and the content under the same container. In some cases, you
+may wish to separatethe nav from the content. The ```tab_navs_for``` and
+```tab_content_for``` helper methods allow this:
+
+```haml
+  .row
+    .col-xs-3
+      = tab_navs_for @people, flavor: :stacked do |people|
+        - tab 'Option 1', 'option_1_id', people.foos, active: true
+        - tab 'Option 2', 'option_2_id', people.bars
+    .col-xs-3
+      = tab_content_for @people do |people|
+        - tab 'option_1_id', people.foos, active: true do |scope|
+          This is content for option 1
+        - tab 'option_2', people.bars do |scope|
+          This is content for option 2
+```
+
+`tab_navs_for` takes the same options as `tabs_for`, as does its `tab` method,
+which does not take a block, however. Instead, the block is present in the `tab`
+option of `tab_content_for`. It is important both that the ID fields match
+between the two `tab` methods and that the scopes do as well, otherwise there
+may be display issues. You also have to set ```active: true``` on the content
+tab as well as the nav tab.
+
 ### Filter
 
 Stradivari uses Ransack to perform search queries. Ransack provides a mapper
