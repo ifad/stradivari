@@ -2,7 +2,7 @@
  * Lazy-loaded tabs
  */
 jQuery(function() {
-  $('.nav.nav-tabs, .nav.nav-pills').on('click', '[data-url]', function(event) {
+  $('.nav.nav-tabs, .nav.nav-pills, .nav.nav-stacked').on('click', '[data-url]', function(event) {
     var loader = $(this);
 
     if (loader.data().hasOwnProperty('loaded'))
