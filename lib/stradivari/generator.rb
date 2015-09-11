@@ -1,7 +1,11 @@
 module Stradivari
 
   class Generator
+    include Stradivari::Concerns::CssFriendly
+
     class Tag
+    include Stradivari::Concerns::CssFriendly
+
       delegate :view, :klass, to: :@parent
       delegate :t, :capture_haml, :haml_tag, :haml_concat, to: :view
 
@@ -56,7 +60,6 @@ module Stradivari
         def type
           klass.stradivari_type(name)
         end
-
     end
 
     def initialize(view, data, *pass)

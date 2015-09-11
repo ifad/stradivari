@@ -7,7 +7,7 @@ module Stradivari
           super(parent, opts)
 
           @label    = label
-          @dom_id   = self.class.css_friendly(dom_id)
+          @dom_id   = css_friendly(dom_id)
           @content  = content
           @renderer = renderer
         end
@@ -58,12 +58,6 @@ module Stradivari
 
           count = @content.respond_to?(:count) ? @content.count : counter
           haml_tag :span, count, class: 'badge alert-info'
-        end
-
-        # If the dom_id has css selector characters in them, it will muck up any search,
-        # so this method converts the dom_id to a less dangerous form.
-        def self.css_friendly dom_id
-          dom_id.gsub( /[\[\]:.,]/, '_' )
         end
       end
 

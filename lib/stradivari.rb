@@ -14,12 +14,14 @@ module Stradivari
   autoload :Table,      'stradivari/table'
   autoload :Tabs,       'stradivari/tabs'
   autoload :Filter,     'stradivari/filter'
+  autoload :Dislocated, 'stradivari/dislocated'
 
   autoload :CSV,        'stradivari/csv'
   autoload :XLSX,       'stradivari/xlsx'
 
   module Concerns
     autoload :TableBuilder, 'stradivari/concerns/table_builder'
+    autoload :CssFriendly,  'stradivari/concerns/css_friendly'
   end
 
 end
