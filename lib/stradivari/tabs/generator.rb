@@ -61,17 +61,6 @@ module Stradivari
         end
       end
 
-      def initialize(view, render_nav, render_content, *pass, &definition)
-        @tabs = []
-
-        super(view, nil, *pass)
-
-        @render_nav = render_nav
-        @render_content = render_content
-
-        instance_exec(*pass, &definition)
-      end
-
       def tab(label, dom_id, content, opts = {}, &renderer)
         if (tab = self.class.const_get(:Tab).new(self, label, dom_id, content, opts, renderer)).enabled?
           @tabs << tab
@@ -103,7 +92,31 @@ module Stradivari
         capture_haml(&renderer)
       end
 
+      class << self
+        def tabs view, *pass, &definition
+          new(view, true, true, *pass, &definition)
+        end
+
+        def navs view, *pass, &definition
+          new(view, true, false, *pass, &definition)
+        end
+
+        def content view, *pass, &definition
+          new(view, false, true, *pass, &definition)
+        end
+      end
+
     protected
+
+      def initialize(view, render_nav, render_content, *pass, &definition)
+        super(view, nil, *pass)
+
+        @tabs           = []
+        @render_nav     = render_nav
+        @render_content = render_content
+
+        instance_exec(*pass, &definition)
+      end
 
       def render_for_print tabs
         lambda do
