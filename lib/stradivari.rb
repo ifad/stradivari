@@ -14,7 +14,6 @@ module Stradivari
   autoload :Table,      'stradivari/table'
   autoload :Tabs,       'stradivari/tabs'
   autoload :Filter,     'stradivari/filter'
-  autoload :Dislocated, 'stradivari/dislocated'
 
   autoload :CSV,        'stradivari/csv'
   autoload :XLSX,       'stradivari/xlsx'

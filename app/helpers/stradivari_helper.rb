@@ -24,11 +24,11 @@ module StradivariHelper
   end
 
   def tab_navs_for(*args, &block)
-    Stradivari::Dislocated::Tabs::Generator.new(self, *args, &block).to_s
+    Stradivari::Tabs::Dislocated::NavGenerator.new(self, *args, &block).to_s
   end
 
   def tab_content_for(*args, &block)
-    Stradivari::Dislocated::Content::Generator.new(self, *args, &block).to_s
+    Stradivari::Tabs::Dislocated::ContentGenerator.new(self, *args, &block).to_s
   end
 
   def search_param(name)
