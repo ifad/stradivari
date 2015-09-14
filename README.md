@@ -265,9 +265,9 @@ may wish to separatethe nav from the content. The ```tab_navs_for``` and
         - tab 'Option 2', 'option_2_id', people.bars
     .col-xs-3
       = tab_content_for @people do |people|
-        - tab 'option_1_id', people.foos, active: true do |scope|
+        - tab_content 'option_1_id', people.foos, active: true do |scope|
           This is content for option 1
-        - tab 'option_2', people.bars do |scope|
+        - tab_content 'option_2', people.bars do |scope|
           This is content for option 2
 ```
 

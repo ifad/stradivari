@@ -20,15 +20,15 @@ module StradivariHelper
   end
 
   def tabs_for(*args, &block)
-    Stradivari::Tabs::Generator.new(self, *args, &block).to_s
+    Stradivari::Tabs::Generator.new(self, true, true, *args, &block).to_s
   end
 
   def tab_navs_for(*args, &block)
-    Stradivari::Tabs::Dislocated::NavGenerator.new(self, *args, &block).to_s
+    Stradivari::Tabs::Generator.new(self, true, false, *args, &block).to_s
   end
 
   def tab_content_for(*args, &block)
-    Stradivari::Tabs::Dislocated::ContentGenerator.new(self, *args, &block).to_s
+    Stradivari::Tabs::Generator.new(self, false, true, *args, &block).to_s
   end
 
   def search_param(name)
