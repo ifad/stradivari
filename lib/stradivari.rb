@@ -20,6 +20,7 @@ module Stradivari
 
   module Concerns
     autoload :TableBuilder, 'stradivari/concerns/table_builder'
+    autoload :CssFriendly,  'stradivari/concerns/css_friendly'
   end
 
 end

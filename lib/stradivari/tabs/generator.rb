@@ -7,7 +7,7 @@ module Stradivari
           super(parent, opts)
 
           @label    = label
-          @dom_id   = self.class.css_friendly(dom_id)
+          @dom_id   = css_friendly(dom_id)
           @content  = content
           @renderer = renderer
         end
@@ -59,26 +59,18 @@ module Stradivari
           count = @content.respond_to?(:count) ? @content.count : counter
           haml_tag :span, count, class: 'badge alert-info'
         end
-
-        # If the dom_id has css selector characters in them, it will muck up any search,
-        # so this method converts the dom_id to a less dangerous form.
-        def self.css_friendly dom_id
-          dom_id.gsub( /[\[\]:.,]/, '_' )
-        end
-      end
-
-      def initialize(view, *pass, &definition)
-        @tabs = []
-
-        super(view, nil, *pass)
-
-        instance_exec(*pass, &definition)
       end
 
       def tab(label, dom_id, content, opts = {}, &renderer)
         if (tab = self.class.const_get(:Tab).new(self, label, dom_id, content, opts, renderer)).enabled?
           @tabs << tab
         end
+      end
+
+      alias_method :tab_nav, :tab
+
+      def tab_content(dom_id, content, opts = {}, &renderer)
+        tab 'label', dom_id, content, opts, &renderer
       end
 
       def blank(&block)
@@ -92,36 +84,74 @@ module Stradivari
         renderer = if tabs.blank?
           blank
         elsif @opts.fetch(:printable, false)
-          lambda do
-            tabs.each do |tab|
-              haml_tag(:h5) do
-                haml_tag(:ul, class: 'list-unstyled') { tab.nav(@opts) }
-              end
-              haml_tag(:div) { tab.content(blank: blank) }
-            end
-          end
-
+          render_for_print(tabs)
         else
-          lambda do
-            flavor = @opts.fetch(:flavor, 'tabs')
-
-            tabs.first.opts[:active] = true if tabs.none? {|tab| tab.opts.fetch(:active, false)}
-
-            # Navigation
-            haml_tag :ul, class: "nav nav-#{flavor}" do
-              tabs.each {|tab| tab.nav(@opts) }
-            end
-
-            # Content
-            haml_tag :div, class: 'tab-content' do
-              tabs.each {|tab| tab.content(blank: blank)}
-            end
-          end
+          render_for_display(tabs)
         end
 
         capture_haml(&renderer)
       end
 
+      class << self
+        def tabs view, *pass, &definition
+          new(view, true, true, *pass, &definition)
+        end
+
+        def navs view, *pass, &definition
+          new(view, true, false, *pass, &definition)
+        end
+
+        def content view, *pass, &definition
+          new(view, false, true, *pass, &definition)
+        end
+      end
+
+    protected
+
+      def initialize(view, render_nav, render_content, *pass, &definition)
+        super(view, nil, *pass)
+
+        @tabs           = []
+        @render_nav     = render_nav
+        @render_content = render_content
+
+        instance_exec(*pass, &definition)
+      end
+
+      def render_for_print tabs
+        lambda do
+          tabs.each do |tab|
+            if @render_nav
+              haml_tag(:h5) do
+                haml_tag(:ul, class: 'list-unstyled') { tab.nav(@opts) }
+              end
+            end
+            if @render_content
+              haml_tag(:div) { tab.content(blank: blank) }
+            end
+          end
+        end
+      end
+
+      def render_for_display tabs
+        lambda do
+          flavor = @opts.fetch(:flavor, 'tabs')
+
+          tabs.first.opts[:active] = true if tabs.none? {|tab| tab.opts.fetch(:active, false)}
+
+          if @render_nav
+            haml_tag :ul, class: "nav nav-#{flavor}" do
+              tabs.each {|tab| tab.nav(@opts) }
+            end
+          end
+
+          if @render_content
+            haml_tag :div, class: 'tab-content' do
+              tabs.each {|tab| tab.content(blank: blank)}
+            end
+          end
+        end
+      end
     end
   end
 end
