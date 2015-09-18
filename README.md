@@ -278,6 +278,12 @@ between the two `tab` methods and that the scopes do as well, otherwise there
 may be display issues. You also have to set ```active: true``` on the content
 tab as well as the nav tab.
 
+#### How to specify opened tabs at page load
+
+You can specify which tabs to automatically open at the page loading adding their id to the parameter `stradi_tabs[]=` to the page URI. Multiple tabs can be specified.
+
+es: http://mysite.com?stradi_tabs[]=bar&stradi_tabs[]=baz
+
 ### Filter
 
 Stradivari uses Ransack to perform search queries. Ransack provides a mapper
@@ -566,4 +572,3 @@ impact in making the world a better place.
 [rails-i18n-ar]:           http://guides.rubyonrails.org/i18n.html#translations-for-active-record-models
 [ransack-basic-searching]: https://github.com/activerecord-hackery/ransack/wiki/Basic-Searching
 [src-filter-builder]:      https://github.com/ifad/stradivari/tree/master/lib/filter/builder
-
