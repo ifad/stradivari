@@ -21,6 +21,7 @@ module Stradivari
     initializer 'stradivari.setup_helpers' do |app|
       app.config.to_prepare do
         ActionController::Base.send :helper, StradivariHelper
+        ActionMailer::Base.send     :helper, StradivariHelper
       end
     end
 
