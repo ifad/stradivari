@@ -218,22 +218,19 @@ module Stradivari
         end
 
         def render_footer
-          if data.respond_to?(:current_page)
+          haml_tag :tfoot do
+            haml_tag :tr do
+              haml_tag :td, colspan: @columns.count do
+                haml_tag :div, download, class: 'download pull-left' if @opts[:downloadable]
 
-            haml_tag :tfoot do
-              haml_tag :tr do
-                haml_tag :td, colspan: @columns.count do
-                  haml_tag :div, download, class: 'download pull-left' if @opts[:downloadable]
-
-                  if @custom_footer
-                    haml_tag :div, class: "pull-left #{@custom_footer[:class]}" do
-                      @view.instance_exec(&@custom_footer[:block])
-                    end
+                if @custom_footer
+                  haml_tag :div, class: "pull-left #{@custom_footer[:class]}" do
+                    @view.instance_exec(&@custom_footer[:block])
                   end
-
-                  haml_tag :div, counters, class: 'counters pull-right'
-                  haml_tag :div, '', class: 'clearfix'
                 end
+                
+                haml_tag :div, counters, class: 'counters pull-right' if data.respond_to?(:current_page)
+                haml_tag :div, '', class: 'clearfix'
               end
             end
           end
