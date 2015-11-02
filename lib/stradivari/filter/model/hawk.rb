@@ -16,9 +16,32 @@ module Stradivari
           end
 
           def stradivari_filter(stradivari_filter_options)
-            params = stradivari_filter_options.dup
-
-            where(params.delete_if {|k,v| v.blank?})
+            filter = self
+            params = stradivari_filter_options.deep_dup
+            sort, dir = nil, nil
+            params = params.delete_if do |k,v|
+              delete_param = true
+              if v.blank?
+                # ignore blanks
+              elsif k.to_sym == :sort
+                sort = v
+              elsif k.to_sym == :direction
+                dir = v
+              elsif (scope = self.stradivari_scopes.fetch(k.to_sym, nil))
+                # if we have a stradivari scope, use it
+                value = scope[:type] == :boolean ? v == 'true' : v
+                filter = filter.public_send(k, value)
+              else
+                # this'll be a good where condition
+                delete_param = false
+              end
+              delete_param
+            end
+            filter = filter.where(params)
+            if sort.present?
+              filter = filter.order("#{sort} #{dir || 'asc'}")
+            end
+            filter
           end
         end
       end
