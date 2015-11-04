@@ -74,12 +74,12 @@ module Stradivari
       end
 
       def blank(&block)
-        @blank = block
+        @blank = block if block
+        @blank || Proc.new { }
       end
 
       def to_s
         tabs = @tabs.reject(&:blank?)
-        blank = @blank || Proc.new { }
 
         renderer = if tabs.blank?
           blank
