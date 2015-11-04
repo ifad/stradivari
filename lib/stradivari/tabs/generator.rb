@@ -13,11 +13,19 @@ module Stradivari
         end
 
         def blank?
-          @content.blank? && !opts.fetch(:present, false)
+          @content.blank? && !present
         end
 
         def active?
           @opts.fetch(:active, false)
+        end
+
+        def present
+          @opts.fetch(:present, false)
+        end
+
+        def force?
+          present == :force
         end
 
         def nav(global_opts = {})
@@ -40,7 +48,7 @@ module Stradivari
           klass << ' active' if active?
 
           haml_tag :div, class: klass, id: @dom_id do
-            renderer = @content.blank? ? opts.fetch(:blank) : @renderer
+            renderer = (@content.blank? && !force?) ? opts.fetch(:blank) : @renderer
             view.instance_exec(@content, &renderer)
           end
         end
