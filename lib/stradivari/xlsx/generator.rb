@@ -41,7 +41,7 @@ module Stradivari
 
       protected
         def xlsx
-          Axlsx::Package.new do |package|
+          Axlsx::Package.new({ author: '' }) do |package|
             package.use_shared_strings = true
             # apply column styling if set
             package.workbook.add_worksheet(name: opts.fetch(:sheet, nil)) do |sheet|
