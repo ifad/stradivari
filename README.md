@@ -49,6 +49,10 @@ Add to your Gemfile
 Add to your app/assets/javascripts/application.js
 
     //= require stradivari
+    
+Add to your app/assets/stylesheets/application.css
+
+    *= require stradivari
 
 Add to your app/controllers/application_controller.rb
 
