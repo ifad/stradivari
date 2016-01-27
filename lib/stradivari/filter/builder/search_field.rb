@@ -15,6 +15,16 @@ module Stradivari
               data[:stradivari] = "autocomplete"
             end
 
+            if d = opts.fetch(:data, nil).presence
+              if u = d.fetch(:remote_url, nil).presence
+                data["remote-url"] = u
+              end
+
+              if l = d.fetch(:display, nil).presence
+                data["display"] = l.call(opts[:value])
+              end
+            end
+
             if sort = opts.fetch(:sort, nil)
               data[:sort] = sort
             end

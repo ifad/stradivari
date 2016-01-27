@@ -94,7 +94,10 @@ module Stradivari
               id, link = id, [ id, 'detached' ].join('_')
               id, link = link, id if detached?
 
-              haml_tag :form, class: form_classes, role: 'form', id: id, data: { link: link } do
+              data = { link: link }
+              data[:detached] = true if detached?
+
+              haml_tag :form, class: form_classes, role: 'form', id: id, data: data do
                 unless detached?
                   haml_tag :input, type: :hidden, name: :sort,      value: @opts.fetch(:sort,      view.params[:sort])
                   haml_tag :input, type: :hidden, name: :direction, value: @opts.fetch(:direction, view.params[:direction])
