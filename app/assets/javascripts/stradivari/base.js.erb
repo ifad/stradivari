@@ -1,9 +1,11 @@
 window.Stradivari = (typeof Stradivari != "undefined") ? Stradivari : {};
 
 $.extend(Stradivari, {
-  filterContext:   "<%= Stradivari::Filter::CONTEXT %>",
-  filterNamespace: "<%= Stradivari::Filter::NAMESPACE %>",
-  version:         "<%= Stradivari::VERSION %>",
+  filterContext:    "<%= Stradivari::Filter::CONTEXT %>",
+  filterNamespace:  "<%= Stradivari::Filter::NAMESPACE %>",
+  typeaheadDisplay: "<%= Stradivari::Filter::TYPEAHEAD_DISPLAY_NAME %>",
+  typeaheadValue:   "<%= Stradivari::Filter::TYPEAHEAD_VALUE_NAME %>",
+  version:          "<%= Stradivari::VERSION %>",
 
   init: function() {
     /* Initialize forms */
