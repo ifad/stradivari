@@ -228,7 +228,7 @@ module Stradivari
                     @view.instance_exec(&@custom_footer[:block])
                   end
                 end
-                
+
                 haml_tag :div, counters, class: 'counters pull-right' if data.respond_to?(:current_page)
                 haml_tag :div, '', class: 'clearfix'
               end

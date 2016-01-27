@@ -26,8 +26,8 @@ Stradivari.Autocompleter = function() {
 
   function initializeDetached() {
     var form = $('form[data-detached=true]');
-    var autoCompleteField = $('input[data-stradivari="autocomplete"]', form);
-    var bloodhounds = prepareTheBloodhounds($('label[data-stradivari="autocomplete"]', form));
+    var autoCompleteField = $('input[data-stradivari=autocomplete]', form);
+    var bloodhounds = prepareTheBloodhounds($('label[data-stradivari=autocomplete]'));
     var datasets = prepareTheDatasets(bloodhounds);
 
     initializeTheBloodhounds(bloodhounds, true);
@@ -40,9 +40,9 @@ Stradivari.Autocompleter = function() {
 
   function initializeAttached() {
     var form = $('form:not([data-detached=true])');
-    var autoCompleteField = $('input[data-stradivari="autocomplete"]', form);
+    var autoCompleteField = $('input[data-stradivari=autocomplete]', form);
 
-    $('label[data-stradivari="autocomplete"]', form).each(function(_, e){
+    $('label[data-stradivari=autocomplete]', form).each(function(_, e){
       var bloodhound = prepareTheBloodhounds($(e));
       var acf  = $('#' + $(e).attr('for'));
       var datasets = prepareTheDatasets(bloodhound);
@@ -147,5 +147,3 @@ Stradivari.Autocompleter = function() {
       })
   }
 }
-
-

@@ -95,7 +95,7 @@ module Stradivari
               id, link = link, id if detached?
 
               data = { link: link }
-              data[:detached] = true if detached?
+              data[:detached] = "true" if detached?
 
               haml_tag :form, class: form_classes, role: 'form', id: id, data: data do
                 unless detached?
