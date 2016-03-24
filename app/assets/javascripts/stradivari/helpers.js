@@ -51,7 +51,7 @@ window._TABLE_ = (function() {
     // in: http://mysite.com?stradi_tabs[]=bar&stradi_tabs[]=baz&foo=bar
     // out: {stradi_tabs: ['bar', 'baz'], foo: "bar"}
     parseURLParameters: function(uri) {
-      var re     = /([^&=]+)=?([^&]*)/g;
+      var re     = /([^&=]+)=?([^&|#]*)/g;
       var query  = uri.split('?')[1]
       var params = {};
 
