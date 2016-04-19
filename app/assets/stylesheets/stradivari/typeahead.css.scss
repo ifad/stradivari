@@ -1,0 +1,61 @@
+@import "bootstrap/mixins";
+@import "bootstrap/variables";
+@import "bootstrap/dropdowns";
+
+
+span.twitter-typeahead {
+  width: 100%;
+
+  .tt-dropdown-menu {
+    @extend .dropdown-menu;
+    background-color: white;
+    width: 100%;
+    border: 1px solid $brand-primary;
+  }
+
+  .tt-suggestion > p {
+    @extend .dropdown-menu;
+    &:hover,
+    &:focus {
+      background-color: $state-info-bg;
+    }
+     margin: 0;
+  }
+
+  .tt-suggestion {
+    padding: 3px 20px;
+    line-height: 24px;
+  }
+
+  .tt-suggestion.tt-cursor {
+    background-color: $state-info-bg;
+  }
+
+  .input-group & {
+    display: block !important;
+    .tt-dropdown-menu {
+      top:33px !important;
+    }
+  }
+
+  .input-group.input-group-lg & {
+    .tt-dropdown-menu {
+      top:44px !important;
+    }
+  }
+
+  .input-group.input-group-sm & {
+    .tt-dropdown-menu {
+      top:28px !important;
+      width: 100%;
+    }
+  }
+
+  .dataset-name {
+    margin: 0;
+    border-bottom: 1px solid #ccc;
+    color: $brand-primary;
+    padding: 3px;
+    line-height: 24px;
+  }
+}
