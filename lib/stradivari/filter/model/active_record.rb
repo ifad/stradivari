@@ -13,6 +13,7 @@ module Stradivari
             case (ver = ::ActiveRecord::VERSION::MAJOR)
             when 3 then extend Rails3
             when 4 then extend Rails4
+            when 5 then extend Rails4
             else
               raise Stradivari::Error, "Unsupported Active Record version (#{ver})"
             end
