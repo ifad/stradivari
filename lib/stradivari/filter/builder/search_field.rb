@@ -8,6 +8,7 @@ module Stradivari
 
           haml_tag :div, class: 'form-group' do
             title = opts[:title] || "Search #{attr.to_s.humanize}"
+            placeholder = opts[:placeholder] || title
 
             data = {}
 
@@ -29,7 +30,7 @@ module Stradivari
               data[:sort] = sort
             end
 
-            input_options = { value: opts[:value], class: "#{opts[:class]} form-control", placeholder: title, data: data }
+            input_options = { value: opts[:value], class: "#{opts[:class]} form-control", placeholder: placeholder, data: data }
 
 
             if opts.key?(:skip_button)
