@@ -61,7 +61,11 @@ module Stradivari
       end
 
       def stradivari_filter_options
-        sortable.merge(params[Filter::NAMESPACE].presence || {})
+        options = params[Filter::NAMESPACE] || {}
+        # params validation is done in Filter::Model.
+        options.permit! if options.respond_to?(:permit!)
+
+        sortable.merge(options)
       end
       alias ransack_options stradivari_filter_options
 
