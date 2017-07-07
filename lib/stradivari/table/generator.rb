@@ -237,10 +237,17 @@ module Stradivari
         end
 
         def counters
+          num_pages =
+            if @data.respond_to?(:num_pages)
+              @data.num_pages
+            elsif @data.respond_to(:total_pages)
+              @data.total_pages
+            end
+
           case @data.current_page
           when 1
             "1 to #{@data.limit_value > @data.total_count ? @data.total_count : @data.limit_value} out of #{@data.total_count} records displayed"
-          when @data.num_pages
+          when num_pages
             "#{(@data.current_page - 1) * (@data.limit_value) + 1} to #{@data.total_count} out of #{@data.total_count} records displayed"
           else
             "#{(@data.current_page - 1) * (@data.limit_value) + 1} to #{@data.current_page * (@data.limit_value)} out of #{@data.total_count} records displayed"
