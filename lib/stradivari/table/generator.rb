@@ -240,7 +240,7 @@ module Stradivari
           num_pages =
             if @data.respond_to?(:num_pages)
               @data.num_pages
-            elsif @data.respond_to(:total_pages)
+            elsif @data.respond_to?(:total_pages)
               @data.total_pages
             end
 
