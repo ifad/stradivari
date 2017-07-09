@@ -266,7 +266,11 @@ module Stradivari
             end
             text << '...'
 
-            haml_tag :a, text, href: view.url_for(view.params.merge(format: format)), class: classes
+            params = view.params.dup
+            params = params.permit! if params.respond_to?(:permit!)
+            params = params.to_h
+
+            haml_tag :a, text, href: view.url_for(params.merge(format: format)), class: classes
           end
         end
 
