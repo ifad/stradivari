@@ -34,7 +34,7 @@ module Stradivari
             instance_exec(&Helpers::render_title(name, title, opts))
 
             classes = Builder::prepare_classes(opts, (type == :single_line ? 'form-inline' : 'multi-line'))
-            haml_concat hidden_field(opts[:namespace], name, value: '')
+            haml_concat hidden_field(opts[:namespace], "#{name}[]", value: '')
             haml_tag :div, class: classes do
               if type == :multi_line
 
