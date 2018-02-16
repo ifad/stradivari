@@ -270,6 +270,19 @@ module Stradivari
             params = params.permit! if params.respond_to?(:permit!)
             params = params.to_h
 
+            # Work around url_for() below not yielding in the resulting query
+            # string Array parameters that are empty.
+            #
+            #   url_for(foo: []) => /
+            #   url_for(foo: ['']) => /?foo[]=
+            #
+            # This is necessary to discern between "array parameter not set"
+            # or "array parameter set to empty".
+            #
+            params[:q].tap do |query|
+              params[:q] = query.each {|k,v| query[k] = [''] if v.is_a?(Array) && v.empty? }
+            end
+
             haml_tag :a, text, href: view.url_for(params.merge(format: format)), class: classes
           end
         end
