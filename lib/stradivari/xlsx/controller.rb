@@ -3,8 +3,7 @@ module Stradivari
 
     module Controller
       def render_xlsx(options = {})
-        filename = options.delete(:filename) || 'export'
-        filename << '.xlsx' unless filename =~ /\.xlsx$/
+        filename = _stradivari_xlsx_file_name(options.delete(:filename))
 
         xlsx = render_to_string(options.merge(formats: [:xlsx]))
 
@@ -17,6 +16,21 @@ module Stradivari
           disposition: options.fetch(:disposition, 'attachment'),
           status:      options.fetch(:status,      200),
           filename:    filename
+      end
+
+      def _stradivari_xlsx_file_name(filename)
+        if filename.nil? || filename.strip.length == 0
+          filename = 'export'
+        end
+
+        if filename.length > 128
+          filename = filename[0..118] + '-cut' # 119 + 4 = 123
+        end
+
+        # Here we reach at most 128 chars.
+        filename << '.xlsx' unless filename =~ /\.xlsx$/
+
+        return filename
       end
     end
 
