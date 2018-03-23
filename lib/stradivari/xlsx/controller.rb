@@ -19,16 +19,21 @@ module Stradivari
       end
 
       def _stradivari_xlsx_file_name(filename)
-        if filename.nil? || filename.strip.length == 0
-          filename = 'export'
-        end
+        filename =
+          if filename.nil? || filename.strip.length == 0
+            'export'
+          else
+            filename.dup
+          end
 
-        if filename.length > 128
+        filename.sub!(/\.xlsx$/i, '')
+
+        if filename.length > 119
           filename = filename[0..118] + '-cut' # 119 + 4 = 123
         end
 
         # Here we reach at most 128 chars.
-        filename << '.xlsx' unless filename =~ /\.xlsx$/
+        filename << '.xlsx'
 
         return filename
       end
