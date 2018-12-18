@@ -281,7 +281,7 @@ module Stradivari
             #
             params[:q].tap do |query|
               params[:q] = query.each {|k,v| query[k] = [''] if v.is_a?(Array) && v.empty? }
-            end
+            end if params[:q]
 
             haml_tag :a, text, href: view.url_for(params.merge(format: format)), class: classes
           end
