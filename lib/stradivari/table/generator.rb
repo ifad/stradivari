@@ -246,12 +246,19 @@ module Stradivari
 
           case @data.current_page
           when 1
-            "1 to #{@data.limit_value > @data.total_count ? @data.total_count : @data.limit_value} out of #{@data.total_count} records displayed"
+            from = 1
+            to = @data.limit_value > @data.total_count ? @data.total_count : @data.limit_value
           when num_pages
-            "#{(@data.current_page - 1) * (@data.limit_value) + 1} to #{@data.total_count} out of #{@data.total_count} records displayed"
+            from = (@data.current_page - 1) * (@data.limit_value) + 1
+            to = @data.total_count
           else
-            "#{(@data.current_page - 1) * (@data.limit_value) + 1} to #{@data.current_page * (@data.limit_value)} out of #{@data.total_count} records displayed"
+            from = (@data.current_page - 1) * (@data.limit_value) + 1
+            to = @data.current_page * @data.limit_value
           end
+
+          total = @data.total_count
+
+          I18n.t("stradivari.table.paginator", default: '%{from} to %{to} out of %{total} records displayed', from: from, to: to, total: total)
         end
 
         def download
@@ -259,12 +266,10 @@ module Stradivari
             format = @opts[:downloadable] === true ? :csv : @opts[:downloadable]
             classes = @opts[:downloadable_type] == :event ? "downloadable_event" : ""
 
-            text = 'Export'
-            case format
-            when :csv  then text << ' to CSV'
-            when :xlsx then text << ' to Excel'
+            text = case format
+            when :csv  then I18n.t("stradivari.table.export_csv", default: 'Export to CSV...')
+            when :xlsx then I18n.t("stradivari.table.export_excel", default: 'Export to Excel...')
             end
-            text << '...'
 
             params = view.params.dup
             params = params.permit! if params.respond_to?(:permit!)
