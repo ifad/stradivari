@@ -50,7 +50,7 @@ module Stradivari
 
             # Process search scopes
             ransack_params = params.delete_if do |k, v|
-              if v.blank?
+              if Array(v).reject(&:blank?).blank?
                 true # Don't bother processing blank values
 
               elsif (scope = stradivari_scopes.fetch(k.to_sym, nil))
