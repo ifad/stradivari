@@ -24,7 +24,7 @@ module Stradivari
             extend ClassMethods
 
             # Add PG Full Text Search adapter
-            include ::PgSearch
+            include ::PgSearch::Model
           end
         end
 
