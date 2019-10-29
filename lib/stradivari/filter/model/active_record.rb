@@ -14,7 +14,7 @@ module Stradivari
             when 3 then extend Rails3
             when 4 then extend Rails4
             when 5 then extend Rails4
-            when 6 then extend Rails4              
+            when 6 then extend Rails4
             else
               raise Stradivari::Error, "Unsupported Active Record version (#{ver})"
             end
@@ -24,7 +24,14 @@ module Stradivari
             extend ClassMethods
 
             # Add PG Full Text Search adapter
-            include ::PgSearch::Model
+            pg_search_major_version = ::PgSearch::VERSION.split('.').first.to_i
+
+            if pg_search_major_version >= 3
+              # Correct way to load PgSearch into models from version 3.0.0
+              include ::PgSearch::Model
+            else
+              include ::PgSearch
+            end
           end
         end
 
