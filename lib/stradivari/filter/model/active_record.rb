@@ -23,11 +23,8 @@ module Stradivari
             include Base
             extend ClassMethods
 
-            # Add PG Full Text Search adapter
-            pg_search_major_version = ::PgSearch::VERSION.split('.').first.to_i
-
-            if pg_search_major_version >= 3
-              # Correct way to load PgSearch into models from version 3.0.0
+            if Gem::Version.new(PgSearch::VERSION) >= Gem::Version.new('2.3.0')
+              # Correct way to load PgSearch into models from version 2.3.0
               include ::PgSearch::Model
             else
               include ::PgSearch
