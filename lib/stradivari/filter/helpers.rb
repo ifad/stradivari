@@ -9,7 +9,7 @@ module Stradivari
 
 
             collection.each do |title, value|
-              checked = (opts[:value].to_s == value.to_s)
+              checked = (opts[:value].to_s == value.to_s || opts[:default_checked].to_s == value.to_s)
               any_checked = false if checked
 
               haml_tag :div, class: Helpers::prepare_radio_class(checked, 'radio') do
@@ -20,10 +20,12 @@ module Stradivari
               end
             end
 
-            haml_tag :div, class: Helpers::prepare_radio_class(any_checked, 'radio') do
-              haml_tag :label do
-                haml_concat radio_button(opts[:namespace], attr, '', checked: any_checked)
-                haml_concat 'Any'
+            if opts[:include_blank].blank? || (opts[:include_blank].present? && topts[:include_blank].to_s == 'true')
+              haml_tag :div, class: Helpers::prepare_radio_class(any_checked, 'radio') do
+                haml_tag :label do
+                  haml_concat radio_button(opts[:namespace], attr, '', checked: any_checked)
+                  haml_concat 'Any'
+                end
               end
             end
           end
