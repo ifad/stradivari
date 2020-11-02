@@ -1,4 +1,4 @@
-require 'axlsx'
+require 'caxlsx'
 
 module Stradivari
   module XLSX
