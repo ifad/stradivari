@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.3
+
+* [BUGFIX] Fix blank option and default checked value ([#31](https://github.com/ifad/stradivari/issues/31))
+
 ## 0.6.2
 
 * [FEATURE] Add options to specify blank option and default checked value ([#29](https://github.com/ifad/stradivari/pull/29))
