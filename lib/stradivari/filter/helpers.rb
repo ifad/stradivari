@@ -20,7 +20,7 @@ module Stradivari
               end
             end
 
-            if opts[:include_blank].blank? || (opts[:include_blank].present? && topts[:include_blank].to_s == 'true')
+            if opts.fetch(:include_blank, true).to_s == 'true'
               haml_tag :div, class: Helpers::prepare_radio_class(any_checked, 'radio') do
                 haml_tag :label do
                   haml_concat radio_button(opts[:namespace], attr, '', checked: any_checked)

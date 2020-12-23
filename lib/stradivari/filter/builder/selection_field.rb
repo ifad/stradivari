@@ -21,11 +21,8 @@ module Stradivari
               if collection.kind_of?(Array) && collection.size <= radios_max
                 instance_exec(&Helpers.radios_for_collection(collection, attr, opts))
               else
-                options =  if opts[:include_blank].to_s.present? && opts[:include_blank].to_s == 'false'
-                  {selected: opts[:value]}
-                else
-                  {selected: opts[:value], include_blank: 'Any'}
-                end
+                options = { selected: opts[:value] }
+                options[:include_blank] = 'Any' if opts.fetch(:include_blank, true).to_s == 'true'
 
                 haml_concat select(opts[:namespace], attr, collection, {selected: opts[:value], include_blank: 'Any'}, {class: 'form-control'})
               end
