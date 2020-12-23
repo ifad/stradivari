@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.0
+
+* [FEATURE] Replace axlsx with caxlsx ([#25](https://github.com/ifad/stradivari/issues/25))
+
 ## 0.6.3
 
 * [BUGFIX] Fix blank option and default checked value ([#31](https://github.com/ifad/stradivari/issues/31))
