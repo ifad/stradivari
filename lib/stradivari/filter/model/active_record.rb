@@ -1,20 +1,18 @@
+# frozen_string_literal: true
+
 require 'pg_search'
 require 'ransack'
 
 module Stradivari
   module Filter
     module Model
-
       module ActiveRecord
         def self.included(base)
           base.module_eval do
             # Load the appropriate stradivari_all adapter
             #
             case (ver = ::ActiveRecord::VERSION::MAJOR)
-            when 3 then extend Rails3
-            when 4 then extend Rails4
-            when 5 then extend Rails4
-            when 6 then extend Rails4
+            when 4, 5, 6 then extend Rails
             else
               raise Stradivari::Error, "Unsupported Active Record version (#{ver})"
             end
@@ -50,7 +48,7 @@ module Stradivari
 
           def stradivari_filter(stradivari_filter_options)
             params = stradivari_filter_options.deep_dup
-            arel = self.stradivari_all
+            arel = stradivari_all
             sort, dir = params.values_at(:sort, :direction)
 
             # Process search scopes
@@ -94,32 +92,32 @@ module Stradivari
           end
 
           private
-            def full_text_search(name, options, &block)
-              dictionary = options[:dictionary] || stradivari_filter_options.fetch(:dictionary, :english)
-              column     = options[:column]     || stradivari_filter_options.fetch(:column, 'tsv')
 
-              # Set up pg search
-              #
-              pg_search_scope "_#{name}",
-                against: :unused, # Only tsvector columns allowed
-                using: { tsearch: { prefix: true, dictionary: dictionary, tsvector_column: column } }
+          def full_text_search(name, options)
+            dictionary = options[:dictionary] || stradivari_filter_options.fetch(:dictionary, :english)
+            column     = options[:column]     || stradivari_filter_options.fetch(:column, 'tsv')
 
-              # Create a class method accepting an additional set of options,
-              # wrapping the pg_search scope.
-              #
-              # If a block is passed, then call it passing the original query
-              # and the resulting search scope - allowing customization of
-              # results.
-              define_singleton_method(name) do |query, options = {}, &block|
-                search = public_send("_#{name}", query)
-                search = block.call(query, search) if block
+            # Set up pg search
+            #
+            pg_search_scope "_#{name}",
+                            against: :unused, # Only tsvector columns allowed
+                            using: { tsearch: { prefix: true, dictionary: dictionary, tsvector_column: column } }
 
-                search
-              end
+            # Create a class method accepting an additional set of options,
+            # wrapping the pg_search scope.
+            #
+            # If a block is passed, then call it passing the original query
+            # and the resulting search scope - allowing customization of
+            # results.
+            define_singleton_method(name) do |query, _options = {}, &block|
+              search = public_send("_#{name}", query)
+              search = yield(query, search) if block
+
+              search
             end
+          end
         end
       end
-
     end
   end
 end

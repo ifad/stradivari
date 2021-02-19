@@ -11,7 +11,7 @@ $(function() {
 
   });
 
-  $('table.table').on('click', '.downloadable_event', function(event) {
+  $('table.table').on('click', '.stradivari-downloadable-event', function(event) {
     event.preventDefault();
     var $form = $(this).parents('table.table');
 

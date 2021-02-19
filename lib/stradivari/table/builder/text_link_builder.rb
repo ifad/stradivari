@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Stradivari
   module Table
     class Builder::TextLinkBuilder < Builder

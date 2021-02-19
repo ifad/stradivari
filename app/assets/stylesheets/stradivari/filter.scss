@@ -1,0 +1,53 @@
+$stradivari-spacer: $spacer !default;
+
+.custom-control-label--stradivari {
+  font-weight: $font-weight-normal;
+}
+
+.list-group-item--stradivari {
+  padding: $input-btn-padding-x;
+}
+
+.list-group-item--stradivari-active {
+  background-color: theme-color-level(success, $alert-bg-level);
+
+  .radio:not(.checked) {
+    display: none;
+  }
+}
+
+.stradivari-filter-form-container {
+  .form-group--stradivari {
+    margin-bottom: $stradivari-spacer / 2;
+
+    + .form-group--stradivari {
+      padding-top: $stradivari-spacer / 2;
+      border-top: 1px solid rgba($black, .1);
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+
+      .stradivari-options {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.stradivari-handle {
+  font-weight: $font-weight-normal;
+}
+
+.stradivari-label {
+  margin-bottom: 0;
+}
+
+.stradivari-options {
+  margin: ($stradivari-spacer / 2) 0;
+
+  &--multi-line {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+}

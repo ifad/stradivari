@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 module Stradivari
   module Filter
     module Model
-
       module Hawk
         def self.included(base)
           base.module_eval do
@@ -18,8 +19,9 @@ module Stradivari
           def stradivari_filter(stradivari_filter_options)
             filter = self
             params = stradivari_filter_options.deep_dup
-            sort, dir = nil, nil
-            params = params.delete_if do |k,v|
+            sort = nil
+            dir = nil
+            params = params.delete_if do |k, v|
               delete_param = true
               if v.blank?
                 # ignore blanks
@@ -27,7 +29,7 @@ module Stradivari
                 sort = v
               elsif k.to_sym == :direction
                 dir = v
-              elsif (scope = self.stradivari_scopes.fetch(k.to_sym, nil))
+              elsif (scope = stradivari_scopes.fetch(k.to_sym, nil))
                 # if we have a stradivari scope, use it
                 value = scope[:type] == :boolean ? v == 'true' : v
                 filter = filter.public_send(k, value)
@@ -38,14 +40,11 @@ module Stradivari
               delete_param
             end
             filter = filter.where(params)
-            if sort.present?
-              filter = filter.order("#{sort} #{dir || 'asc'}")
-            end
+            filter = filter.order("#{sort} #{dir || 'asc'}") if sort.present?
             filter
           end
         end
       end
-
     end
   end
 end

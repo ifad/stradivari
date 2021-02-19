@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 require 'stradivari/filter/helpers'
 
 module Stradivari
   module Filter
     class Builder::BooleanField < Builder
-
       def self.render
         lambda do |attr, opts|
           title = opts.fetch(:title, attr.to_s.humanize)
@@ -11,24 +12,22 @@ module Stradivari
 
           opts[:collapsed_field] = true if opts[:value].present?
 
-          haml_tag :div, class: "form-group" do
+          haml_tag :div, class: 'form-group form-group--stradivari' do
             if opts.fetch(:tristate, false)
-              instance_exec(&Helpers::render_title(attr, title, opts))
-              haml_tag :div, class: Builder::prepare_classes(opts) do
-                instance_exec(&Helpers.radios_for_collection([['Yes', 'true'], ['No', 'false']], attr, opts))
+              instance_exec(&Helpers.render_title(attr, title, opts))
+              haml_tag :div, class: Builder.prepare_classes(opts) do
+                instance_exec(&Helpers.radios_for_collection([%w[Yes true], %w[No false]], attr, opts))
               end
             else
-              haml_tag :div, class: 'checkbox single-value' do
-                haml_tag :label do
-                  haml_concat title
-                  haml_concat check_box(opts[:namespace], attr, {checked: opts[:value].present?}, 'true', nil)
-                end
+              haml_tag :label, class: 'custom-control custom-checkbox custom-control-inline single-value' do
+                haml_concat check_box(opts[:namespace], attr,
+                                      { checked: opts[:value].present?, class: 'custom-control-input' }, 'true', nil)
+                haml_tag :span, title, class: 'custom-control-label custom-control-label--stradivari'
               end
             end
           end
         end
       end
-
     end
   end
 end

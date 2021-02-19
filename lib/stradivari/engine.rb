@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Stradivari
   class Railtie < ::Rails::Engine
-    initializer 'stradivari.active_record' do |app|
+    initializer 'stradivari.active_record' do |_app|
       ActiveSupport.on_load(:active_record) do
         ActiveRecord::Base.instance_eval do
           include Stradivari::Filter::Model::ActiveRecord
@@ -9,7 +11,7 @@ module Stradivari
       end
     end
 
-    initializer 'stradivari.hawk' do |app|
+    initializer 'stradivari.hawk' do |_app|
       if defined?(::Hawk)
         Hawk::Model::Base.instance_eval do
           include Stradivari::Filter::Model::Hawk
@@ -25,7 +27,7 @@ module Stradivari
       end
     end
 
-    initializer 'stradivari.setup_mime_types' do |app|
+    initializer 'stradivari.setup_mime_types' do |_app|
       Mime::Type.register 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', :xlsx
     end
   end

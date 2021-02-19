@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 module Stradivari
   module Tabs
-
     class Generator < Stradivari::Generator
       class Tab < Tag
         def initialize(parent, label, dom_id, content, opts, renderer)
@@ -29,13 +30,12 @@ module Stradivari
         end
 
         def nav(global_opts = {})
-          klass = 'active' if active?
-
           attributes = @opts.except(:if, :url)
-          attributes.deep_merge!(href: "##@dom_id", data: {toggle: :tab})
+          attributes.deep_merge!(href: "##{@dom_id}", data: { toggle: :tab })
+          attributes[:class] = "nav-link #{'active' if active?} #{attributes[:class]}"
           attributes[:data][:url] = @opts[:url]
 
-          haml_tag :li, class: klass do
+          haml_tag :li, class: 'nav-item' do
             haml_tag :a, attributes do
               haml_concat @label
               counter global_opts
@@ -44,11 +44,11 @@ module Stradivari
         end
 
         def content(opts = {})
-          klass = 'tab-pane'
-          klass << ' active' if active?
+          klass = +'tab-pane'
+          klass << ' active show' if active?
 
           haml_tag :div, class: klass, id: @dom_id do
-            renderer = (@content.blank? && !force?) ? opts.fetch(:blank) : @renderer
+            renderer = @content.blank? && !force? ? opts.fetch(:blank) : @renderer
             view.instance_exec(@content, &renderer)
           end
         end
@@ -57,10 +57,10 @@ module Stradivari
           # @opts are this tab's options, while global_opts are options coming
           # from the tabs generator.
           counter = if @opts.key?(:counter)
-            @opts.fetch(:counter, nil)
-          else
-            global_opts.fetch(:counters, true)
-          end
+                      @opts.fetch(:counter, nil)
+                    else
+                      global_opts.fetch(:counters, true)
+                    end
 
           return unless counter
 
@@ -75,7 +75,7 @@ module Stradivari
         end
       end
 
-      alias_method :tab_nav, :tab
+      alias tab_nav tab
 
       def tab_content(dom_id, content, opts = {}, &renderer)
         tab 'label', dom_id, content, opts, &renderer
@@ -83,38 +83,38 @@ module Stradivari
 
       def blank(&block)
         @blank = block if block
-        @blank || Proc.new { }
+        @blank || proc {}
       end
 
       def to_s
         tabs = @tabs.reject(&:blank?)
 
         renderer = if tabs.blank?
-          blank
-        elsif @opts.fetch(:printable, false)
-          render_for_print(tabs)
-        else
-          render_for_display(tabs)
-        end
+                     blank
+                   elsif @opts.fetch(:printable, false)
+                     render_for_print(tabs)
+                   else
+                     render_for_display(tabs)
+                   end
 
         capture_haml(&renderer)
       end
 
       class << self
-        def tabs view, *pass, &definition
+        def tabs(view, *pass, &definition)
           new(view, true, true, *pass, &definition)
         end
 
-        def navs view, *pass, &definition
+        def navs(view, *pass, &definition)
           new(view, true, false, *pass, &definition)
         end
 
-        def content view, *pass, &definition
+        def content(view, *pass, &definition)
           new(view, false, true, *pass, &definition)
         end
       end
 
-    protected
+      protected
 
       def initialize(view, render_nav, render_content, *pass, &definition)
         super(view, nil, *pass)
@@ -126,7 +126,7 @@ module Stradivari
         instance_exec(*pass, &definition)
       end
 
-      def render_for_print tabs
+      def render_for_print(tabs)
         lambda do
           tabs.each do |tab|
             if @render_nav
@@ -134,28 +134,26 @@ module Stradivari
                 haml_tag(:ul, class: 'list-unstyled') { tab.nav(@opts) }
               end
             end
-            if @render_content
-              haml_tag(:div) { tab.content(blank: blank) }
-            end
+            haml_tag(:div) { tab.content(blank: blank) } if @render_content
           end
         end
       end
 
-      def render_for_display tabs
+      def render_for_display(tabs)
         lambda do
           flavor = @opts.fetch(:flavor, 'tabs')
 
-          tabs.first.opts[:active] = true if tabs.none? {|tab| tab.opts.fetch(:active, false)}
+          tabs.first.opts[:active] = true if tabs.none? { |tab| tab.opts.fetch(:active, false) }
 
           if @render_nav
-            haml_tag :ul, class: "nav nav-#{flavor}" do
-              tabs.each {|tab| tab.nav(@opts) }
+            haml_tag :ul, class: "nav nav-#{flavor}", role: 'tablist' do
+              tabs.each { |tab| tab.nav(@opts) }
             end
           end
 
           if @render_content
             haml_tag :div, class: 'tab-content' do
-              tabs.each {|tab| tab.content(blank: blank)}
+              tabs.each { |tab| tab.content(blank: blank) }
             end
           end
         end

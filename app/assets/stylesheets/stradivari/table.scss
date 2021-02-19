@@ -1,0 +1,13 @@
+.table--stradivari {
+  th {
+    &.sortable {
+      white-space: nowrap !important;
+      cursor: pointer;
+    }
+
+    &.sortable:hover,
+    &.active-column {
+      background-color: darken($table-accent-bg, 8%);
+    }
+  }
+}
