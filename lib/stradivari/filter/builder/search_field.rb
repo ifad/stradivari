@@ -1,28 +1,27 @@
+# frozen_string_literal: true
+
 module Stradivari
   module Filter
     class Builder::SearchField < Builder
-
       def self.render
         lambda do |attr, opts|
-          attr  = opts[:is_scoped] ? attr : [attr, 'cont'].join('_')
+          attr = opts[:is_scoped] ? attr : [attr, 'cont'].join('_')
 
-          haml_tag :div, class: 'form-group' do
+          haml_tag :div, class: 'form-group form-group--stradivari' do
             title = opts[:title] || "Search #{attr.to_s.humanize}"
             placeholder = opts[:placeholder] || title
 
             data = {}
 
-            if opts.fetch(:autocomplete, false)
-              data[:stradivari] = "autocomplete"
-            end
+            data[:stradivari] = 'autocomplete' if opts.fetch(:autocomplete, false)
 
             if d = opts.fetch(:data, nil).presence
               if u = d.fetch(:remote_url, nil).presence
-                data["remote-url"] = u
+                data['remote-url'] = u
               end
 
               if l = d.fetch(:display, nil).presence
-                data["display"] = l.call(opts[:value])
+                data['display'] = l.call(opts[:value])
               end
             end
 
@@ -30,25 +29,22 @@ module Stradivari
               data[:sort] = sort
             end
 
-            input_options = { value: opts[:value], class: "#{opts[:class]} form-control", placeholder: placeholder, data: data }
+            input_options = { value: opts[:value], class: "#{opts[:class]} form-control", placeholder: placeholder,
+                              data: data }
 
-
-            if opts.key?(:skip_button)
-              $stderr.puts "The skip_button option to search filter field is deprecated. Please use button: true/false. Button is now disabled by default. (called from #{caller[0]})"
-            end
+            warn "The skip_button option to search filter field is deprecated. Please use button: true/false. Button is now disabled by default. (called from #{caller(1..1).first})" if opts.key?(:skip_button)
 
             if opts[:skip_button] || !opts.fetch(:button, nil)
-              instance_exec(&Helpers::render_title(attr, title.clone, opts))
-              haml_tag :div, class: Builder::prepare_classes(opts) do
+              instance_exec(&Helpers.render_title(attr, title.clone, opts))
+              haml_tag :div, class: Builder.prepare_classes(opts) do
                 haml_concat text_field(opts[:namespace], attr, input_options)
               end
             else
               haml_tag :div, class: 'input-group' do
                 haml_concat text_field(opts[:namespace], attr, input_options)
-                haml_tag :span, class: 'input-group-btn' do
-
+                haml_tag :span, class: 'input-group-append' do
                   haml_tag :button, type: 'button', class: 'btn btn-primary search' do
-                    haml_tag :i, class: 'fa fa-search'
+                    haml_tag :span, class: 'fas fa-search'
                     haml_concat 'Search'
                   end
                 end
@@ -61,7 +57,6 @@ module Stradivari
       def self.value(params, name)
         params[name] || params["#{name}_cont"]
       end
-
     end
   end
 end

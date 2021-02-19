@@ -1,8 +1,8 @@
+# frozen_string_literal: true
+
 module Stradivari
   module Details
-
     class Generator < Stradivari::Generator
-
       DETAILS_OPTIONS = {
         class: 'dl-horizontal'
       }
@@ -30,23 +30,24 @@ module Stradivari
         end
 
         protected
-          delegate :object, to: :@parent
 
-          def value(object = self.object)
-            if @renderer.present?
-              capture_haml { view.instance_exec(object, &@renderer) }
-            else
-              build(object)
-            end
-          end
+        delegate :object, to: :@parent
 
-          def build(object = self.object)
-            view.instance_exec(object, @opts[:method].presence || @label, @opts, &builder.render)
+        def value(object = self.object)
+          if @renderer.present?
+            capture_haml { view.instance_exec(object, &@renderer) }
+          else
+            build(object)
           end
+        end
 
-          def name
-            @label
-          end
+        def build(object = self.object)
+          view.instance_exec(object, @opts[:method].presence || @label, @opts, &builder.render)
+        end
+
+        def name
+          @label
+        end
       end
 
       def initialize(view, object, *pass, &definition)
@@ -84,7 +85,6 @@ module Stradivari
       def klass
         @data.class
       end
-
     end
   end
 end

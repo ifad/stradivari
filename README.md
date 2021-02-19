@@ -23,7 +23,7 @@ grew up on its own. :smile:
 
 ## Features
 
-This Gem combines [HAML][] and [Bootstrap 3][] to provide you easy
+This Gem combines [HAML][] and [Bootstrap 4][] to provide you easy
 generators for:
 
 - HTML Tables
@@ -49,7 +49,7 @@ Add to your Gemfile
 Add to your app/assets/javascripts/application.js
 
     //= require stradivari
-    
+
 Add to your app/assets/stylesheets/application.css
 
     *= require stradivari
@@ -120,7 +120,7 @@ or, provide a `no_data` block which will be rendered in place:
 = table_for @foos do
   - no_data do
     There are no entries.
-    %a.btn.btn-default{ href:'#' } Create
+    %a.btn.btn-secondary{ href:'#' } Create
 ```
 
 ### CSV
@@ -568,7 +568,7 @@ impact in making the world a better place.
   -- vjt  Mon Jun  9 20:21:42 CEST 2014
 
 [logo]:                    http://upload.wikimedia.org/wikipedia/commons/c/cd/Antonio_stradivari.jpg
-[Bootstrap 3]:             https://github.com/twbs/bootstrap
+[Bootstrap 4]:             https://getbootstrap.com/docs/4.6/getting-started/introduction/
 [Active Admin]:            https://github.com/gregbell/active_admin
 [HAML]:                    https://github.com/haml/haml
 [PgSearch]:                https://github.com/Casecommons/pg_search

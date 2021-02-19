@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 module Stradivari
   module Filter
     module Model
-
       module Base
         def self.included(base)
           base.module_eval do
@@ -11,11 +12,11 @@ module Stradivari
 
         module ClassMethods
           def stradivari_filter_options(options = nil)
-            @_stradivari_filter_options = options if options
-            @_stradivari_filter_options || {}
+            @stradivari_filter_options ||= options || {}
           end
+
           def configure_scope_search(*args)
-            $stderr.puts "#{name}.configure_scope_search is deprecated. Please use .stradivari_filter_options (called from #{caller[0]})"
+            warn "#{name}.configure_scope_search is deprecated. Please use .stradivari_filter_options (called from #{caller(1..1).first})"
             stradivari_filter_options(*args)
           end
 
@@ -26,11 +27,11 @@ module Stradivari
             super
 
             subclass.stradivari_filter_options(
-              self.stradivari_filter_options
+              stradivari_filter_options
             )
 
             subclass.stradivari_scopes.update(
-              self.stradivari_scopes
+              stradivari_scopes
             )
           end
 
@@ -44,8 +45,9 @@ module Stradivari
             options[:type] ||= :string
             stradivari_scopes.store(name.to_sym, options)
           end
+
           def scope_search(*args, &block)
-            $stderr.puts "#{name}.scope_search is deprecated. Please use .stradivari_scope (called from #{caller[0]})"
+            warn "#{name}.scope_search is deprecated. Please use .stradivari_scope (called from #{caller(1..1).first})"
             stradivari_scope(*args, &block)
           end
 
@@ -53,11 +55,9 @@ module Stradivari
             options  = args.extract_options!
             callable = args.first
 
-            if callable && block
-              raise Stradivari::Error, "Can't give a block both via parameter and syntax"
-            end
+            raise Stradivari::Error, "Can't give a block both via parameter and syntax" if callable && block
 
-            return callable || block, options
+            [callable || block, options]
           end
           private :stradivari_scope_options
 
@@ -65,7 +65,7 @@ module Stradivari
           # Keeps the registry of defined stradivari scopes
           #
           def stradivari_scopes
-            @_stradivari_scopes ||= {}
+            @stradivari_scopes ||= {}
           end
 
           ##
@@ -81,14 +81,13 @@ module Stradivari
           def stradivari_filter(stradivari_filter_options)
             raise NotImplementedError
           end
+
           def extended_search(*args)
-            $stderr.puts "#{name}.extended_search is deprecated. Please use .stradivari_filter (called from #{caller[0]})"
+            warn "#{name}.extended_search is deprecated. Please use .stradivari_filter (called from #{caller(1..1).first})"
             stradivari_filter(*args)
           end
-
         end
       end
-
     end
   end
 end

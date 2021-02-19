@@ -20,78 +20,75 @@
 *
 **/
 
-Stradivari.Autocompleter = function() {
-  initializeDetached();
-  initializeAttached();
+Stradivari.Autocompleter = function () {
+  initializeDetached()
+  initializeAttached()
 
-  function initializeDetached() {
-    var form = $('form[data-detached=true]');
-    var autoCompleteField = $('input[data-stradivari=autocomplete]', form);
-    var bloodhounds = prepareTheBloodhounds($('label[data-stradivari=autocomplete]'));
-    var datasets = prepareTheDatasets(bloodhounds);
+  function initializeDetached () {
+    var form = $('form[data-detached=true]')
+    var autoCompleteField = $('input[data-stradivari=autocomplete]', form)
+    var bloodhounds = prepareTheBloodhounds($('label[data-stradivari=autocomplete]'))
+    var datasets = prepareTheDatasets(bloodhounds)
 
-    initializeTheBloodhounds(bloodhounds, true);
+    initializeTheBloodhounds(bloodhounds, true)
 
-    initializeTypeahead(autoCompleteField, datasets);
-    attachCallbacks(form, autoCompleteField);
+    initializeTypeahead(autoCompleteField, datasets)
+    attachCallbacks(form, autoCompleteField)
 
-    attachEvents(autoCompleteField);
+    attachEvents(autoCompleteField)
   }
 
-  function initializeAttached() {
-    var form = $('form:not([data-detached=true])');
-    var autoCompleteField = $('input[data-stradivari=autocomplete]', form);
+  function initializeAttached () {
+    var form = $('form:not([data-detached=true])')
+    var autoCompleteField = $('input[data-stradivari=autocomplete]', form)
 
-    $('label[data-stradivari=autocomplete]', form).each(function(_, e){
-      var bloodhound = prepareTheBloodhounds($(e));
-      var acf  = $('#' + $(e).attr('for'));
-      var datasets = prepareTheDatasets(bloodhound);
+    $('label[data-stradivari=autocomplete]', form).each(function (_, e) {
+      var bloodhound = prepareTheBloodhounds($(e))
+      var acf = $('#' + $(e).attr('for'))
+      var datasets = prepareTheDatasets(bloodhound)
 
-      initializeTheBloodhounds(bloodhound, true);
+      initializeTheBloodhounds(bloodhound, true)
 
-      initializeTypeahead(acf, datasets);
-    });
+      initializeTypeahead(acf, datasets)
+    })
 
-    attachCallbacks(form, autoCompleteField);
+    attachCallbacks(form, autoCompleteField)
 
-    attachEvents(autoCompleteField);
+    attachEvents(autoCompleteField)
   }
 
-  function prepareTheBloodhounds(labels) {
-    var bloodHoundsPack = [];
-    $.each(labels, function(_, label) {
-      var element = $('#' + $(label).attr('for'));
-      var remote_url = element.data('remote-url');
-      var dataset_name = $(label).attr("for").replace(Stradivari.filterNamespace + "_", "");
+  function prepareTheBloodhounds (labels) {
+    var bloodHoundsPack = []
+    $.each(labels, function (_, label) {
+      var element = $('#' + $(label).attr('for'))
+      var remote_url = element.data('remote-url')
+      var dataset_name = $(label).attr('for').replace(Stradivari.filterNamespace + '_', '')
       var bloodhunt_opts = {
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
-        display: Stradivari.typeaheadDisplay,
-      };
-
-      if(remote_url === undefined)
-        bloodhunt_opts.local = Stradivari.filterForm.getOptions(dataset_name);
-      else {
-        bloodhunt_opts.remote = {
-         url: element.data('remote-url') + '?q=%QUERY',
-         wildcard: '%QUERY'
-       }
+        display: Stradivari.typeaheadDisplay
       }
 
-      var bloodhound = new Bloodhound(bloodhunt_opts);
+      if (remote_url === undefined) { bloodhunt_opts.local = Stradivari.filterForm.getOptions(dataset_name) } else {
+        bloodhunt_opts.remote = {
+          url: element.data('remote-url') + '?q=%QUERY',
+          wildcard: '%QUERY'
+        }
+      }
 
-      if(remote_url === undefined)
-        bloodhound.dataset_name = dataset_name;
+      var bloodhound = new Bloodhound(bloodhunt_opts)
 
-      bloodhound.label = $(label).find(".text").text();
-      bloodHoundsPack.push(bloodhound);
+      if (remote_url === undefined) { bloodhound.dataset_name = dataset_name }
+
+      bloodhound.label = $(label).find('.text').text()
+      bloodHoundsPack.push(bloodhound)
     })
-    return bloodHoundsPack;
+    return bloodHoundsPack
   }
 
-  function prepareTheDatasets(bh) {
-    var datasets = [];
-    $.each(bh, function(_, bloodhound){
+  function prepareTheDatasets (bh) {
+    var datasets = []
+    $.each(bh, function (_, bloodhound) {
       datasets.push({
         name: bloodhound.dataset_name,
         displayKey: Stradivari.typeaheadDisplay,
@@ -101,49 +98,48 @@ Stradivari.Autocompleter = function() {
         }
       })
     })
-    return datasets;
+    return datasets
   }
 
-  function initializeTheBloodhounds(bh, clear_cache) {
-    $.each(bh, function(_, bloodhound){
-      if(clear_cache)
-        bloodhound.clearPrefetchCache();
-      bloodhound.initialize();
+  function initializeTheBloodhounds (bh, clear_cache) {
+    $.each(bh, function (_, bloodhound) {
+      if (clear_cache) { bloodhound.clearPrefetchCache() }
+      bloodhound.initialize()
     })
   }
 
-  function initializeTypeahead(field, datasets) {
-    field.typeahead({highlight: true, displayKey: Stradivari.typeaheadDisplay}, datasets);
+  function initializeTypeahead (field, datasets) {
+    field.typeahead({ highlight: true, displayKey: Stradivari.typeaheadDisplay }, datasets)
 
-    field.filter('[data-display][data-display!=null]').each(function(_,e){
-      $(e).val( $(e).data('display'));
-    });
+    field.filter('[data-display][data-display!=null]').each(function (_, e) {
+      $(e).val($(e).data('display'))
+    })
   }
 
-  function attachCallbacks(form, fields) {
+  function attachCallbacks (form, fields) {
     form
-      .on('submit', function(e){
-        fields.filter('[data-display][data-display!=null]').each(function(_, e){
-          $(e).val($(e).typeahead('val'));
-        });
-      });
+      .on('submit', function (e) {
+        fields.filter('[data-display][data-display!=null]').each(function (_, e) {
+          $(e).val($(e).typeahead('val'))
+        })
+      })
   }
 
-  function attachEvents(fields){
+  function attachEvents (fields) {
     fields
-      .on("typeahead:selected typeahead:autocompleted", function(e, selected){
-        var self = $(this);
+      .on('typeahead:selected typeahead:autocompleted', function (e, selected) {
+        var self = $(this)
 
-        if(selected.dataset !== undefined) {
-          $("#" + Stradivari.filterNamespace + "_" + selected.dataset + "_" + selected[Stradivari.typeaheadValue].toLowerCase()).prop('checked', true);
+        if (selected.dataset !== undefined) {
+          $('#' + Stradivari.filterNamespace + '_' + selected.dataset + '_' + selected[Stradivari.typeaheadValue].toLowerCase()).prop('checked', true)
 
-          self.removeAttr("placeholder");
-          self.val('');
+          self.removeAttr('placeholder')
+          self.val('')
         } else {
-          self.val(selected[Stradivari.typeaheadValue]);
+          self.val(selected[Stradivari.typeaheadValue])
         }
 
-        Stradivari.filterForm.form.submit();
+        Stradivari.filterForm.form.submit()
       })
   }
 }

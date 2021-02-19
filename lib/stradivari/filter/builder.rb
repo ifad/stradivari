@@ -1,20 +1,21 @@
+# frozen_string_literal: true
+
 module Stradivari
   module Filter
-
     class Builder < Stradivari::Builder
-      Implementations = {
-        selection:  'SelectionField',
+      IMPLEMENTATIONS = {
+        selection: 'SelectionField',
         date_range: 'DateRangeField',
-        number:     'NumberField',
-        boolean:    'BooleanField',
-        checkbox:   'CheckboxField',
-        search:     'SearchField',
-        custom:     'CustomField'
+        number: 'NumberField',
+        boolean: 'BooleanField',
+        checkbox: 'CheckboxField',
+        search: 'SearchField',
+        custom: 'CustomField'
       }
 
-      Implementations.each do |id, name|
+      IMPLEMENTATIONS.each do |id, name|
         require "stradivari/filter/builder/#{id}_field"
-        Implementations[id] = const_get(name)
+        IMPLEMENTATIONS[id] = const_get(name)
       end.freeze
 
       autoload :ActionField, 'stradivari/filter/builder/action_field'
@@ -28,18 +29,17 @@ module Stradivari
           value(params, name).present?
         end
 
-        def prepare_classes(opts, classes = "")
-          classes << " #{priority(opts)}-priority"
-          classes << " closed" if priority(opts) == :low && !opts[:active_field]
+        def prepare_classes(opts, classes = '')
+          classes = classes.dup
+          classes << " stradivari-options stradivari-options--#{priority(opts)}-priority"
+          classes << ' collapse collapse--stradivari' if priority(opts) == :low && !opts[:active_field]
           classes
         end
 
         def priority(opts = {})
           opts.fetch :priority, :normal # :low, :normal, :high
         end
-
       end
     end
-
   end
 end

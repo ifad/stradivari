@@ -1,21 +1,23 @@
+# frozen_string_literal: true
+
 module StradivariHelper
-  def table_for *args, &block
+  def table_for(*args, &block)
     Stradivari::Table::Generator.new(self, *args, &block).to_s
   end
 
-  def csv_for *args, &block
+  def csv_for(*args, &block)
     Stradivari::CSV::Generator.new(self, *args, &block).to_s
   end
 
-  def xlsx_for *args, &block
+  def xlsx_for(*args, &block)
     Stradivari::XLSX::Generator.new(self, *args, &block).to_s
   end
 
-  def details_for *args, &block
+  def details_for(*args, &block)
     Stradivari::Details::Generator.new(self, *args, &block).to_s
   end
 
-  def filter_for *args, &block
+  def filter_for(*args, &block)
     Stradivari::Filter::Generator.new(self, *args, &block).to_s
   end
 
@@ -53,5 +55,4 @@ module StradivariHelper
 
     check_box_tag(name, value, checked, data: data, id: options[:name])
   end
-
 end

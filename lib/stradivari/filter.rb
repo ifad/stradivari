@@ -1,5 +1,6 @@
-module Stradivari::Filter
+# frozen_string_literal: true
 
+module Stradivari::Filter
   NAMESPACE              = :q
   CONTEXT                = :context
   TYPEAHEAD_DISPLAY_NAME = :name
@@ -8,5 +9,4 @@ module Stradivari::Filter
   autoload :Generator, 'stradivari/filter/generator'
   autoload :Builder,   'stradivari/filter/builder'
   autoload :Model,     'stradivari/filter/model'
-
 end

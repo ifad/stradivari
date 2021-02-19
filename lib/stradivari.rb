@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'stradivari/version'
 require 'stradivari/engine'
 
 module Stradivari
-
   autoload :Error,      'stradivari/error'
 
   autoload :Builder,    'stradivari/builder'
@@ -22,5 +23,4 @@ module Stradivari
     autoload :TableBuilder, 'stradivari/concerns/table_builder'
     autoload :CssFriendly,  'stradivari/concerns/css_friendly'
   end
-
 end
