@@ -42,7 +42,7 @@
       })
 
       for (var i = 0; i < linked.length; ++i) {
-        if (linked[i].node.prop('checked') != bool) {
+        if (linked[i].node.prop('checked') !== bool) {
           linked[i].onChange(bool)
         }
       }
@@ -66,7 +66,7 @@
         var self = this
 
         this.eachListener(function (l) {
-          if (l.event == event) {
+          if (l.event === event) {
             l.callback(self, data)
           }
         })
@@ -120,7 +120,7 @@
       var nodes = []
 
       this.eachChild(function (child) {
-        if (child.name() == name) {
+        if (child.name() === name) {
           nodes.push(child)
         }
         $.merge(nodes, child.findNamedChildren(name))
@@ -149,10 +149,10 @@
     rebind: function (path) {
       for (var i = 0; i < this.children.length; ++i) {
         var child = this.children[i]
-        if (path.length == 1 && path[0].getAttribute('data-select-tree-name') == child.node[0].getAttribute('data-select-tree-name')) {
+        if (path.length === 1 && path[0].getAttribute('data-select-tree-name') === child.node[0].getAttribute('data-select-tree-name')) {
           child.node = $(path[0])
           return true
-        } else if (child.node[0] == path[0]) {
+        } else if (child.node[0] === path[0]) {
           path.shift()
           return child.rebind(path)
         }
@@ -179,14 +179,14 @@
   SelectTree.byParent = function (name) {
     var self = this
     return this.all().filter(function () {
-      return (this.getAttribute('data-' + self.data_prefix + '-parent') == name)
+      return (this.getAttribute('data-' + self.data_prefix + '-parent') === name)
     })
   }
 
   SelectTree.byName = function (name) {
     var self = this
     return this.all().filter(function () {
-      return (this.getAttribute('data-' + self.data_prefix + '-name') == name)
+      return (this.getAttribute('data-' + self.data_prefix + '-name') === name)
     })
   }
 
@@ -209,7 +209,7 @@
       var item = this
       var path = []
 
-      while (item != null) {
+      while (item !== null) {
         path.unshift(item)
 
         item = item.getAttribute('data-' + self.data_prefix + '-parent')
@@ -218,7 +218,7 @@
 
       var root = path.shift()
       var tree = $trees.filter(function (t) {
-        return root == t.node[0]
+        return root === t.node[0]
       })[0]
 
       if (tree) { tree.rebind(path) }
@@ -233,13 +233,13 @@
 
   SelectTree.setTotal = function (tree, counter) {
     var count = (counter.data(this.data_prefix + '-total') || 0)
-    var tree_total = tree.total
+    var treeTotal = tree.total
     var updated = tree.calcTotalSelected()
 
-    if (tree_total < updated) {
-      count += (updated - tree_total)
-    } else if (tree_total > updated) {
-      count += (updated - tree_total)
+    if (treeTotal < updated) {
+      count += (updated - treeTotal)
+    } else if (treeTotal > updated) {
+      count += (updated - treeTotal)
     }
 
     counter.data(this.data_prefix + '-total', count)

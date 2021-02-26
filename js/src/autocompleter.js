@@ -61,24 +61,24 @@ Stradivari.Autocompleter = function () {
     var bloodHoundsPack = []
     $.each(labels, function (_, label) {
       var element = $('#' + $(label).attr('for'))
-      var remote_url = element.data('remote-url')
-      var dataset_name = $(label).attr('for').replace(Stradivari.filterNamespace + '_', '')
-      var bloodhunt_opts = {
+      var remoteUrl = element.data('remote-url')
+      var datasetName = $(label).attr('for').replace(Stradivari.filterNamespace + '_', '')
+      var bloodhuntOpts = {
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         display: Stradivari.typeaheadDisplay
       }
 
-      if (remote_url === undefined) { bloodhunt_opts.local = Stradivari.filterForm.getOptions(dataset_name) } else {
-        bloodhunt_opts.remote = {
+      if (remoteUrl === undefined) { bloodhuntOpts.local = Stradivari.filterForm.getOptions(datasetName) } else {
+        bloodhuntOpts.remote = {
           url: element.data('remote-url') + '?q=%QUERY',
           wildcard: '%QUERY'
         }
       }
 
-      var bloodhound = new Bloodhound(bloodhunt_opts)
+      var bloodhound = new Bloodhound(bloodhuntOpts)
 
-      if (remote_url === undefined) { bloodhound.dataset_name = dataset_name }
+      if (remoteUrl === undefined) { bloodhound.datasetName = datasetName }
 
       bloodhound.label = $(label).find('.text').text()
       bloodHoundsPack.push(bloodhound)
@@ -90,7 +90,7 @@ Stradivari.Autocompleter = function () {
     var datasets = []
     $.each(bh, function (_, bloodhound) {
       datasets.push({
-        name: bloodhound.dataset_name,
+        name: bloodhound.datasetName,
         displayKey: Stradivari.typeaheadDisplay,
         source: bloodhound.ttAdapter(),
         templates: {
@@ -101,9 +101,9 @@ Stradivari.Autocompleter = function () {
     return datasets
   }
 
-  function initializeTheBloodhounds (bh, clear_cache) {
+  function initializeTheBloodhounds (bh, clearCache) {
     $.each(bh, function (_, bloodhound) {
-      if (clear_cache) { bloodhound.clearPrefetchCache() }
+      if (clearCache) { bloodhound.clearPrefetchCache() }
       bloodhound.initialize()
     })
   }

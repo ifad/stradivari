@@ -38,7 +38,7 @@ window._TABLE_ = (function () {
       return navigate(query()
         .filter(function (p) {
           return !params.some(function (param) {
-            return p.split('=')[0] == param.split('=')[0] // Clunky.
+            return p.split('=')[0] === param.split('=')[0] // Clunky.
           })
         })
         .concat(params)

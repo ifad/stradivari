@@ -17,11 +17,11 @@ Stradivari.Form = function () {
   }
 
   var fieldOverrideSorting = function (form) {
-    var field_sorting = form.find('[data-sort]:first')
-    var current_sorting = form.find('[name=sort]')
+    var fieldSorting = form.find('[data-sort]:first')
+    var currentSorting = form.find('[name=sort]')
 
-    if (field_sorting.val() && !current_sorting.val()) {
-      current_sorting.val(field_sorting.data('sort'))
+    if (fieldSorting.val() && !currentSorting.val()) {
+      currentSorting.val(fieldSorting.data('sort'))
     }
   }
 }
@@ -46,8 +46,8 @@ Stradivari.FilterForm = function () {
     .on('click', '.btn--stradivari-clear', function (event) {
       event.preventDefault()
       _TABLE_.filterURLParameters(function (param) {
-        return param.indexOf(Stradivari.filterNamespace + '[') != 0 &&
-          param.indexOf(Stradivari.filterContext + '[') != 0
+        return param.indexOf(Stradivari.filterNamespace + '[') !== 0 &&
+          param.indexOf(Stradivari.filterContext + '[') !== 0
       })
     })
     .on('change', '.number_field select', function (event) {
@@ -68,12 +68,12 @@ Stradivari.FilterForm.form = function () {
 
 Stradivari.FilterForm.prototype = {
   form: null,
-  getOptions: function (opt_name) {
+  getOptions: function (optName) {
     var jsonData = []
 
-    this.form.find($("[name*='[" + opt_name + "]']")).each(function () {
+    this.form.find($("[name*='[" + optName + "]']")).each(function () {
       var elem = $(this)
-      jsonData.push({ id: elem.val(), name: elem.parent().text().trim(), dataset: opt_name })
+      jsonData.push({ id: elem.val(), name: elem.parent().text().trim(), dataset: optName })
     })
 
     return jsonData
@@ -83,7 +83,6 @@ Stradivari.FilterForm.prototype = {
 Stradivari.DetachedForm = function () {
   Stradivari.Form.call(this)
 
-  var self = this
   this.form = Stradivari.DetachedForm.form()
 
   this.form
@@ -96,7 +95,7 @@ Stradivari.DetachedForm = function () {
       processDetachedForm($(this.form))
     })
     .on('keydown', function (event) {
-      if (event.which == 13) { processDetachedForm($(this)) }
+      if (event.which === 13) { processDetachedForm($(this)) }
     })
 
   var processDetachedForm = function (detached) {
@@ -126,13 +125,13 @@ Stradivari.FoldableForm = function (form) {
 
         updateToggleTitle($this)
 
-        if ($closedContainer.length != 0) {
+        if ($closedContainer.length !== 0) {
           $closedContainer.collapse('toggle')
         } else {
           var $selected = $formGroup.find('.radio.checked')
           var $radioSelection = $formGroup.find('.radio')
 
-          if ($selected.length != 0) {
+          if ($selected.length !== 0) {
             $selected.removeClass('checked')
             $radioSelection.css('display', 'inline-flex')
           } else {

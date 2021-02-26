@@ -15,14 +15,14 @@
     expand: function (map) {
       var result = this.template
       $.each(map, function (key, value) {
-        result = result.replace(new RegExp('\{' + key + '\}'), value)
+        result = result.replace(new RegExp('{' + key + '}'), value)
       })
       return result
     }
   }
 
   function FilterSelect (el, options) {
-    if (el.get(0).tagName.toLowerCase() != 'select') {
+    if (el.get(0).tagName.toLowerCase() !== 'select') {
       return null
     }
 
@@ -59,7 +59,7 @@
       $.each(this.formatter(data), function (key, value) {
         var option = $('<option></option>')
         option.attr('value', value)
-        if (self.target.data('selected') == value) {
+        if (self.target.data('selected') === value) {
           option.prop('selected', true)
         }
         option.text(key)
