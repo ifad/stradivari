@@ -1,0 +1,74 @@
+{
+  "name": "@ifad/stradivari",
+  "description": "Enterprise toolkit for Ruby/HAML/Bootstrap4 web apps'",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ifad/stradivari.git"
+  },
+  "keywords": [
+    "rails",
+    "ransack",
+    "pg_search"
+  ],
+  "author": "Marcello Barnaba <m.barnaba@ifad.org>",
+  "contributors": [],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ifad/stradivari/issues"
+  },
+  "homepage": "https://github.com/ifad/stradivari",
+  "scripts": {
+    "build": "standard --verbose && rollup -c",
+    "test": "test/javascript/run-qunit.js"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/preset-env": "^7.12.16",
+    "@rollup/plugin-babel": "^5.2.3",
+    "@rollup/plugin-node-resolve": "^11.1.1",
+    "chrome-launcher": "^0.13.4",
+    "puppeteer-core": "^7.1.0",
+    "rollup": "^2.39.0",
+    "rollup-plugin-copy": "^3.3.0",
+    "standard": "^16.0.3"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "jquery": ">= 1.12.4 < 4.0.0"
+  },
+  "main": "dist/client-side-validations.js",
+  "module": "dist/client-side-validations.esm.js",
+  "engines": {
+    "node": ">=6.0.0",
+    "yarn": ">=0.25.2"
+  },
+  "browserslist": [
+    ">= 1%",
+    "last 1 major version",
+    "not dead",
+    "Chrome >= 45",
+    "Firefox >= 38",
+    "Edge >= 12",
+    "Explorer >= 10",
+    "iOS >= 9",
+    "Safari >= 9",
+    "Android >= 4.4",
+    "Opera >= 30"
+  ],
+  "files": [
+    "app"
+  ],
+  "standard": {
+    "ignore": [
+      "/dist/",
+      "/gemfiles/",
+      "/test/",
+      "/vendor/"
+    ]
+  },
+  "version": "0.0.1",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  }
+}
