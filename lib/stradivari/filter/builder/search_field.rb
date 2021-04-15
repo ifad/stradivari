@@ -7,7 +7,7 @@ module Stradivari
         lambda do |attr, opts|
           attr = opts[:is_scoped] ? attr : [attr, 'cont'].join('_')
 
-          haml_tag :div, class: 'form-group form-group--stradivari' do
+          haml_tag :div, class: 'form-group form-group--stradivari', data: { stradivari: { attr: attr } } do
             title = opts[:title] || "Search #{attr.to_s.humanize}"
             placeholder = opts[:placeholder] || title
 

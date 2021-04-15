@@ -15,7 +15,7 @@ module Stradivari
 
           opts[:collapsed_field] = true if opts[:value].present? & collection.is_a?(Array) && collection.size <= radios_max
 
-          haml_tag :div, class: 'form-group form-group--stradivari' do
+          haml_tag :div, class: 'form-group form-group--stradivari', data: { stradivari: { attr: attr } } do
             instance_exec(&Helpers.render_title(attr, title, opts))
 
             haml_tag :div, class: Builder.prepare_classes(opts) do

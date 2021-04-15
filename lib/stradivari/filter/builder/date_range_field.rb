@@ -8,7 +8,7 @@ module Stradivari
           from_value = opts[:value].first
           to_value   = opts[:value].last
 
-          haml_tag :div, class: 'form-group form-group--stradivari' do
+          haml_tag :div, class: 'form-group form-group--stradivari', data: { stradivari: { attr: attr } } do
             instance_exec(&Helpers.render_title(attr, opts.fetch(:title, attr.to_s.humanize), opts))
 
             haml_tag :div, class: Builder.prepare_classes(opts) do
