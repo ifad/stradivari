@@ -22,11 +22,11 @@ module Stradivari
 
       class << self
         def value(params, name)
-          params[name] || params["#{name}_eq"]
+          params[name] || params["#{name}_eq"] || params["#{name}_in"]
         end
 
         def active?(params, name)
-          value(params, name).present?
+          Array.wrap(value(params, name)).select(&:present?).present?
         end
 
         def prepare_classes(opts, classes = '')

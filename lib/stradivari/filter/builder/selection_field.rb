@@ -9,7 +9,8 @@ module Stradivari
         lambda do |attr, opts|
           collection = opts[:collection].is_a?(Proc) ? opts[:collection].call : opts[:collection]
           title      = opts.fetch(:title, attr.to_s.humanize)
-          attr       = opts[:is_scoped] ? attr : [attr, 'eq'].join('_')
+          multiple   = opts.fetch(:multiple, false).to_s == 'true'
+          attr       = opts[:is_scoped] ? attr : [attr, (multiple ? 'in' : 'eq')].join('_')
 
           radios_max = opts.fetch(:radios_count, 5)
 
@@ -25,7 +26,10 @@ module Stradivari
                 options = { selected: opts[:value] }
                 options[:include_blank] = 'Any' if opts.fetch(:include_blank, true).to_s == 'true'
 
-                haml_concat select(opts[:namespace], attr, collection, { selected: opts[:value], include_blank: 'Any' }, { class: 'custom-select mb-2' })
+                html_options = { class: "custom-select mb-2 #{opts[:class]}"}
+                html_options[:multiple] = 'multiple' if multiple
+
+                haml_concat select(opts[:namespace], attr, collection, options, html_options)
               end
             end
           end
