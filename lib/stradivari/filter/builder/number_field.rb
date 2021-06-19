@@ -13,7 +13,7 @@ module Stradivari
             ['Less Than', "#{attr}_lt"]
           ]
 
-          haml_tag :div, class: 'form-group form-group--stradivari', data: { stradivari: { attr: attr } } do
+          haml_tag :div, class: "form-group form-group--stradivari #{opts[:form_group_class]}", data: { stradivari: { attr: attr } } do
             instance_exec(&Helpers.render_title("#{attr}_eq", opts[:title] || attr.to_s.humanize, opts))
 
             haml_tag :div, class: Builder.prepare_classes(opts) do

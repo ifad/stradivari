@@ -28,7 +28,7 @@ module Stradivari
           checked, unchecked = collection.partition { |_, value| values.include?(value.to_s) }
           opts[:collapsed_field] = true if type == :multi_line && checked.present?
 
-          haml_tag :div, class: 'form-group form-group--stradivari', data: { stradivari: { attr: attr } } do
+          haml_tag :div, class: "form-group form-group--stradivari #{opts[:form_group_class]}", data: { stradivari: { attr: attr } } do
             instance_exec(&Helpers.render_title(name, title, opts))
 
             classes = Builder.prepare_classes(opts, (type == :single_line ? 'stradivari-options--one-line' : 'stradivari-options--multi-line'))
