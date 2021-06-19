@@ -6,7 +6,7 @@ module Stradivari
       def self.render
         lambda do |attr, opts|
           def cb(name, title, value, checked, opts)
-            haml_tag :label, class: 'custom-control custom-checkbox custom-control-inline' do
+            haml_tag :label, class: 'custom-control custom-checkbox' do
               haml_concat check_box(opts[:namespace], name,
                                     { multiple: true, value: value, checked: checked, class: 'custom-control-input' }, value, nil)
               haml_tag :span, title, class: 'custom-control-label custom-control-label--stradivari'

@@ -12,14 +12,14 @@ module Stradivari
               checked = (opts[:value].to_s == value.to_s || opts[:default_checked].to_s == value.to_s)
               any_checked = false if checked
 
-              haml_tag :label, class: Helpers.prepare_radio_class(checked, 'radio custom-control custom-radio custom-control-inline') do
+              haml_tag :label, class: Helpers.prepare_radio_class(checked, 'radio custom-control custom-radio') do
                 haml_concat radio_button(opts[:namespace], attr, value, checked: checked, class: 'custom-control-input')
                 haml_tag :span, title, class: 'custom-control-label custom-control-label--stradivari'
               end
             end
 
             if opts.fetch(:include_blank, true).to_s == 'true'
-              haml_tag :label, class: Helpers.prepare_radio_class(any_checked, 'radio custom-control custom-radio custom-control-inline') do
+              haml_tag :label, class: Helpers.prepare_radio_class(any_checked, 'radio custom-control custom-radio') do
                 haml_concat radio_button(opts[:namespace], attr, '', checked: any_checked, class: 'custom-control-input')
                 haml_tag :span, 'Any', class: 'custom-control-label custom-control-label--stradivari'
               end
