@@ -91,7 +91,15 @@ module Stradivari
         def sortable_icon
           klass = +'fas fa-sort'
           fa_icon = "-#{opts[:sortable_icon]}" if opts.key?(:sortable_icon)
-          icon_direction = current_sorting_direction == 'asc' ? 'down' : 'down-alt'
+          icon_direction =
+            if current_sorting_direction == 'asc'
+              'down'
+            elsif opts.key?(:sortable_icon)
+              'down-alt'
+            else
+              'up'
+            end
+
           klass << "#{fa_icon}-#{icon_direction}" if sorting_active?
 
           haml_tag :span, '', class: klass
