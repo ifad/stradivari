@@ -47,6 +47,20 @@ module Stradivari
         end
       end
 
+      def self.renderable_field(attribute, value, opts, bound)
+        as_what = opts[:as]
+
+        date_format = opts[:format] ||
+        lambda do
+          case as_what.to_s
+          when "date"
+            date_field(opts[:namespace], "#{attribute}_#{bound}", { value: value, class: 'form-control' })
+          else
+            text_field(opts[:namespace], "#{attribute}_#{bound}", { value: value, class: 'form-control' })
+          end
+        end
+      end
+
       def self.prepare_radio_class(active_field, default = '')
         default = default.dup
         default << ' checked' if active_field
