@@ -49,14 +49,14 @@ module Stradivari
 
       def self.renderable_field(attribute, value, opts, bound)
         as_what = opts[:as]
+        css_classes = opts[:class]
 
-        date_format = opts[:format] ||
         lambda do
           case as_what.to_s
           when "date"
-            date_field(opts[:namespace], "#{attribute}_#{bound}", { value: value, class: 'form-control' })
+            date_field(opts[:namespace], "#{attribute}_#{bound}", { value: value, class: "form-control #{css_classes}".strip })
           else
-            text_field(opts[:namespace], "#{attribute}_#{bound}", { value: value, class: 'form-control' })
+            text_field(opts[:namespace], "#{attribute}_#{bound}", { value: value, class: "form-control #{css_classes}".strip })
           end
         end
       end
