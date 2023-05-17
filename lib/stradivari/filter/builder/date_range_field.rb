@@ -15,7 +15,7 @@ module Stradivari
               haml_tag :div, class: 'd-flex justify-content-center mb-2' do
                 haml_concat instance_exec(&Helpers.renderable_field(attr, from_value, opts, 'gteq'))
                 haml_tag :span, '-', class: 'align-self-center px-2'
-                haml_concat instance_exec(&Helpers.renderable_field(attr, from_value, opts, 'lteq'))
+                haml_concat instance_exec(&Helpers.renderable_field(attr, to_value, opts, 'lteq'))
               end
             end
           end
