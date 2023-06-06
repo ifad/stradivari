@@ -13,9 +13,9 @@ module Stradivari
 
             haml_tag :div, class: Builder.prepare_classes(opts) do
               haml_tag :div, class: 'd-flex justify-content-center mb-2' do
-                haml_concat text_field(opts[:namespace], "#{attr}_gteq", { value: from_value, class: 'form-control' })
+                haml_concat instance_exec(&Helpers.renderable_field(attr, from_value, opts, 'gteq'))
                 haml_tag :span, '-', class: 'align-self-center px-2'
-                haml_concat text_field(opts[:namespace], "#{attr}_lteq", { value: to_value, class: 'form-control' })
+                haml_concat instance_exec(&Helpers.renderable_field(attr, to_value, opts, 'lteq'))
               end
             end
           end
