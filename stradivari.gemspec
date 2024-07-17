@@ -34,5 +34,5 @@ This Gem combines HAML and Bootstrap 3 to provide you easy generators for:
   spec.add_runtime_dependency 'pg_search'
   spec.add_runtime_dependency 'ransack'
   spec.add_runtime_dependency 'haml'
-  spec.add_runtime_dependency 'axlsx'
+  spec.add_runtime_dependency 'caxlsx'
 end
