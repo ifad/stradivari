@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.1
+
+* [FEATURE] Support for rails 7 ([#30](https://github.com/ifad/stradivari/pull/37))
+
 ## 0.7.0
 
 * [FEATURE] Replace axlsx with caxlsx ([#25](https://github.com/ifad/stradivari/issues/25))
