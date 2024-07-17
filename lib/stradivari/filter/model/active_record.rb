@@ -15,6 +15,7 @@ module Stradivari
             when 4 then extend Rails4
             when 5 then extend Rails4
             when 6 then extend Rails4
+            when 7 then extend Rails4
             else
               raise Stradivari::Error, "Unsupported Active Record version (#{ver})"
             end
