@@ -57,21 +57,21 @@ module Stradivari
           end
       end
 
-      def initialize(view, klass, *pass, &definition)
+      def initialize(view, klass, *pass, &)
         @fields = []
 
         super(view, klass, *pass)
         opts.reverse_merge! Filter::Generator::FILTER_OPTIONS
         opts[:inline] = true if detached?
 
-        instance_exec(*pass, &definition)
+        instance_exec(*pass, &)
       end
 
-      def field scope, attr, opts = {}, &renderer
+      def field(scope, attr, opts = {}, &)
         attr  = attr.to_sym
         scope = scope.to_sym
 
-        if (f = self.class.const_get(:Field).new(self, scope, attr, opts, &renderer)).enabled?
+        if (f = self.class.const_get(:Field).new(self, scope, attr, opts, &)).enabled?
           @fields << f
         end
       end

@@ -1,34 +1,34 @@
 module StradivariHelper
-  def table_for *args, &block
-    Stradivari::Table::Generator.new(self, *args, &block).to_s
+  def table_for(*args, &)
+    Stradivari::Table::Generator.new(self, *args, &).to_s
   end
 
-  def csv_for *args, &block
-    Stradivari::CSV::Generator.new(self, *args, &block).to_s
+  def csv_for(*args, &)
+    Stradivari::CSV::Generator.new(self, *args, &).to_s
   end
 
-  def xlsx_for *args, &block
-    Stradivari::XLSX::Generator.new(self, *args, &block).to_s
+  def xlsx_for(*args, &)
+    Stradivari::XLSX::Generator.new(self, *args, &).to_s
   end
 
-  def details_for *args, &block
-    Stradivari::Details::Generator.new(self, *args, &block).to_s
+  def details_for(*args, &)
+    Stradivari::Details::Generator.new(self, *args, &).to_s
   end
 
-  def filter_for *args, &block
-    Stradivari::Filter::Generator.new(self, *args, &block).to_s
+  def filter_for(*args, &)
+    Stradivari::Filter::Generator.new(self, *args, &).to_s
   end
 
-  def tabs_for(*args, &block)
-    Stradivari::Tabs::Generator.tabs(self, *args, &block).to_s
+  def tabs_for(*args, &)
+    Stradivari::Tabs::Generator.tabs(self, *args, &).to_s
   end
 
-  def tab_navs_for(*args, &block)
-    Stradivari::Tabs::Generator.navs(self, *args, &block).to_s
+  def tab_navs_for(*args, &)
+    Stradivari::Tabs::Generator.navs(self, *args, &).to_s
   end
 
-  def tab_content_for(*args, &block)
-    Stradivari::Tabs::Generator.content(self, *args, &block).to_s
+  def tab_content_for(*args, &)
+    Stradivari::Tabs::Generator.content(self, *args, &).to_s
   end
 
   def search_param(name)

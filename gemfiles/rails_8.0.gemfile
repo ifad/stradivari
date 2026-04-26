@@ -16,7 +16,7 @@ gem "database_cleaner-active_record"
 gem "haml-rails"
 gem "nokogiri"
 gem "pg"
-gem "rails", "~> 7.0.0"
+gem "rails", "~> 8.0.0"
 gem "roo"
 gem "rubocop", require: false
 gem "rubocop-packaging", require: false

@@ -28,7 +28,7 @@ This Gem combines HAML and Bootstrap 3 to provide you easy generators for:
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.required_ruby_version = '>= 3.0'
+  spec.required_ruby_version = '>= 3.2'
 
   spec.metadata = {
     'bug_tracker_uri'       => 'https://github.com/ifad/stradivari/issues',

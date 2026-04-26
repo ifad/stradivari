@@ -49,13 +49,13 @@ module Stradivari
           end
       end
 
-      def initialize(view, object, *pass, &definition)
+      def initialize(view, object, *pass, &)
         @fields = []
 
         super(view, object, *pass)
         opts.reverse_merge! Details::Generator::DETAILS_OPTIONS
 
-        instance_exec(object, *pass, &definition)
+        instance_exec(object, *pass, &)
       end
 
       alias object data
