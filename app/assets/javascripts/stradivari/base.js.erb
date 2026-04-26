@@ -1,9 +1,9 @@
 window.Stradivari = window.Stradivari || {};
 
 Object.assign(Stradivari, {
-  filterContext: '<%= Stradivari::Filter::CONTEXT %>',
-  filterNamespace: '<%= Stradivari::Filter::NAMESPACE %>',
-  version: '<%= Stradivari::VERSION %>',
+  filterContext: "<%= Stradivari::Filter::CONTEXT %>",
+  filterNamespace: "<%= Stradivari::Filter::NAMESPACE %>",
+  version: "<%= Stradivari::VERSION %>",
 
   init() {
     if (Stradivari.DetachedForm.form()) {
@@ -16,7 +16,7 @@ Object.assign(Stradivari, {
     }
 
     setTimeout(() => {
-      const focusField = document.querySelector('input.focus:not([readonly])');
+      const focusField = document.querySelector("input.focus:not([readonly])");
 
       if (focusField) {
         focusField.focus();
@@ -27,7 +27,7 @@ Object.assign(Stradivari, {
         }
       }
     });
-  }
+  },
 });
 
 Stradivari.ready(() => Stradivari.init());

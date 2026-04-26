@@ -3,7 +3,7 @@ const stradivariElementsFrom = (value) => {
     return [];
   }
 
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     return Stradivari.all(value);
   }
 
@@ -11,7 +11,7 @@ const stradivariElementsFrom = (value) => {
     return [value];
   }
 
-  if (typeof value.length === 'number') {
+  if (typeof value.length === "number") {
     return Array.from(value).filter(Boolean);
   }
 
@@ -25,7 +25,10 @@ class StradivariTemplate {
 
   expand(map) {
     return Object.entries(map).reduce((result, [key, value]) => {
-      return result.replace(new RegExp(`\\{${key}\\}`, 'g'), encodeURIComponent(value));
+      return result.replace(
+        new RegExp(`\\{${key}\\}`, "g"),
+        encodeURIComponent(value),
+      );
     }, this.template);
   }
 }
@@ -47,20 +50,23 @@ Stradivari.FilterSelect = class {
   }
 
   bind() {
-    this.element.addEventListener('change', () => this.onChange());
+    this.element.addEventListener("change", () => this.onChange());
   }
 
   async onChange() {
     this.target.disabled = true;
 
     try {
-      const response = await fetch(this.template.expand({ value: this.element.value }), {
-        credentials: 'same-origin',
-        headers: {
-          Accept: 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
-        }
-      });
+      const response = await fetch(
+        this.template.expand({ value: this.element.value }),
+        {
+          credentials: "same-origin",
+          headers: {
+            Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+          },
+        },
+      );
 
       if (!response.ok) {
         throw new Error(`Filter select request failed with ${response.status}`);
@@ -76,7 +82,7 @@ Stradivari.FilterSelect = class {
     this.target.replaceChildren();
 
     Object.entries(this.formatter(data)).forEach(([label, value]) => {
-      const option = document.createElement('option');
+      const option = document.createElement("option");
       option.value = value;
       option.selected = this.target.dataset.selected === String(value);
       option.textContent = label;

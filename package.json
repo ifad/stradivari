@@ -3,13 +3,19 @@
   "packageManager": "pnpm@10.33.0",
   "scripts": {
     "build:css": "tailwindcss -i ./app/assets/tailwind/stradivari.css -o ./app/assets/stylesheets/stradivari/generated.css --minify",
+    "format": "pnpm run format:tailwind && pnpm run format:js",
+    "format:js": "prettier --write --parser babel \"app/assets/javascripts/**/*.js\" app/assets/javascripts/stradivari/base.js.erb",
     "format:tailwind": "prettier --write ./app/assets/tailwind/stradivari.css",
-    "lint": "pnpm run lint:tailwind && pnpm run lint:js",
-    "lint:js": "node ./scripts/lint-javascript.mjs",
+    "lint": "pnpm run lint:tailwind && pnpm run lint:format:js && pnpm run lint:js",
+    "lint:format:js": "prettier --check --parser babel \"app/assets/javascripts/**/*.js\" app/assets/javascripts/stradivari/base.js.erb",
+    "lint:js": "eslint \"app/assets/javascripts/**/*.js\" app/assets/javascripts/stradivari/base.js.erb",
     "lint:tailwind": "prettier --check ./app/assets/tailwind/stradivari.css"
   },
   "devDependencies": {
+    "@eslint/js": "10.0.1",
     "@tailwindcss/cli": "4.2.2",
+    "eslint": "10.2.1",
+    "globals": "17.5.0",
     "prettier": "3.8.3",
     "prettier-plugin-tailwindcss": "0.7.3",
     "tailwindcss": "4.2.2"
