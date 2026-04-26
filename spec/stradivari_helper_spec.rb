@@ -56,7 +56,7 @@ RSpec.describe StradivariHelper do
       expect(view.filter_for(Widget) { search :name_like }).to be_a(String)
       expect(view.tabs_for([1]) do
         tab 'A', 'a', [1] do |_|
-          haml_concat 'x'
+          concat 'x'
         end
       end).to be_a(String)
     end

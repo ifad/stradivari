@@ -7,11 +7,11 @@ RSpec.describe Stradivari::Tabs::Generator do
     it 'renders nav and content with default flavor (tabs)' do
       view = view_context
       out = view.tabs_for([1, 2, 3]) do |scope|
-        tab 'First',  'first', scope, present: true do |s|
-          haml_concat "Count: #{s.count}"
+        tab 'First', 'first', scope, present: true do |s|
+          concat "Count: #{s.count}"
         end
         tab 'Second', 'second', [], present: false do |_|
-          haml_concat 'Nothing'
+          concat 'Nothing'
         end
       end
 
@@ -27,7 +27,7 @@ RSpec.describe Stradivari::Tabs::Generator do
       view = view_context
       out = view.tabs_for([1], flavor: :pills) do |scope|
         tab 'Only', 'only', scope do |_|
-          haml_concat 'X'
+          concat 'X'
         end
       end
       expect(out).to include('nav-pills')
@@ -37,7 +37,7 @@ RSpec.describe Stradivari::Tabs::Generator do
       view = view_context
       out = view.tabs_for([1]) do |s|
         tab 'A', 'foo[bar].baz', s do |_|
-          haml_concat 'x'
+          concat 'x'
         end
       end
       expect(out).to include('id=\'foo_bar__baz\'').or include('id="foo_bar__baz"')
@@ -46,9 +46,9 @@ RSpec.describe Stradivari::Tabs::Generator do
     it 'renders the blank fallback when all tabs are blank' do
       view = view_context
       out = view.tabs_for([]) do |_|
-        blank { haml_tag :div, 'Nothing here', class: 'empty' }
+        blank { content_tag :div, 'Nothing here', class: 'empty' }
         tab 'Empty', 'empty', [] do |_|
-          haml_concat 'never'
+          concat 'never'
         end
       end
       doc = Nokogiri::HTML.fragment(out)
@@ -60,12 +60,12 @@ RSpec.describe Stradivari::Tabs::Generator do
       view = view_context
       with_counters = view.tabs_for([1, 2, 3]) do |s|
         tab 'A', 'a', s do |_|
-          haml_concat 'x'
+          concat 'x'
         end
       end
       no_counters = view.tabs_for([1, 2, 3], counters: false) do |s|
         tab 'B', 'b', s do |_|
-          haml_concat 'x'
+          concat 'x'
         end
       end
       expect(with_counters).to include('badge')
@@ -78,7 +78,7 @@ RSpec.describe Stradivari::Tabs::Generator do
       view = view_context
       out = view.tab_navs_for do
         tab 'Only', 'only', [1] do |_|
-          haml_concat 'x'
+          concat 'x'
         end
       end
       expect(out).to include('nav-tabs')
@@ -89,7 +89,7 @@ RSpec.describe Stradivari::Tabs::Generator do
       view = view_context
       out = view.tab_content_for do
         tab 'Only', 'only', [1] do |_|
-          haml_concat 'x'
+          concat 'x'
         end
       end
       expect(out).to include('tab-content')
@@ -102,7 +102,7 @@ RSpec.describe Stradivari::Tabs::Generator do
       view = view_context
       out = view.tabs_for([1, 2, 3]) do |s|
         tab 'A', 'a', s, counter: 99 do |_|
-          haml_concat 'x'
+          concat 'x'
         end
       end
       expect(out).to include('>3<') # @content responds to count → uses count, not raw counter
@@ -112,7 +112,7 @@ RSpec.describe Stradivari::Tabs::Generator do
       view = view_context
       out = view.tabs_for([1], printable: true) do |s|
         tab 'A', 'a', s do |_|
-          haml_concat 'X'
+          concat 'X'
         end
       end
       expect(out).to include('X')
@@ -123,7 +123,7 @@ RSpec.describe Stradivari::Tabs::Generator do
       view = view_context
       out = view.tabs_for([1]) do |_|
         tab_content 'a', [1] do |_|
-          haml_concat 'aliased'
+          concat 'aliased'
         end
       end
       expect(out).to include('aliased')

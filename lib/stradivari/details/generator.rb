@@ -33,7 +33,7 @@ module Stradivari
 
         def value(object = self.object)
           if @renderer.present?
-            capture_haml { view.instance_exec(object, &@renderer) }
+            capture { view.instance_exec(object, &@renderer) }
           else
             build(object)
           end
@@ -67,17 +67,19 @@ module Stradivari
 
       def to_s
         renderer = lambda do
-          haml_tag :dl, @opts do
-            @fields.each do |field|
-              if (c = field.content).present?
-                haml_tag :dt, field.label, field.opts[:label]
-                haml_tag :dd, c,           field.opts[:content]
+          concat(
+            content_tag(:dl, @opts) do
+              @fields.each do |field|
+                if (c = field.content).present?
+                  concat content_tag(:dt, field.label, field.opts[:label])
+                  concat content_tag(:dd, c,           field.opts[:content])
+                end
               end
             end
-          end
+          )
         end
 
-        capture_haml(&renderer)
+        capture(&renderer)
       end
 
       def klass

@@ -5,11 +5,11 @@ module Stradivari
         lambda do |attr, opts|
           # rubocop:disable Lint/NestedMethodDefinition -- defined on the view via instance_exec; refactoring to a lambda would change call semantics for descendants
           def cb(name, label, value, checked, opts)
-            haml_tag :div, class: 'checkbox' do
-              haml_tag :label do
-                haml_concat check_box(opts[:namespace], name, { multiple: true, value: value, checked: checked }, value, nil)
-                haml_concat label
-              end
+            content_tag(:div, class: 'checkbox') do
+              content_tag(:label, safe_join([
+                                              check_box(opts[:namespace], name, { multiple: true, value: value, checked: checked }, value, nil),
+                                              label
+                                            ]))
             end
           end
           # rubocop:enable Lint/NestedMethodDefinition
@@ -29,30 +29,28 @@ module Stradivari
           checked, unchecked = collection.partition { |_, value| values.include?(value.to_s) }
           opts[:collapsed_field] = true if type == :multi_line && checked.present?
 
-          haml_tag :div, class: 'form-group' do
-            instance_exec(&Helpers.render_title(name, title, opts))
+          classes = Builder.prepare_classes(opts, (type == :single_line ? 'form-inline' : 'multi-line'))
+          checkboxes = if type == :multi_line
+                         checked_boxes = checked.map { |label, value| cb(name, label, value, true, opts) }
+                         if checked.present?
+                           checked_boxes << content_tag(:div, safe_join([
+                                                                          tag.hr,
+                                                                          *unchecked.map { |label, value| cb(name, label, value, false, opts) }
+                                                                        ]), class: 'closed')
+                         else
+                           checked_boxes.concat(unchecked.map { |label, value| cb(name, label, value, false, opts) })
+                         end
+                       else
+                         collection.map do |label, value|
+                           cb(name, label, value, values.include?(value.to_s), opts)
+                         end
+                       end
 
-            classes = Builder.prepare_classes(opts, (type == :single_line ? 'form-inline' : 'multi-line'))
-            haml_concat hidden_field(opts[:namespace], "#{name}[]", value: '')
-            haml_tag :div, class: classes do
-              if type == :multi_line
-
-                checked.each { |label, value| cb(name, label, value, true, opts) }
-                if checked.present?
-                  haml_tag :div, class: 'closed' do
-                    haml_tag :hr
-                    unchecked.each { |label, value| cb(name, label, value, false, opts) }
-                  end
-                else
-                  unchecked.each { |label, value| cb(name, label, value, false, opts) }
-                end
-              else
-                collection.each do |label, value|
-                  cb(name, label, value, values.include?(value.to_s), opts)
-                end
-              end
-            end
-          end
+          concat content_tag(:div, safe_join([
+                                               capture { instance_exec(&Helpers.render_title(name, title, opts)) },
+                                               hidden_field(opts[:namespace], "#{name}[]", value: ''),
+                                               content_tag(:div, safe_join(checkboxes), class: classes)
+                                             ]), class: 'form-group')
         end
       end
 

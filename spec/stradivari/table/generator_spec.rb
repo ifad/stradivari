@@ -18,7 +18,7 @@ RSpec.describe Stradivari::Table::Generator do
       view = view_context
       out = view.table_for([]) do
         no_data do
-          haml_tag :strong, 'No widgets at all'
+          content_tag :strong, 'No widgets at all'
         end
         column :id
       end
@@ -66,7 +66,7 @@ RSpec.describe Stradivari::Table::Generator do
       view = view_context
       out = view.table_for(Widget.all) do
         column :name do |w|
-          haml_tag :strong, "BANG-#{w.name}"
+          content_tag :strong, "BANG-#{w.name}"
         end
       end
       expect(out).to include('BANG-Widget 0')
@@ -90,7 +90,7 @@ RSpec.describe Stradivari::Table::Generator do
       out = view.table_for(Widget.all) do
         column :name
         footer(class: 'totals') do
-          haml_tag :strong, 'TOTAL'
+          content_tag :strong, 'TOTAL'
         end
       end
       expect(out).to include('TOTAL')

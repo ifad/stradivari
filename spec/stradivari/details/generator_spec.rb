@@ -39,7 +39,7 @@ RSpec.describe Stradivari::Details::Generator do
     widget = create_widget(name: 'X')
     out = view.details_for(widget) do
       field :badge do |w|
-        haml_tag :strong, "[#{w.name}]"
+        content_tag :strong, "[#{w.name}]"
       end
     end
     expect(out).to include('[X]')

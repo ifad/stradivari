@@ -18,8 +18,8 @@ RSpec.describe Stradivari::Generator do
     expect(gen.opts).to eq(class: 'foo')
   end
 
-  it 'delegates haml helpers to the view' do
-    expect(described_class.new(view, nil)).to respond_to(:capture_haml)
+  it 'delegates Rails rendering helpers to the view' do
+    expect(described_class.new(view, nil)).to respond_to(:capture)
   end
 
   describe Stradivari::Generator::Tag do

@@ -24,7 +24,7 @@ RSpec.describe 'Coverage edge cases' do
     it 'renders an empty tab when present: :force is set' do
       out = view.tabs_for([]) do |_|
         tab 'Forced', 'forced', [], present: :force do |_|
-          haml_concat 'visible'
+          concat 'visible'
         end
       end
       expect(out).to include('visible')

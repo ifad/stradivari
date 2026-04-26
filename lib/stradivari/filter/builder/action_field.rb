@@ -3,18 +3,13 @@ module Stradivari
     class Builder::ActionField
       def self.render
         lambda do
-          haml_tag :ul, class: 'list-group actions' do
-            haml_tag :li, class: 'list-group-item' do
-              haml_tag :button, class: 'btn btn-primary btn-sm search' do
-                haml_tag :i, '', class: 'fa fa-search'
-                haml_concat ' Search'
-              end
-              haml_tag :button, class: 'btn btn-default btn-sm clear' do
-                haml_tag :i, '', class: 'fa fa-times'
-                haml_concat ' Clear'
-              end
-            end
-          end
+          search = content_tag(:button, safe_join([content_tag(:i, '', class: 'fa fa-search'), ' Search']),
+                               class: 'btn btn-primary btn-sm search')
+          clear = content_tag(:button, safe_join([content_tag(:i, '', class: 'fa fa-times'), ' Clear']),
+                              class: 'btn btn-default btn-sm clear')
+
+          concat content_tag(:ul, content_tag(:li, safe_join([search, clear]), class: 'list-group-item'),
+                             class: 'list-group actions')
         end
       end
     end

@@ -20,7 +20,7 @@ module Stradivari
       class Column < CSV::Generator::Column
         def to_s(object)
           if @renderer.present?
-            capture_haml { view.instance_exec(object, &@renderer) }
+            capture { view.instance_exec(object, &@renderer) }
           elsif opts.fetch(:type, nil)
             object.public_send(@name)
           else

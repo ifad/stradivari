@@ -4,7 +4,7 @@ module Stradivari
       class Column < Table::Generator::Column
         def to_s(object)
           if @renderer.present?
-            capture_haml { view.instance_exec(object, &@renderer) }
+            capture { view.instance_exec(object, &@renderer) }
           else
             build(object)
           end.to_s.strip
@@ -14,7 +14,7 @@ module Stradivari
       def to_s
         renderer = -> { render_csv_content }
 
-        capture_haml(&renderer)
+        capture(&renderer)
       end
 
       protected

@@ -49,7 +49,7 @@ RSpec.describe Stradivari::Filter::Generator do
   it 'renders custom fields with a user-supplied renderer' do
     out = view.filter_for(Widget) do
       custom :my_thing, active: -> { true } do |attr, _opts|
-        haml_tag :div, "custom:#{attr}", class: 'my-thing'
+        content_tag :div, "custom:#{attr}", class: 'my-thing'
       end
     end
     doc = Nokogiri::HTML.fragment(out)
@@ -62,7 +62,7 @@ RSpec.describe Stradivari::Filter::Generator do
     expect do
       view.filter_for(Widget) do
         custom :foo do |attr, _opts|
-          haml_tag :div, attr
+          content_tag :div, attr
         end
       end
     end.to raise_error(ArgumentError, /active attribute block/)
@@ -70,8 +70,8 @@ RSpec.describe Stradivari::Filter::Generator do
 
   it 'supports prepend and append blocks' do
     out = view.filter_for(Widget) do
-      prepend(class: 'pre') { haml_tag :div, 'PRE' }
-      append(class: 'post') { haml_tag :div, 'POST' }
+      prepend(class: 'pre') { content_tag :div, 'PRE' }
+      append(class: 'post') { content_tag :div, 'POST' }
       search :name_like
     end
     doc = Nokogiri::HTML.fragment(out)

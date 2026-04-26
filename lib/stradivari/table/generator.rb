@@ -25,7 +25,7 @@ module Stradivari
 
         def to_s(object)
           value = if @renderer.present?
-                    capture_haml { view.instance_exec(object, &@renderer) }
+                    capture { view.instance_exec(object, &@renderer) }
                   else
                     build(object)
                   end
@@ -34,8 +34,8 @@ module Stradivari
         end
 
         def header
-          sortable_icon if sortable?
-          haml_concat title
+          concat sortable_icon if sortable?
+          concat title
         end
 
         def html_opts
@@ -93,7 +93,7 @@ module Stradivari
             s_class << [fa_icon, "-#{current_sorting_direction}"].join if sorting_active?
           end
 
-          haml_tag :i, '', class: klass
+          content_tag(:i, '', class: klass)
         end
       end
 
@@ -138,7 +138,7 @@ module Stradivari
       def to_s
         renderer = -> { @data.present? ? generate_table : generate_no_data }
 
-        capture_haml(&renderer)
+        capture(&renderer)
       end
 
       def klass
@@ -153,45 +153,53 @@ module Stradivari
         html_opts[:name]  = @opts[:name]
         html_opts[:id]    = @opts[:id]
 
-        haml_tag :table, html_opts do
-          render_header if @opts[:header_visible]
-          render_body   if @opts[:body_visible]
-          render_footer if @opts[:footer_visible]
-        end
+        concat(
+          content_tag(:table, html_opts) do
+            render_header if @opts[:header_visible]
+            render_body   if @opts[:body_visible]
+            render_footer if @opts[:footer_visible]
+          end
+        )
       end
 
       def generate_no_data
         if @no_data
-          haml_tag :div, class: 'no-data alert alert-warning', &@no_data
+          concat(content_tag(:div, class: 'no-data alert alert-warning', &@no_data))
         else
-          haml_tag :div, @opts[:no_data], class: 'no-data alert alert-warning'
+          concat content_tag(:div, @opts[:no_data], class: 'no-data alert alert-warning')
         end
       end
 
       def render_header
-        haml_tag :thead do
-          haml_tag :tr do
-            @columns.each do |col|
-              haml_tag(:th, col.html_opts) { col.header }
-            end
+        concat(
+          content_tag(:thead) do
+            concat(
+              content_tag(:tr) do
+                @columns.each do |col|
+                  concat(content_tag(:th, col.html_opts) { col.header })
+                end
+              end
+            )
           end
-        end
+        )
       end
 
       def render_body
-        haml_tag :tbody do
-          @data.each do |object|
-            if (children = self.children(object))
-              render_row(object, :parent)
+        concat(
+          content_tag(:tbody) do
+            @data.each do |object|
+              if (children = self.children(object))
+                render_row(object, :parent)
 
-              children.each do |child|
-                render_row(child, :child)
+                children.each do |child|
+                  render_row(child, :child)
+                end
+              else
+                render_row(object)
               end
-            else
-              render_row(object)
             end
           end
-        end
+        )
       end
 
       def children(object)
@@ -207,30 +215,40 @@ module Stradivari
           @row&.call(attributes, object) # allow developer to add custom attributes to the <tr>
         end
 
-        haml_tag :tr, attributes do
-          @columns.each do |col|
-            haml_tag(:td, col.to_s(object), col.html_opts)
+        concat(
+          content_tag(:tr, attributes) do
+            @columns.each do |col|
+              concat content_tag(:td, col.to_s(object), col.html_opts)
+            end
           end
-        end
+        )
       end
 
       def render_footer
-        haml_tag :tfoot do
-          haml_tag :tr do
-            haml_tag :td, colspan: @columns.count do
-              haml_tag :div, download, class: 'download pull-left' if @opts[:downloadable]
+        concat(
+          content_tag(:tfoot) do
+            concat(
+              content_tag(:tr) do
+                concat(
+                  content_tag(:td, colspan: @columns.count) do
+                    concat content_tag(:div, download, class: 'download pull-left') if @opts[:downloadable]
 
-              if @custom_footer
-                haml_tag :div, class: "pull-left #{@custom_footer[:class]}" do
-                  @view.instance_exec(&@custom_footer[:block])
-                end
+                    if @custom_footer
+                      concat(
+                        content_tag(:div, class: "pull-left #{@custom_footer[:class]}") do
+                          @view.instance_exec(&@custom_footer[:block])
+                        end
+                      )
+                    end
+
+                    concat content_tag(:div, counters, class: 'counters pull-right') if data.respond_to?(:current_page)
+                    concat content_tag(:div, '', class: 'clearfix')
+                  end
+                )
               end
-
-              haml_tag :div, counters, class: 'counters pull-right' if data.respond_to?(:current_page)
-              haml_tag :div, '', class: 'clearfix'
-            end
+            )
           end
-        end
+        )
       end
 
       def counters
@@ -252,7 +270,7 @@ module Stradivari
       end
 
       def download
-        capture_haml do
+        capture do
           format = @opts[:downloadable] === true ? :csv : @opts[:downloadable]
           classes = @opts[:downloadable_type] == :event ? 'downloadable_event' : ''
 
@@ -280,7 +298,7 @@ module Stradivari
             params[:q] = query.each { |k, v| query[k] = [''] if v.is_a?(Array) && v.empty? }
           end
 
-          haml_tag :a, text, href: view.url_for(params.merge(format: format)), class: classes
+          concat content_tag(:a, text, href: view.url_for(params.merge(format: format)), class: classes)
         end
       end
     end
