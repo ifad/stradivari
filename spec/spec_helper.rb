@@ -29,7 +29,6 @@ require 'rspec/rails'
 require 'webmock/rspec'
 require 'database_cleaner/active_record'
 require 'nokogiri'
-require 'csv'
 require 'roo'
 
 require 'support/view_context'

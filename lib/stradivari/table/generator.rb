@@ -34,8 +34,20 @@ module Stradivari
         end
 
         def header
-          concat sortable_icon if sortable?
-          concat title
+          content = safe_join([sortable_icon, title].compact)
+
+          return content unless sortable?
+
+          view.link_to(
+            content,
+            sort_href,
+            class: 'stradivari-table__sort-link',
+            data: {
+              stradivari_table_sort: true,
+              sort: sort_on,
+              direction: next_sorting_direction
+            }
+          )
         end
 
         def header_html_opts
@@ -47,12 +59,9 @@ module Stradivari
               html_opts[:data] ||= {}
               html_opts[:data][:stradivari_table_sort] = true
               html_opts[:data][:sort]      = sort_on
-              html_opts[:data][:direction] = if sorting_active?
-                                               classes << 'stradivari-table__header-cell--active'
-                                               current_sorting_direction == 'asc' ? 'desc' : 'asc' # Inversion on click
-                                             else
-                                               'asc'
-                                             end
+              html_opts[:data][:direction] = next_sorting_direction
+
+              classes << 'stradivari-table__header-cell--active' if sorting_active?
             end
 
             classes << 'stradivari-table__header-cell--actions' if name == :actions
@@ -93,11 +102,12 @@ module Stradivari
         end
 
         def current_sorting_column
-          view.sortable[:sort].to_s
+          current_sorting[:sort].to_s
         end
 
         def current_sorting_direction
-          view.sortable[:direction].to_s
+          direction = current_sorting[:direction].to_s
+          direction.presence || 'asc'
         end
 
         def sorting_active?
@@ -112,6 +122,46 @@ module Stradivari
           icon = sorting_active? ? "sort_#{current_sorting_direction}" : :sort
 
           Stradivari::Icons.svg(icon)
+        end
+
+        def next_sorting_direction
+          if sorting_active?
+            current_sorting_direction == 'asc' ? 'desc' : 'asc'
+          else
+            'asc'
+          end
+        end
+
+        def sort_href
+          params = request_params.merge(sort: sort_on, direction: next_sorting_direction)
+          path = view.request.path if view.respond_to?(:request) && view.request.respond_to?(:path)
+
+          if path.present?
+            [path, params.to_query].join('?')
+          else
+            ['?', params.to_query].join
+          end
+        end
+
+        def request_params
+          return {} unless view.respond_to?(:params)
+
+          params = view.params.dup
+          params = params.permit! if params.respond_to?(:permit!)
+          params = params.to_h
+
+          query_params = params[:q] || params['q']
+          query_params&.each do |key, value|
+            query_params[key] = [''] if value.is_a?(Array) && value.empty?
+          end
+
+          params
+        end
+
+        def current_sorting
+          return {} unless view.respond_to?(:sortable)
+
+          view.sortable || {}
         end
       end
 
@@ -173,10 +223,12 @@ module Stradivari
         html_opts[:data]  = (html_opts[:data] || {}).merge(stradivari_table: true)
 
         concat(
-          content_tag(:table, html_opts) do
-            render_header if @opts[:header_visible]
-            render_body   if @opts[:body_visible]
-            render_footer if @opts[:footer_visible]
+          content_tag(:div, class: 'stradivari-table__viewport') do
+            content_tag(:table, html_opts) do
+              render_header if @opts[:header_visible]
+              render_body   if @opts[:body_visible]
+              render_footer if @opts[:footer_visible]
+            end
           end
         )
       end
