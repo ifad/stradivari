@@ -100,6 +100,10 @@ module Stradivari
               id, link = link, id if detached?
 
               data = { link: link, stradivari_filter_form: (detached? ? 'detached' : 'main') }
+              unless detached?
+                data[:stradivari_filter_context] = Filter::CONTEXT
+                data[:stradivari_filter_namespace] = NAMESPACE
+              end
               data[:detached] = 'true' if detached?
 
               concat(

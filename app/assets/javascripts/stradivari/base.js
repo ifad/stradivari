@@ -1,11 +1,22 @@
 window.Stradivari = window.Stradivari || {};
 
 Object.assign(Stradivari, {
-  filterContext: "<%= Stradivari::Filter::CONTEXT %>",
-  filterNamespace: "<%= Stradivari::Filter::NAMESPACE %>",
-  version: "<%= Stradivari::VERSION %>",
+  configure() {
+    const configElement = document.querySelector(
+      '[data-stradivari-filter-form="main"]',
+    );
+
+    if (!configElement) {
+      return;
+    }
+
+    this.filterContext = configElement.dataset.stradivariFilterContext;
+    this.filterNamespace = configElement.dataset.stradivariFilterNamespace;
+  },
 
   init() {
+    this.configure();
+
     if (Stradivari.DetachedForm.form()) {
       Stradivari.detachedForm = new Stradivari.DetachedForm();
     }

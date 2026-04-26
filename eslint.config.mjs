@@ -7,7 +7,7 @@ export default [
   },
   js.configs.recommended,
   {
-    files: ['app/assets/javascripts/**/*.js', 'app/assets/javascripts/**/*.js.erb'],
+    files: ['app/assets/javascripts/**/*.js'],
     languageOptions: {
       ecmaVersion: 2022,
       globals: {

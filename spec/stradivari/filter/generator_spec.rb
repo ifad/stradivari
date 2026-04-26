@@ -10,7 +10,10 @@ RSpec.describe Stradivari::Filter::Generator do
       search :name_like
     end
     doc = Nokogiri::HTML.fragment(out)
-    expect(doc.at_css('form#filter-form')).not_to be_nil
+    form = doc.at_css('form#filter-form')
+    expect(form).not_to be_nil
+    expect(form['data-stradivari-filter-context']).to eq('context')
+    expect(form['data-stradivari-filter-namespace']).to eq('q')
     expect(doc.at_css('input[type="hidden"][name="sort"]')).not_to be_nil
     expect(doc.at_css('input[type="hidden"][name="direction"]')).not_to be_nil
     expect(doc.at_css('.stradivari-filter__panel')).not_to be_nil
@@ -30,6 +33,8 @@ RSpec.describe Stradivari::Filter::Generator do
     end
     doc = Nokogiri::HTML.fragment(out)
     expect(doc.at_css('form[data-detached="true"]')).not_to be_nil
+    expect(doc.at_css('form[data-stradivari-filter-context]')).to be_nil
+    expect(doc.at_css('form[data-stradivari-filter-namespace]')).to be_nil
     expect(doc.at_css('form input[name="sort"]')).to be_nil
   end
 
