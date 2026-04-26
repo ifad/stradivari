@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'Coverage edge cases' do
@@ -36,7 +38,7 @@ RSpec.describe 'Coverage edge cases' do
         include Stradivari::XLSX::Controller
 
         def render_to_string(_opts)
-          "fake-xlsx-bytes\n" # ends with \n to trigger the slice! branch
+          (+'fake-xlsx-bytes') << "\n" # ends with \n to trigger the slice! branch
         end
 
         def send_data(payload, _opts = {})

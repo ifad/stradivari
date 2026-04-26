@@ -53,5 +53,4 @@ module StradivariHelper
 
     check_box_tag(name, value, checked, data: data, id: options[:name])
   end
-
 end

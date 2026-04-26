@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module XlsxHelpers
   # Opens the binary string returned by Stradivari::XLSX::Generator and yields a
   # Roo::Excelx instance for assertions.

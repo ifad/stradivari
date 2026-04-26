@@ -1,6 +1,5 @@
 module Stradivari
   module Tabs
-
     class Generator < Stradivari::Generator
       class Tab < Tag
         def initialize(parent, label, dom_id, content, opts, renderer)
@@ -32,7 +31,7 @@ module Stradivari
           klass = 'active' if active?
 
           attributes = @opts.except(:if, :url)
-          attributes.deep_merge!(href: "##@dom_id", data: {toggle: :tab})
+          attributes.deep_merge!(href: "##{@dom_id}", data: { toggle: :tab })
           attributes[:data][:url] = @opts[:url]
 
           haml_tag :li, class: klass do
@@ -48,7 +47,7 @@ module Stradivari
           klass << ' active' if active?
 
           haml_tag :div, class: klass, id: @dom_id do
-            renderer = (@content.blank? && !force?) ? opts.fetch(:blank) : @renderer
+            renderer = @content.blank? && !force? ? opts.fetch(:blank) : @renderer
             view.instance_exec(@content, &renderer)
           end
         end
@@ -57,10 +56,10 @@ module Stradivari
           # @opts are this tab's options, while global_opts are options coming
           # from the tabs generator.
           counter = if @opts.key?(:counter)
-            @opts.fetch(:counter, nil)
-          else
-            global_opts.fetch(:counters, true)
-          end
+                      @opts.fetch(:counter, nil)
+                    else
+                      global_opts.fetch(:counters, true)
+                    end
 
           return unless counter
 
@@ -75,7 +74,7 @@ module Stradivari
         end
       end
 
-      alias_method :tab_nav, :tab
+      alias tab_nav tab
 
       def tab_content(dom_id, content, opts = {}, &)
         tab('label', dom_id, content, opts, &)
@@ -83,19 +82,19 @@ module Stradivari
 
       def blank(&block)
         @blank = block if block
-        @blank || Proc.new { }
+        @blank || proc {}
       end
 
       def to_s
-        tabs = @tabs.reject(&:blank?)
+        tabs = @tabs.compact_blank
 
         renderer = if tabs.blank?
-          blank
-        elsif @opts.fetch(:printable, false)
-          render_for_print(tabs)
-        else
-          render_for_display(tabs)
-        end
+                     blank
+                   elsif @opts.fetch(:printable, false)
+                     render_for_print(tabs)
+                   else
+                     render_for_display(tabs)
+                   end
 
         capture_haml(&renderer)
       end
@@ -114,7 +113,7 @@ module Stradivari
         end
       end
 
-    protected
+      protected
 
       def initialize(view, render_nav, render_content, *pass, &)
         super(view, nil, *pass)
@@ -126,7 +125,7 @@ module Stradivari
         instance_exec(*pass, &)
       end
 
-      def render_for_print tabs
+      def render_for_print(tabs)
         lambda do
           tabs.each do |tab|
             if @render_nav
@@ -134,28 +133,26 @@ module Stradivari
                 haml_tag(:ul, class: 'list-unstyled') { tab.nav(@opts) }
               end
             end
-            if @render_content
-              haml_tag(:div) { tab.content(blank: blank) }
-            end
+            haml_tag(:div) { tab.content(blank: blank) } if @render_content
           end
         end
       end
 
-      def render_for_display tabs
+      def render_for_display(tabs)
         lambda do
           flavor = @opts.fetch(:flavor, 'tabs')
 
-          tabs.first.opts[:active] = true if tabs.none? {|tab| tab.opts.fetch(:active, false)}
+          tabs.first.opts[:active] = true if tabs.none? { |tab| tab.opts.fetch(:active, false) }
 
           if @render_nav
             haml_tag :ul, class: "nav nav-#{flavor}" do
-              tabs.each {|tab| tab.nav(@opts) }
+              tabs.each { |tab| tab.nav(@opts) }
             end
           end
 
           if @render_content
             haml_tag :div, class: 'tab-content' do
-              tabs.each {|tab| tab.content(blank: blank)}
+              tabs.each { |tab| tab.content(blank: blank) }
             end
           end
         end

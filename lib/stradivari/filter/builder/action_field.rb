@@ -1,7 +1,6 @@
 module Stradivari
   module Filter
     class Builder::ActionField
-
       def self.render
         lambda do
           haml_tag :ul, class: 'list-group actions' do
@@ -18,7 +17,6 @@ module Stradivari
           end
         end
       end
-
     end
   end
 end

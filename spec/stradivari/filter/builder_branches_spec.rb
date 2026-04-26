@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'stradivari/filter/helpers'
 
@@ -106,11 +108,11 @@ RSpec.describe Stradivari::Filter::Helpers do
 
   describe '.prepare_radio_class' do
     it 'appends " checked" when active' do
-      expect(described_class.prepare_radio_class(true, 'radio')).to eq('radio checked')
+      expect(described_class.prepare_radio_class(true, +'radio')).to eq('radio checked')
     end
 
     it 'returns the default when not active' do
-      expect(described_class.prepare_radio_class(false, 'radio')).to eq('radio')
+      expect(described_class.prepare_radio_class(false, +'radio')).to eq('radio')
     end
   end
 end

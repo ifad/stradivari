@@ -1,6 +1,5 @@
 module Stradivari
   module Filter
-
     module Model
       autoload :Base,         'stradivari/filter/model/base'
       autoload :ActiveRecord, 'stradivari/filter/model/active_record'
@@ -8,6 +7,5 @@ module Stradivari
       autoload :Rails4,       'stradivari/filter/model/rails4'
       autoload :Hawk,         'stradivari/filter/model/hawk'
     end
-
   end
 end

@@ -1,10 +1,13 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Stradivari::Filter::Model::Base do
   let(:host) do
     Class.new do
       include Stradivari::Filter::Model::Base
-      def self.name; 'DummyHost'; end
+
+      def self.name = 'DummyHost'
     end
   end
 
@@ -28,12 +31,15 @@ RSpec.describe Stradivari::Filter::Model::Base do
     it 'forwards configure_scope_search to stradivari_filter_options' do
       host.singleton_class.define_method(:stradivari_filter_options) { |*a| [:configured, *a] }
       result = silence_stderr { host.configure_scope_search(:foo) }
-      expect(result).to eq([:configured, :foo])
+      expect(result).to eq(%i[configured foo])
     end
 
     it 'forwards scope_search to stradivari_scope' do
       seen = nil
-      host.singleton_class.define_method(:stradivari_scope) { |*a, &b| seen = [a, b]; :ok }
+      host.singleton_class.define_method(:stradivari_scope) do |*a, &b|
+        seen = [a, b]
+        :ok
+      end
       silence_stderr { host.scope_search(:bar, type: :number) { :hi } }
       expect(seen[0]).to eq([:bar, { type: :number }])
       expect(seen[1].call).to eq(:hi)
@@ -42,7 +48,7 @@ RSpec.describe Stradivari::Filter::Model::Base do
     it 'forwards extended_search to stradivari_filter' do
       host.singleton_class.define_method(:stradivari_filter) { |*a| [:filtered, *a] }
       result = silence_stderr { host.extended_search(:x) }
-      expect(result).to eq([:filtered, :x])
+      expect(result).to eq(%i[filtered x])
     end
   end
 

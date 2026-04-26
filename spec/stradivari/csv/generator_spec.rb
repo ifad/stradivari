@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Stradivari::CSV::Generator do
@@ -10,8 +12,8 @@ RSpec.describe Stradivari::CSV::Generator do
       column :name
       column :price
     end
-    parsed = ::CSV.parse(csv_string)
-    expect(parsed.first).to eq(['Id', 'Name', 'Price'])
+    parsed = CSV.parse(csv_string)
+    expect(parsed.first).to eq(%w[Id Name Price])
     expect(parsed.size).to eq(3)
   end
 
@@ -22,7 +24,7 @@ RSpec.describe Stradivari::CSV::Generator do
         haml_concat w.name.upcase
       end
     end
-    parsed = ::CSV.parse(csv_string)
+    parsed = CSV.parse(csv_string)
     expect(parsed.last.first).to eq('FOO')
   end
 
@@ -31,7 +33,7 @@ RSpec.describe Stradivari::CSV::Generator do
     csv_string = view.csv_for(Widget.all) do
       column :name
     end
-    parsed = ::CSV.parse(csv_string)
+    parsed = CSV.parse(csv_string)
     expect(parsed.last.first).to eq('Padded')
   end
 end

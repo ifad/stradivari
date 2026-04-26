@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe StradivariHelper do
@@ -52,7 +54,11 @@ RSpec.describe StradivariHelper do
       expect(view.xlsx_for(Widget.all) { column :id }).to be_a(String)
       expect(view.details_for(Widget.first) { field :id }).to be_a(String)
       expect(view.filter_for(Widget) { search :name_like }).to be_a(String)
-      expect(view.tabs_for([1]) { tab 'A', 'a', [1] do |_|; haml_concat 'x'; end }).to be_a(String)
+      expect(view.tabs_for([1]) do
+        tab 'A', 'a', [1] do |_|
+          haml_concat 'x'
+        end
+      end).to be_a(String)
     end
   end
 end

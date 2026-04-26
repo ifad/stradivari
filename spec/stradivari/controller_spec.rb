@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe WidgetsController, type: :request do
@@ -61,7 +63,7 @@ RSpec.describe WidgetsController, type: :request do
     it 'returns CSV content' do
       get '/widgets.csv'
       expect(response).to have_http_status(:ok)
-      parsed = ::CSV.parse(response.body)
+      parsed = CSV.parse(response.body)
       # Header + 3 rows (when no children)
       expect(parsed.first).to eq(%w[Id Name Price])
       expect(parsed.size).to eq(4)
@@ -76,7 +78,7 @@ RSpec.describe WidgetsController, type: :request do
       rows = xlsx_rows(response.body)
       expect(rows.size).to eq(3)
       open_xlsx(response.body) do |sheet|
-        expect(sheet.row(1)).to eq(['Id', 'Name', 'Price'])
+        expect(sheet.row(1)).to eq(%w[Id Name Price])
       end
     end
 

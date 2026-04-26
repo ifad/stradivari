@@ -1,5 +1,5 @@
-module Stradivari::Details
-
-  autoload :Generator, 'stradivari/details/generator'
-
+module Stradivari
+  module Details
+    autoload :Generator, 'stradivari/details/generator'
+  end
 end

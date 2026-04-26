@@ -1,10 +1,14 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Stradivari::Concerns::TableBuilder do
   let(:host_class) do
     Class.new do
       include Stradivari::Concerns::TableBuilder
+
       attr_writer :opts, :type
+
       def initialize(opts: {}, type: nil)
         @opts = opts
         @type = type
