@@ -4,6 +4,8 @@
   "scripts": {
     "build:css": "tailwindcss -i ./app/assets/tailwind/stradivari.css -o ./app/assets/stylesheets/stradivari/generated.css --minify",
     "format:tailwind": "prettier --write ./app/assets/tailwind/stradivari.css",
+    "lint": "pnpm run lint:tailwind && pnpm run lint:js",
+    "lint:js": "node ./scripts/lint-javascript.mjs",
     "lint:tailwind": "prettier --check ./app/assets/tailwind/stradivari.css"
   },
   "devDependencies": {

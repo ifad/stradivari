@@ -1,273 +1,230 @@
-(function() {
+class SelectTree {
+  constructor(node, parent = null) {
+    this.node = node;
+    this.parent = parent;
+    this.children = [];
+    this.linked = null;
+    this.listeners = [];
+    this.total = 0;
 
-  window.SelectTree = function(node, parent) {
-    var self       = this;
-    this.node      = node;
-    this.parent    = parent;
-    this.children  = [ ];
-    this.linked    = null;
-    this.listeners = [ ];
-    this.total     = 0;
-
-    SelectTree.byParent(this.name()).each(function() {
-      self.children.push(new SelectTree($(this), self));
+    SelectTree.byParent(this.name()).forEach((childNode) => {
+      this.children.push(new SelectTree(childNode, this));
     });
 
-    node.on('change', function() {
-      self.onChange($(this).prop('checked'));
+    this.node.addEventListener('change', () => {
+      this.onChange(this.node.checked);
     });
   }
 
-  SelectTree.prototype = {
-    constructor: SelectTree,
+  data(key) {
+    return this.node.getAttribute(`data-${SelectTree.dataPrefix}-${key}`);
+  }
 
-    data: function(key) {
-      return this.node[0].getAttribute('data-' + SelectTree.data_prefix + '-' + key);
-    },
+  name() {
+    return this.data('name');
+  }
 
-    name: function() {
-      return this.data('name');
-    },
+  countTotal() {
+    return this.data('count-total');
+  }
 
-    countTotal: function() {
-      return this.data('count-total');
-    },
+  onChange(checked) {
+    const linked = this.findLinked();
 
-    onChange: function(bool) {
-      var linked = this.findLinked();
+    this.node.checked = checked;
 
-      this.node.prop('checked', bool);
+    this.eachChild((child) => {
+      child.onChange(checked);
+    });
 
-      this.eachChild(function(child) {
-        child.onChange(bool);
-      });
-
-      for(var i = 0; i < linked.length; ++i) {
-        if(linked[i].node.prop('checked') != bool) {
-          linked[i].onChange(bool);
-        }
+    linked.forEach((linkedNode) => {
+      if (linkedNode.node.checked !== checked) {
+        linkedNode.onChange(checked);
       }
+    });
 
-      this.fireEvent('change', self);
-    },
+    this.fireEvent('change', this);
+  }
 
-    addListener: function(event, listener) {
-      /* only the root node has listeners */
-      if(this.parent) {
-        this.parent.addListener(event, listener);
-      }
-      else {
-        this.listeners.push({ event : event, callback : listener });
-      }
-    },
-
-    fireEvent: function(event, data) {
-      if(this.parent) {
-        this.parent.fireEvent(event, data);
-      }
-      else {
-        var self = this;
-
-        this.eachListener(function(l) {
-          if(l.event == event) {
-            l.callback(self, data);
-          }
-        });
-      }
-    },
-
-    calcTotalSelected: function() {
-      var total = 0;
-
-      if(this.node.prop('checked') && this.countTotal()) {
-        total += 1;
-      }
-
-      this.eachChild(function(c) {
-        total += c.calcTotalSelected();
-      });
-
-      this.total = total;
-
-      return this.total;
-    },
-
-    eachListener: function(cb) {
-      for(var i = 0; i < this.listeners.length; ++i) {
-        cb(this.listeners[i]);
-      }
-    },
-
-    eachChild: function(cb) {
-      for(var i = 0; i < this.children.length; ++i) {
-        cb(this.children[i]);
-      }
-    },
-
-    /*
-     * find all nodes in the tree with the
-     * specified name
-     */
-    findNamed: function(name) {
-      if(this.parent) {
-        return this.parent.findNamed(name);
-      }
-      else {
-        return this.findNamedChildren(name);
-      }
-    },
-
-    /*
-     * find all child nodes with the given name
-     */
-    findNamedChildren: function(name) {
-      var nodes =[ ];
-
-      this.eachChild(function(child) {
-        if(child.name() == name) {
-          nodes.push(child);
-        }
-        $.merge(nodes, child.findNamedChildren(name));
-      });
-
-      return nodes;
-    },
-
-    /*
-     * a linked node is a node in the same
-     * tree with the same name as this node
-     */
-    findLinked: function() {
-      if(this.linked) {
-        return this.linked;
-      }
-      else {
-        this.linked = this.findNamed(this.name());
-        return this.linked;
-      }
-    },
-
-    /*
-     * Walks the given path in child branches looking for the tree whose node
-     * is the last item, and replaces it. Meant to be used with AJAX updates.
-     */
-    rebind: function(path) {
-      for(var i = 0; i < this.children.length; ++i) {
-        var child = this.children[i];
-        if (path.length == 1 && path[0].getAttribute('data-select-tree-name') == child.node[0].getAttribute('data-select-tree-name')) {
-          child.node = $(path[0]);
-          return true;
-        }
-        else if (child.node[0] == path[0]) {
-          path.shift();
-          return child.rebind(path);
-        }
-      }
-
-      return false;
+  addListener(event, listener) {
+    if (this.parent) {
+      this.parent.addListener(event, listener);
+    } else {
+      this.listeners.push({ event, callback: listener });
     }
   }
 
-  SelectTree.data_prefix = 'select-tree';
+  fireEvent(event, data) {
+    if (this.parent) {
+      this.parent.fireEvent(event, data);
+      return;
+    }
 
-  var $all, $trees;
-
-  SelectTree.all = function() {
-    if (!$all)
-      $all = $('input[type="checkbox"][data-bind="' + this.data_prefix + '"]');
-
-    return $all;
+    this.eachListener((listener) => {
+      if (listener.event === event) {
+        listener.callback(this, data);
+      }
+    });
   }
 
-  SelectTree.allRoots = function() {
+  calcTotalSelected() {
+    let total = 0;
+
+    if (this.node.checked && this.countTotal()) {
+      total += 1;
+    }
+
+    this.eachChild((child) => {
+      total += child.calcTotalSelected();
+    });
+
+    this.total = total;
+    return this.total;
+  }
+
+  eachListener(callback) {
+    this.listeners.forEach(callback);
+  }
+
+  eachChild(callback) {
+    this.children.forEach(callback);
+  }
+
+  findNamed(name) {
+    return this.parent ? this.parent.findNamed(name) : this.findNamedChildren(name);
+  }
+
+  findNamedChildren(name) {
+    return this.children.reduce((nodes, child) => {
+      if (child.name() === name) {
+        nodes.push(child);
+      }
+
+      return nodes.concat(child.findNamedChildren(name));
+    }, []);
+  }
+
+  findLinked() {
+    if (!this.linked) {
+      this.linked = this.findNamed(this.name());
+    }
+
+    return this.linked;
+  }
+
+  rebind(path) {
+    for (const child of this.children) {
+      if (path.length === 1 && path[0].getAttribute('data-select-tree-name') === child.node.getAttribute('data-select-tree-name')) {
+        child.node = path[0];
+        return true;
+      }
+
+      if (child.node === path[0]) {
+        path.shift();
+        return child.rebind(path);
+      }
+    }
+
+    return false;
+  }
+
+  static all() {
+    if (!this.cachedAll) {
+      this.cachedAll = Stradivari.all(`input[type="checkbox"][data-bind="${this.dataPrefix}"]`);
+    }
+
+    return this.cachedAll;
+  }
+
+  static allRoots() {
     return this.byParent(null);
   }
 
-  SelectTree.byParent = function(name) {
-    var self = this;
-    return this.all().filter(function() {
-      return (this.getAttribute('data-' + self.data_prefix + '-parent') == name);
+  static byParent(name) {
+    return this.all().filter((node) => node.getAttribute(`data-${this.dataPrefix}-parent`) === name);
+  }
+
+  static byName(name) {
+    return this.all().filter((node) => node.getAttribute(`data-${this.dataPrefix}-name`) === name);
+  }
+
+  static buildAll() {
+    this.trees = [];
+    this.cachedAll = null;
+
+    this.allRoots().forEach((node) => {
+      this.trees.push(new SelectTree(node));
     });
   }
 
-  SelectTree.byName = function(name) {
-    var self = this;
-    return this.all().filter(function() {
-      return (this.getAttribute('data-' + self.data_prefix + '-name') == name);
-    });
-  }
+  static rebind(html) {
+    const root = this.fragmentFrom(html);
 
-  SelectTree.buildAll = function() {
-    $trees = [ ];
-    $all   = null; // Refresh
+    Stradivari.all(`[data-bind="${this.dataPrefix}"]`, root).forEach((updatedNode) => {
+      let item = updatedNode;
+      const path = [];
 
-    this.allRoots().each(function() {
-      var tree = new SelectTree($(this));
-      $trees.push(tree);
-    });
-  }
-
-  /* Given a piece of updated HTML via AJAX, looks up the select-tree boxes,
-   * builds a path to the root, and then calls rebind() on it */
-  SelectTree.rebind = function(html) {
-    var self = this;
-    $(html).find('[data-bind="' + this.data_prefix + '"]').each(function() {
-      // Go up to the root
-      var item = this;
-      var path = [ ];
-
-      while(item != null) {
+      while (item) {
         path.unshift(item);
 
-        item = item.getAttribute('data-' + self.data_prefix + '-parent');
-        if (item)
-          item = self.byName(item)[0];
+        const parentName = item.getAttribute(`data-${this.dataPrefix}-parent`);
+        item = parentName ? this.byName(parentName)[0] : null;
       }
 
-      var root = path.shift();
-      var tree = $trees.filter(function(t) {
-        return root == t.node[0];
-      })[0];
+      const rootNode = path.shift();
+      const tree = this.trees.find((candidate) => candidate.node === rootNode);
 
-      if (tree)
+      if (tree) {
         tree.rebind(path);
-    });
-  }
-
-  SelectTree.eachCounter = function(cb) {
-    $('[data-' + this.data_prefix + '-total]').each(function() {
-      cb($(this));
-    });
-  }
-
-  SelectTree.setTotal = function(tree, counter) {
-    var count      = (counter.data(this.data_prefix + '-total') || 0);
-    var tree_total = tree.total;
-    var updated    = tree.calcTotalSelected();
-
-    if(tree_total < updated) {
-      count += (updated - tree_total);
-    }
-    else if(tree_total > updated) {
-      count += (updated - tree_total);
-    }
-
-    counter.data(this.data_prefix + '-total', count);
-
-    var presenter = counter.val() ? counter.val : counter.text;
-    presenter.call(counter, presenter.call(counter).replace(/\d+/, count));
-  }
-
-  $(function() {
-    SelectTree.buildAll();
-
-    SelectTree.eachCounter(function(c) {
-      for(var i = 0; i < $trees.length; ++i) {
-        $trees[i].addListener('change', function(t) {
-          SelectTree.setTotal(t, c);
-        });
       }
+    });
+  }
+
+  static fragmentFrom(html) {
+    if (typeof html !== 'string') {
+      return html;
+    }
+
+    const template = document.createElement('template');
+    template.innerHTML = html;
+    return template.content;
+  }
+
+  static eachCounter(callback) {
+    Stradivari.all(`[data-${this.dataPrefix}-total]`).forEach(callback);
+  }
+
+  static setTotal(tree, counter) {
+    let count = Number(counter.dataset.selectTreeTotal || 0);
+    const previousTotal = tree.total;
+    const updatedTotal = tree.calcTotalSelected();
+
+    count += updatedTotal - previousTotal;
+    counter.dataset.selectTreeTotal = count;
+
+    if ('value' in counter && counter.value) {
+      counter.value = counter.value.replace(/\d+/, count);
+    } else {
+      counter.textContent = counter.textContent.replace(/\d+/, count);
+    }
+  }
+}
+
+SelectTree.dataPrefix = 'select-tree';
+SelectTree.data_prefix = SelectTree.dataPrefix;
+SelectTree.cachedAll = null;
+SelectTree.trees = [];
+
+window.SelectTree = SelectTree;
+
+Stradivari.ready(() => {
+  SelectTree.buildAll();
+
+  SelectTree.eachCounter((counter) => {
+    SelectTree.trees.forEach((tree) => {
+      tree.addListener('change', (changedTree) => {
+        SelectTree.setTotal(changedTree, counter);
+      });
     });
   });
-
-})();
+});

@@ -10,8 +10,6 @@ module Stradivari
 
           data = {}
 
-          data[:stradivari] = 'autocomplete' if opts.fetch(:autocomplete, false)
-
           if (d = opts.fetch(:data, nil).presence)
             if (u = d.fetch(:remote_url, nil).presence)
               data['remote-url'] = u

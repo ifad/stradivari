@@ -98,11 +98,11 @@ RSpec.describe Stradivari::Filter::Helpers do
       expect(out).to be_a(String)
     end
 
-    it 'attaches data-stradivari=autocomplete on the title label when autocomplete: true' do
+    it 'ignores autocomplete: true on title labels' do
       out = view.filter_for(Widget) do
         search :name_like, priority: :low, autocomplete: true
       end
-      expect(out).to include('data-stradivari="autocomplete"')
+      expect(out).not_to include('data-stradivari="autocomplete"')
     end
   end
 

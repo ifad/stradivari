@@ -1,168 +1,219 @@
-Stradivari.Form = function () {
-  mergeForms = function(form, detached) {
-    if (!form.data('merged')) {
-      form.data('merged', true);
-      detached.find(':input:not(:submit,:button)').each(function() {
-        // We do this because on IE input.clone() does not preserve
-        // the val() not even on text inputs.
-        var input = $(this),
-            clone = input.clone();
-        clone
-          .val(input.val())
-          .hide()
-          .appendTo(form);
-      });
-      fieldOverrideSorting(form);
+Stradivari.Form = class {
+  mergeForms(form, detached) {
+    if (!form || !detached || form.dataset.merged === 'true') {
+      return;
     }
+
+    form.dataset.merged = 'true';
+
+    detached.querySelectorAll('input:not([type="submit"]):not([type="button"]), select, textarea').forEach((input) => {
+      const clone = input.cloneNode(true);
+      clone.value = input.value;
+      clone.checked = input.checked;
+      clone.hidden = true;
+      clone.style.display = 'none';
+      form.appendChild(clone);
+    });
+
+    this.fieldOverrideSorting(form);
   }
 
-  var fieldOverrideSorting = function(form) {
-    var field_sorting = form.find('[data-sort]:first');
-    var current_sorting = form.find('[name=sort]');
+  fieldOverrideSorting(form) {
+    const fieldSorting = form.querySelector('[data-sort]');
+    const currentSorting = form.querySelector('[name="sort"]');
 
-    if (field_sorting.val() && !current_sorting.val()) {
-      current_sorting.val(field_sorting.data('sort'));
+    if (fieldSorting && currentSorting && fieldSorting.value && !currentSorting.value) {
+      currentSorting.value = fieldSorting.dataset.sort;
     }
   }
 };
 
-Stradivari.FilterForm = function() {
-  Stradivari.Form.call(this);
+Stradivari.FilterForm = class extends Stradivari.Form {
+  constructor() {
+    super();
+    this.form = Stradivari.FilterForm.form();
 
-  this.form = Stradivari.FilterForm.form();
-
-  this.form.
-    on('click', '[data-stradivari-filter-action="search"]', function(event) {
-      event.preventDefault();
-      processFilterForm($(this.form), {
-        submit: true
-      });
-    }).
-    on('submit', function(event) {
-      processFilterForm($(this.form), {
-        submit: false
-      });
-    }).
-    on('click', '[data-stradivari-filter-action="clear"]', function(event) {
-      event.preventDefault();
-      _TABLE_.filterURLParameters(function(param) {
-        return param.indexOf(Stradivari.filterNamespace + '[') != 0 &&
-          param.indexOf(Stradivari.filterContext + '[') != 0;
-      });
-    }).
-    on('change', '[data-stradivari-filter-field="number"] select', function(event) {
-      event.preventDefault();
-      $(this).parents('fieldset').find('input').attr('name', Stradivari.filterNamespace + '[' + this.value + ']');
-    });
-
-
-  var processFilterForm = function(form, options) {
-    var detached = $('#' + form.data('link'));
-    mergeForms(form, detached);
-    if (options.submit)
-      form.submit();
-  }
-}
-
-Stradivari.FilterForm.form = function(){
-  return $('form[data-stradivari-filter-form="main"]');
-}
-
-Stradivari.FilterForm.prototype = {
-  form: null,
-  getOptions: function(opt_name) {
-    var jsonData = [];
-
-    this.form.find($("[name*='[" + opt_name + "]']")).each( function(){
-      var elem = $(this);
-      jsonData.push({ id: elem.val(), name: elem.parent().text().trim(), dataset: opt_name });
-    });
-
-    return jsonData;
-  }
-}
-
-
-
-Stradivari.DetachedForm =function() {
-
-  Stradivari.Form.call(this);
-
-  var self = this;
-  this.form = Stradivari.DetachedForm.form();
-
-  this.form.
-    on('click', '[data-stradivari-filter-action="search"]', function(event) {
-      event.preventDefault();
-      processDetachedForm($(this.form));
-    }).
-    on('submit', function(event) {
-      event.preventDefault();
-      processDetachedForm($(this.form));
-    }).
-    on('keydown', function(event) {
-      if (event.which == 13)
-        processDetachedForm($(this));
-    })
-    ;
-
-  var processDetachedForm = function(detached) {
-    var form = $('#' + detached.data('link'));
-    mergeForms(form, detached);
-    form.submit();
-  }
-}
-
-Stradivari.DetachedForm.form = function(){
-  return $('form[data-stradivari-filter-form="detached"]');
-}
-
-Stradivari.FoldableForm = function(form) {
-
-  init = function(){
-    form.
-      on('click', '[data-stradivari-filter-toggle]', function(event) {
-        event.preventDefault();
-        var $this = $(this);
-        var $formGroup = $this.parents('[data-stradivari-filter-field-wrapper]').first();
-        var $closedContainer = $formGroup.find('[data-stradivari-filter-collapsible]').first();
-
-        updateToggleTitle($this);
-
-        if ($closedContainer.length != 0) {
-          $closedContainer.toggle();
-        } else {
-          var $selected = $formGroup.find('[data-stradivari-filter-choice][data-stradivari-state~="checked"]');
-          var $radioSelection = $formGroup.find('[data-stradivari-filter-choice]');
-
-          if ($selected.length != 0) {
-            $selected.removeClass('stradivari-filter__choice--checked').removeAttr('data-stradivari-state');
-            $radioSelection.css('display', 'inline-block');
-          } else {
-            $radioSelection.hide();
-            $selected = $formGroup.find('[data-stradivari-filter-choice] label input[type="radio"]:checked').parents('[data-stradivari-filter-choice]');
-            $selected.addClass('stradivari-filter__choice--checked').attr('data-stradivari-state', 'checked').css('display', 'inline-block');
-          }
-        }
-      });
-  }
-
-  var updateToggleTitle = function($this) {
-    switch($this.html()) {
-      case "Expand":
-        $this.html("Close");
-        break;
-      case "Close":
-        $this.html("Expand");
-        break;
-      case "Add More":
-        $this.html("Narrow");
-        break;
-      case "Narrow":
-        $this.html("Add More");
-        break;
+    if (this.form) {
+      this.bind();
     }
   }
-  return(init());
-}
 
+  static form() {
+    return document.querySelector('form[data-stradivari-filter-form="main"]');
+  }
+
+  bind() {
+    this.form.addEventListener('click', (event) => {
+      const action = event.target.closest('[data-stradivari-filter-action]');
+
+      if (!action || !this.form.contains(action)) {
+        return;
+      }
+
+      event.preventDefault();
+
+      if (action.dataset.stradivariFilterAction === 'search') {
+        this.process({ submit: true });
+      } else if (action.dataset.stradivariFilterAction === 'clear') {
+        _TABLE_.filterURLParameters((param) => {
+          return !param.startsWith(`${Stradivari.filterNamespace}[`) && !param.startsWith(`${Stradivari.filterContext}[`);
+        });
+      }
+    });
+
+    this.form.addEventListener('submit', () => {
+      this.process({ submit: false });
+    });
+
+    this.form.addEventListener('change', (event) => {
+      const select = event.target.closest('[data-stradivari-filter-field="number"] select');
+
+      if (!select || !this.form.contains(select)) {
+        return;
+      }
+
+      const input = select.closest('fieldset').querySelector('input');
+
+      if (input) {
+        input.name = `${Stradivari.filterNamespace}[${select.value}]`;
+      }
+    });
+  }
+
+  process(options) {
+    const detached = document.getElementById(this.form.dataset.link);
+    this.mergeForms(this.form, detached);
+
+    if (options.submit) {
+      this.form.submit();
+    }
+  }
+
+  getOptions(optionName) {
+    return Stradivari.all(`[name*="[${optionName}]"]`, this.form).map((element) => ({
+      id: element.value,
+      name: element.parentElement.textContent.trim(),
+      dataset: optionName
+    }));
+  }
+};
+
+Stradivari.DetachedForm = class extends Stradivari.Form {
+  constructor() {
+    super();
+    this.form = Stradivari.DetachedForm.form();
+
+    if (this.form) {
+      this.bind();
+    }
+  }
+
+  static form() {
+    return document.querySelector('form[data-stradivari-filter-form="detached"]');
+  }
+
+  bind() {
+    this.form.addEventListener('click', (event) => {
+      const action = event.target.closest('[data-stradivari-filter-action="search"]');
+
+      if (!action || !this.form.contains(action)) {
+        return;
+      }
+
+      event.preventDefault();
+      this.process();
+    });
+
+    this.form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      this.process();
+    });
+
+    this.form.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        this.process();
+      }
+    });
+  }
+
+  process() {
+    const form = document.getElementById(this.form.dataset.link);
+    this.mergeForms(form, this.form);
+    form.submit();
+  }
+};
+
+Stradivari.FoldableForm = class {
+  constructor(form) {
+    this.form = form;
+
+    if (this.form) {
+      this.bind();
+    }
+  }
+
+  bind() {
+    this.form.addEventListener('click', (event) => {
+      const toggle = event.target.closest('[data-stradivari-filter-toggle]');
+
+      if (!toggle || !this.form.contains(toggle)) {
+        return;
+      }
+
+      event.preventDefault();
+      this.updateToggleTitle(toggle);
+
+      const formGroup = toggle.closest('[data-stradivari-filter-field-wrapper]');
+      const closedContainer = formGroup.querySelector('[data-stradivari-filter-collapsible]');
+
+      if (closedContainer) {
+        this.toggleElement(closedContainer);
+      } else {
+        this.toggleRadioChoices(formGroup);
+      }
+    });
+  }
+
+  toggleElement(element) {
+    const hidden = element.style.display === 'none' || window.getComputedStyle(element).display === 'none';
+    element.style.display = hidden ? 'block' : 'none';
+  }
+
+  toggleRadioChoices(formGroup) {
+    const selected = Stradivari.all('[data-stradivari-filter-choice][data-stradivari-state~="checked"]', formGroup);
+    const radioSelection = Stradivari.all('[data-stradivari-filter-choice]', formGroup);
+
+    if (selected.length > 0) {
+      selected.forEach((choice) => {
+        choice.classList.remove('stradivari-filter__choice--checked');
+        choice.removeAttribute('data-stradivari-state');
+      });
+      radioSelection.forEach((choice) => {
+        choice.style.display = 'inline-block';
+      });
+    } else {
+      radioSelection.forEach((choice) => {
+        choice.style.display = 'none';
+      });
+
+      Stradivari.all('[data-stradivari-filter-choice] label input[type="radio"]:checked', formGroup).forEach((input) => {
+        const choice = input.closest('[data-stradivari-filter-choice]');
+        choice.classList.add('stradivari-filter__choice--checked');
+        choice.dataset.stradivariState = 'checked';
+        choice.style.display = 'inline-block';
+      });
+    }
+  }
+
+  updateToggleTitle(toggle) {
+    const titles = {
+      'Add More': 'Narrow',
+      Close: 'Expand',
+      Expand: 'Close',
+      Narrow: 'Add More'
+    };
+
+    toggle.textContent = titles[toggle.textContent] || toggle.textContent;
+  }
+};

@@ -22,11 +22,11 @@ RSpec.describe 'Stradivari::Filter::Builder field branches' do
     expect(out).to include('data-remote-url="/auto"')
   end
 
-  it 'search field with autocomplete: true sets data-stradivari=autocomplete' do
+  it 'ignores autocomplete: true on search fields' do
     out = view.filter_for(Widget) do
       search :name_like, autocomplete: true
     end
-    expect(out).to include('data-stradivari="autocomplete"')
+    expect(out).not_to include('data-stradivari="autocomplete"')
   end
 
   it 'search field accepts a sort: option and sets data-sort' do
