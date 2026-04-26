@@ -15,10 +15,10 @@ module Stradivari
                                capture { instance_exec(&Helpers.render_title(attr, title, opts)) },
                                content_tag(:div, capture do
                                  instance_exec(&Helpers.radios_for_collection([%w[Yes true], %w[No false]], attr, opts))
-                               end, class: Builder.prepare_classes(opts))
+                               end, Builder.control_attributes(opts))
                              ])
                  else
-                   content_tag(:div, class: 'checkbox single-value') do
+                   content_tag(:div, class: 'stradivari-filter__choice stradivari-filter__choice--checkbox stradivari-filter__choice--single', data: { stradivari_filter_choice: true }) do
                      content_tag(:label, safe_join([
                                                      title,
                                                      check_box(opts[:namespace], attr, { checked: opts[:value].present? }, 'true', nil)
@@ -26,7 +26,7 @@ module Stradivari
                    end
                  end
 
-          concat content_tag(:div, body, class: 'form-group')
+          concat content_tag(:div, body, Builder.field_attributes(opts))
         end
       end
     end

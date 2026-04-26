@@ -5,8 +5,10 @@ module Stradivari
   autoload :Error,                'stradivari/error'
 
   autoload :Builder,              'stradivari/builder'
+  autoload :ClassNames,           'stradivari/class_names'
   autoload :Generator,            'stradivari/generator'
   autoload :Helpers,              'stradivari/helpers'
+  autoload :Icons,                'stradivari/icons'
   autoload :Controller,           'stradivari/controller'
 
   autoload :Details,    'stradivari/details'

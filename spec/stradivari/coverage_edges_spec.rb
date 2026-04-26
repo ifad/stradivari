@@ -15,7 +15,7 @@ RSpec.describe 'Coverage edge cases' do
         column :price, sortable: true
       end
       doc = Nokogiri::HTML.fragment(out)
-      th = doc.css('th.sortable').find { |t| t['data-sort'] == 'price' }
+      th = doc.css('th[data-stradivari-table-sort]').find { |t| t['data-sort'] == 'price' }
       expect(th['data-direction']).to eq('asc')
     end
   end

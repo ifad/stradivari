@@ -19,28 +19,30 @@ RSpec.describe WidgetsController, type: :request do
       expect(form.at_css('input[name="sort"]')).not_to be_nil
       expect(form.at_css('input[name="direction"]')).not_to be_nil
       # Table with all created rows
-      expect(doc.css('table.table tbody tr').size).to eq(3)
+      expect(doc.css('table.stradivari-table tbody tr').size).to eq(3)
       # `row` block contributed data attributes
-      first_row = doc.at_css('table.table tbody tr')
+      first_row = doc.at_css('table.stradivari-table tbody tr')
       expect(first_row['data-widget-id']).to match(/\A\d+\z/)
       # Sortable header for `name`
-      expect(doc.at_css('table.table thead th.name.sortable')).not_to be_nil
+      expect(doc.at_css('table.stradivari-table thead th.name.stradivari-table__header-cell--sortable')).not_to be_nil
       # Download link in footer (downloadable: :xlsx)
-      expect(doc.at_css('.download a')).not_to be_nil
-      expect(doc.at_css('.download a')['href']).to match(/\.xlsx|format=xlsx/)
+      expect(doc.at_css('.stradivari-table__download a')).not_to be_nil
+      expect(doc.at_css('.stradivari-table__download a')['href']).to match(/\.xlsx|format=xlsx/)
       # Tabs widget rendered
-      expect(doc.at_css('ul.nav.nav-tabs')).not_to be_nil
-      expect(doc.at_css('.tab-content')).not_to be_nil
+      expect(doc.at_css('ul.stradivari-tabs__nav.stradivari-tabs__nav--tabs')).not_to be_nil
+      expect(doc.at_css('.stradivari-tabs__content')).not_to be_nil
+      expect(response.body).not_to include('table table-hover')
+      expect(response.body).not_to include('nav-tabs')
     end
 
     it 'sorts according to params and propagates direction toggle' do
       get '/widgets', params: { sort: 'name', direction: 'desc' }
       doc = html(response.body)
-      header = doc.at_css('table.table thead th.name.sortable')
+      header = doc.at_css('table.stradivari-table thead th.name.stradivari-table__header-cell--sortable')
       expect(header['data-sort']).to eq('name')
       # When the active direction is desc, the next click should toggle to asc
       expect(header['data-direction']).to eq('asc')
-      expect(header['class']).to include('active-column')
+      expect(header['class']).to include('stradivari-table__header-cell--active')
     end
 
     it 'rejects unknown sort columns and falls back to default' do
@@ -48,13 +50,13 @@ RSpec.describe WidgetsController, type: :request do
       expect(response).to have_http_status(:ok)
       # Output should still contain the table; default sort header is "name"
       doc = html(response.body)
-      expect(doc.at_css('table.table thead th.name')).not_to be_nil
+      expect(doc.at_css('table.stradivari-table thead th.name')).not_to be_nil
     end
 
     it 'filters via stradivari scopes' do
       get '/widgets', params: { q: { name_like: 'Widget 1' } }
       doc = html(response.body)
-      rows = doc.css('table.table tbody tr')
+      rows = doc.css('table.stradivari-table tbody tr')
       expect(rows.size).to eq(1)
     end
   end

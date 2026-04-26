@@ -23,8 +23,8 @@ grew up on its own. :smile:
 
 ## Features
 
-This Gem combines Rails view helpers and [Bootstrap 3][] to provide you easy
-generators for:
+This Gem combines Rails view helpers and Stradivari-owned BEM classes to provide
+you easy generators for:
 
 - HTML Tables
 - CSV Tables
@@ -40,6 +40,12 @@ useful help from [Ransack][] and [PgSearch][].
 
 Whoa, what a lot of Gems this glues together! :smile:
 
+Generated HTML uses `stradivari-*` classes as its public styling contract. The
+default stylesheet is compiled from Tailwind CSS into plain CSS and shipped with
+the gem, so applications can use Stradivari without adding Tailwind to their own
+asset pipeline. You can also replace that stylesheet with another implementation
+that targets the same Stradivari classes.
+
 ## Installation
 
 Add to your Gemfile
@@ -53,6 +59,9 @@ Add to your app/assets/javascripts/application.js
 Add to your app/assets/stylesheets/application.css
 
     *= require stradivari
+
+The shipped `stradivari` stylesheet is plain CSS generated from Tailwind CSS.
+It does not require LESS or Bootstrap assets in the host application.
 
 Add to your app/controllers/application_controller.rb
 
@@ -123,7 +132,7 @@ or, provide a `no_data` block which will be rendered in place:
 = table_for @foos do
   - no_data do
     There are no entries.
-    %a.btn.btn-default{ href:'#' } Create
+    %a.stradivari-button.stradivari-button--secondary{ href:'#' } Create
 ```
 
 ### CSV
@@ -250,8 +259,9 @@ function bindPaginators(tab_pane) {
     $(tab_pane).html(data);
     bindPaginators(tab_pane);
   });
+}
 
-$('[data-toggle=tab']).on('stradivari:tab:loaded', function(evt) {
+$('[data-stradivari-tab]').on('stradivari:tab:loaded', function(evt) {
   var tab_id = $(this).attr('href'); // href of the <a> element is "#tab_div_id"
   bindPaginators( $(tab_id) ); // $('#tab_div_id')
 });
@@ -265,12 +275,12 @@ may wish to separatethe nav from the content. The ```tab_navs_for``` and
 ```tab_content_for``` helper methods allow this:
 
 ```haml
-  .row
-    .col-xs-3
+  .people-tabs
+    .people-tabs__nav
       = tab_navs_for @people, flavor: :stacked do |people|
         - tab 'Option 1', 'option_1_id', people.foos, active: true
         - tab 'Option 2', 'option_2_id', people.bars
-    .col-xs-3
+    .people-tabs__content
       = tab_content_for @people do |people|
         - tab_content 'option_1_id', people.foos, active: true do |scope|
           This is content for option 1
@@ -571,7 +581,6 @@ impact in making the world a better place.
   -- vjt  Mon Jun  9 20:21:42 CEST 2014
 
 [logo]:                    http://upload.wikimedia.org/wikipedia/commons/c/cd/Antonio_stradivari.jpg
-[Bootstrap 3]:             https://github.com/twbs/bootstrap
 [Active Admin]:            https://github.com/gregbell/active_admin
 [HAML]:                    https://github.com/haml/haml
 [PgSearch]:                https://github.com/Casecommons/pg_search

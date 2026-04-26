@@ -32,7 +32,7 @@ Stradivari.FilterForm = function() {
   this.form = Stradivari.FilterForm.form();
 
   this.form.
-    on('click', '.search', function(event) {
+    on('click', '[data-stradivari-filter-action="search"]', function(event) {
       event.preventDefault();
       processFilterForm($(this.form), {
         submit: true
@@ -43,14 +43,14 @@ Stradivari.FilterForm = function() {
         submit: false
       });
     }).
-    on('click', '.clear', function(event) {
+    on('click', '[data-stradivari-filter-action="clear"]', function(event) {
       event.preventDefault();
       _TABLE_.filterURLParameters(function(param) {
         return param.indexOf(Stradivari.filterNamespace + '[') != 0 &&
           param.indexOf(Stradivari.filterContext + '[') != 0;
       });
     }).
-    on('change', '.number_field select', function(event) {
+    on('change', '[data-stradivari-filter-field="number"] select', function(event) {
       event.preventDefault();
       $(this).parents('fieldset').find('input').attr('name', Stradivari.filterNamespace + '[' + this.value + ']');
     });
@@ -65,7 +65,7 @@ Stradivari.FilterForm = function() {
 }
 
 Stradivari.FilterForm.form = function(){
-  return $('form.filter-form:not(.form-detached)');
+  return $('form[data-stradivari-filter-form="main"]');
 }
 
 Stradivari.FilterForm.prototype = {
@@ -92,7 +92,7 @@ Stradivari.DetachedForm =function() {
   this.form = Stradivari.DetachedForm.form();
 
   this.form.
-    on('click', '.search', function(event) {
+    on('click', '[data-stradivari-filter-action="search"]', function(event) {
       event.preventDefault();
       processDetachedForm($(this.form));
     }).
@@ -114,34 +114,34 @@ Stradivari.DetachedForm =function() {
 }
 
 Stradivari.DetachedForm.form = function(){
-  return $('form.form-detached');
+  return $('form[data-stradivari-filter-form="detached"]');
 }
 
 Stradivari.FoldableForm = function(form) {
 
   init = function(){
     form.
-      on('click', '.handle', function(event) {
+      on('click', '[data-stradivari-filter-toggle]', function(event) {
         event.preventDefault();
         var $this = $(this);
-        var $formGroup = $this.parents('.form-group').first();
-        var $closedContainer = $formGroup.find('.closed').first();
+        var $formGroup = $this.parents('[data-stradivari-filter-field-wrapper]').first();
+        var $closedContainer = $formGroup.find('[data-stradivari-filter-collapsible]').first();
 
         updateToggleTitle($this);
 
         if ($closedContainer.length != 0) {
           $closedContainer.toggle();
         } else {
-          var $selected = $formGroup.find('.radio.checked');
-          var $radioSelection = $formGroup.find('.radio');
+          var $selected = $formGroup.find('[data-stradivari-filter-choice][data-stradivari-state~="checked"]');
+          var $radioSelection = $formGroup.find('[data-stradivari-filter-choice]');
 
           if ($selected.length != 0) {
-            $selected.removeClass('checked');
+            $selected.removeClass('stradivari-filter__choice--checked').removeAttr('data-stradivari-state');
             $radioSelection.css('display', 'inline-block');
           } else {
             $radioSelection.hide();
-            $selected = $formGroup.find('.radio label input[type="radio"]:checked').parents('.radio');
-            $selected.addClass('checked').css('display', 'inline-block');
+            $selected = $formGroup.find('[data-stradivari-filter-choice] label input[type="radio"]:checked').parents('[data-stradivari-filter-choice]');
+            $selected.addClass('stradivari-filter__choice--checked').attr('data-stradivari-state', 'checked').css('display', 'inline-block');
           }
         }
       });

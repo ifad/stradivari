@@ -16,11 +16,13 @@ RSpec.describe Stradivari::Tabs::Generator do
       end
 
       doc = Nokogiri::HTML.fragment(out)
-      expect(doc.at_css('ul.nav.nav-tabs')).not_to be_nil
-      expect(doc.at_css('.tab-content')).not_to be_nil
-      expect(doc.css('ul.nav-tabs li').size).to eq(1) # second tab is blank+!present
-      expect(doc.at_css('.tab-pane.active')).not_to be_nil
-      expect(doc.at_css('.tab-pane#first')).not_to be_nil
+      expect(doc.at_css('ul.stradivari-tabs__nav.stradivari-tabs__nav--tabs')).not_to be_nil
+      expect(doc.at_css('.stradivari-tabs__content')).not_to be_nil
+      expect(doc.css('ul.stradivari-tabs__nav li').size).to eq(1) # second tab is blank+!present
+      expect(doc.at_css('.stradivari-tabs__pane.stradivari-tabs__pane--active')).not_to be_nil
+      expect(doc.at_css('.stradivari-tabs__pane#first')).not_to be_nil
+      expect(out).not_to include('nav-tabs')
+      expect(out).not_to include('tab-pane')
     end
 
     it 'renders the pills flavor when requested' do
@@ -30,7 +32,7 @@ RSpec.describe Stradivari::Tabs::Generator do
           concat 'X'
         end
       end
-      expect(out).to include('nav-pills')
+      expect(out).to include('stradivari-tabs__nav--pills')
     end
 
     it 'sanitises dom_ids with css_friendly' do
@@ -53,7 +55,7 @@ RSpec.describe Stradivari::Tabs::Generator do
       end
       doc = Nokogiri::HTML.fragment(out)
       expect(doc.at_css('div.empty')).not_to be_nil
-      expect(doc.at_css('ul.nav-tabs')).to be_nil
+      expect(doc.at_css('ul.stradivari-tabs__nav')).to be_nil
     end
 
     it 'renders counters by default and hides them when counters: false' do
@@ -68,8 +70,8 @@ RSpec.describe Stradivari::Tabs::Generator do
           concat 'x'
         end
       end
-      expect(with_counters).to include('badge')
-      expect(no_counters).not_to include('badge')
+      expect(with_counters).to include('stradivari-tabs__badge')
+      expect(no_counters).not_to include('stradivari-tabs__badge')
     end
   end
 
@@ -81,8 +83,8 @@ RSpec.describe Stradivari::Tabs::Generator do
           concat 'x'
         end
       end
-      expect(out).to include('nav-tabs')
-      expect(out).not_to include('tab-content')
+      expect(out).to include('stradivari-tabs__nav--tabs')
+      expect(out).not_to include('stradivari-tabs__content')
     end
 
     it 'tab_content_for renders only the panes' do
@@ -92,8 +94,8 @@ RSpec.describe Stradivari::Tabs::Generator do
           concat 'x'
         end
       end
-      expect(out).to include('tab-content')
-      expect(out).not_to include('nav-tabs')
+      expect(out).to include('stradivari-tabs__content')
+      expect(out).not_to include('stradivari-tabs__nav--tabs')
     end
   end
 
@@ -116,7 +118,7 @@ RSpec.describe Stradivari::Tabs::Generator do
         end
       end
       expect(out).to include('X')
-      expect(out).not_to include('nav-tabs')
+      expect(out).not_to include('stradivari-tabs__nav--tabs')
     end
 
     it 'tab_content alias forwards to tab' do
