@@ -4,7 +4,14 @@ Stradivari.ready(() => {
     "click",
     "[data-stradivari-table] [data-stradivari-table-sort]",
     (event, header) => {
+      const href = header.getAttribute("href");
+
       event.preventDefault();
+
+      if (href) {
+        window.location.assign(href);
+        return;
+      }
 
       _TABLE_.mergeURLParameters([
         `direction=${header.dataset.direction}`,

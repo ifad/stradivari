@@ -19,12 +19,16 @@ RSpec.describe WidgetsController, type: :request do
       expect(form.at_css('input[name="sort"]')).not_to be_nil
       expect(form.at_css('input[name="direction"]')).not_to be_nil
       # Table with all created rows
+      viewport = doc.at_css('.stradivari-table__viewport')
+      expect(viewport).not_to be_nil
       expect(doc.css('table.stradivari-table tbody tr').size).to eq(3)
       # `row` block contributed data attributes
       first_row = doc.at_css('table.stradivari-table tbody tr')
       expect(first_row['data-widget-id']).to match(/\A\d+\z/)
       # Sortable header for `name`
-      expect(doc.at_css('table.stradivari-table thead th.name.stradivari-table__header-cell--sortable')).not_to be_nil
+      header = doc.at_css('table.stradivari-table thead th.name.stradivari-table__header-cell--sortable')
+      expect(header).not_to be_nil
+      expect(header.at_css('a.stradivari-table__sort-link')['href']).to match(/sort=name/)
       # Download link in footer (downloadable: :xlsx)
       expect(doc.at_css('.stradivari-table__download a')).not_to be_nil
       expect(doc.at_css('.stradivari-table__download a')['href']).to match(/\.xlsx|format=xlsx/)
@@ -43,6 +47,7 @@ RSpec.describe WidgetsController, type: :request do
       # When the active direction is desc, the next click should toggle to asc
       expect(header['data-direction']).to eq('asc')
       expect(header['class']).to include('stradivari-table__header-cell--active')
+      expect(header.at_css('a.stradivari-table__sort-link')['href']).to match(/direction=asc/)
     end
 
     it 'rejects unknown sort columns and falls back to default' do

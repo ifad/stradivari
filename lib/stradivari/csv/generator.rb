@@ -1,3 +1,5 @@
+require 'csv'
+
 module Stradivari
   module CSV
     class Generator < Stradivari::Table::Generator
