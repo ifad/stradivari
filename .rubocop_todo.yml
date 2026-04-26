@@ -490,6 +490,10 @@ RSpec/DescribeClass:
   Exclude:
     - 'spec/stradivari/filter/builder_spec.rb'
     - 'spec/stradivari/table/builder_spec.rb'
+    - 'spec/stradivari/coverage_edges_spec.rb'
+    - 'spec/stradivari/csv_xlsx_branches_spec.rb'
+    - 'spec/stradivari/filter/builder_branches_spec.rb'
+    - 'spec/stradivari/table/builder_primitives_spec.rb'
 
 # Offense count: 4
 RSpec/MultipleDescribes:
@@ -498,6 +502,8 @@ RSpec/MultipleDescribes:
     - 'spec/stradivari/table/builder_spec.rb'
     - 'spec/stradivari/table/model/active_record_spec.rb'
     - 'spec/stradivari/xlsx/generator_spec.rb'
+    - 'spec/stradivari/csv_xlsx_branches_spec.rb'
+    - 'spec/stradivari/filter/builder_branches_spec.rb'
 
 # Offense count: 12
 # This cop supports unsafe autocorrection (--autocorrect-all).
