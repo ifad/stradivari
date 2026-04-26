@@ -11,7 +11,7 @@ class SelectTree {
       this.children.push(new SelectTree(childNode, this));
     });
 
-    this.node.addEventListener('change', () => {
+    this.node.addEventListener("change", () => {
       this.onChange(this.node.checked);
     });
   }
@@ -21,11 +21,11 @@ class SelectTree {
   }
 
   name() {
-    return this.data('name');
+    return this.data("name");
   }
 
   countTotal() {
-    return this.data('count-total');
+    return this.data("count-total");
   }
 
   onChange(checked) {
@@ -43,7 +43,7 @@ class SelectTree {
       }
     });
 
-    this.fireEvent('change', this);
+    this.fireEvent("change", this);
   }
 
   addListener(event, listener) {
@@ -91,7 +91,9 @@ class SelectTree {
   }
 
   findNamed(name) {
-    return this.parent ? this.parent.findNamed(name) : this.findNamedChildren(name);
+    return this.parent
+      ? this.parent.findNamed(name)
+      : this.findNamedChildren(name);
   }
 
   findNamedChildren(name) {
@@ -114,7 +116,11 @@ class SelectTree {
 
   rebind(path) {
     for (const child of this.children) {
-      if (path.length === 1 && path[0].getAttribute('data-select-tree-name') === child.node.getAttribute('data-select-tree-name')) {
+      if (
+        path.length === 1 &&
+        path[0].getAttribute("data-select-tree-name") ===
+          child.node.getAttribute("data-select-tree-name")
+      ) {
         child.node = path[0];
         return true;
       }
@@ -130,7 +136,9 @@ class SelectTree {
 
   static all() {
     if (!this.cachedAll) {
-      this.cachedAll = Stradivari.all(`input[type="checkbox"][data-bind="${this.dataPrefix}"]`);
+      this.cachedAll = Stradivari.all(
+        `input[type="checkbox"][data-bind="${this.dataPrefix}"]`,
+      );
     }
 
     return this.cachedAll;
@@ -141,11 +149,15 @@ class SelectTree {
   }
 
   static byParent(name) {
-    return this.all().filter((node) => node.getAttribute(`data-${this.dataPrefix}-parent`) === name);
+    return this.all().filter(
+      (node) => node.getAttribute(`data-${this.dataPrefix}-parent`) === name,
+    );
   }
 
   static byName(name) {
-    return this.all().filter((node) => node.getAttribute(`data-${this.dataPrefix}-name`) === name);
+    return this.all().filter(
+      (node) => node.getAttribute(`data-${this.dataPrefix}-name`) === name,
+    );
   }
 
   static buildAll() {
@@ -160,32 +172,38 @@ class SelectTree {
   static rebind(html) {
     const root = this.fragmentFrom(html);
 
-    Stradivari.all(`[data-bind="${this.dataPrefix}"]`, root).forEach((updatedNode) => {
-      let item = updatedNode;
-      const path = [];
+    Stradivari.all(`[data-bind="${this.dataPrefix}"]`, root).forEach(
+      (updatedNode) => {
+        let item = updatedNode;
+        const path = [];
 
-      while (item) {
-        path.unshift(item);
+        while (item) {
+          path.unshift(item);
 
-        const parentName = item.getAttribute(`data-${this.dataPrefix}-parent`);
-        item = parentName ? this.byName(parentName)[0] : null;
-      }
+          const parentName = item.getAttribute(
+            `data-${this.dataPrefix}-parent`,
+          );
+          item = parentName ? this.byName(parentName)[0] : null;
+        }
 
-      const rootNode = path.shift();
-      const tree = this.trees.find((candidate) => candidate.node === rootNode);
+        const rootNode = path.shift();
+        const tree = this.trees.find(
+          (candidate) => candidate.node === rootNode,
+        );
 
-      if (tree) {
-        tree.rebind(path);
-      }
-    });
+        if (tree) {
+          tree.rebind(path);
+        }
+      },
+    );
   }
 
   static fragmentFrom(html) {
-    if (typeof html !== 'string') {
+    if (typeof html !== "string") {
       return html;
     }
 
-    const template = document.createElement('template');
+    const template = document.createElement("template");
     template.innerHTML = html;
     return template.content;
   }
@@ -202,7 +220,7 @@ class SelectTree {
     count += updatedTotal - previousTotal;
     counter.dataset.selectTreeTotal = count;
 
-    if ('value' in counter && counter.value) {
+    if ("value" in counter && counter.value) {
       counter.value = counter.value.replace(/\d+/, count);
     } else {
       counter.textContent = counter.textContent.replace(/\d+/, count);
@@ -210,7 +228,7 @@ class SelectTree {
   }
 }
 
-SelectTree.dataPrefix = 'select-tree';
+SelectTree.dataPrefix = "select-tree";
 SelectTree.data_prefix = SelectTree.dataPrefix;
 SelectTree.cachedAll = null;
 SelectTree.trees = [];
@@ -222,7 +240,7 @@ Stradivari.ready(() => {
 
   SelectTree.eachCounter((counter) => {
     SelectTree.trees.forEach((tree) => {
-      tree.addListener('change', (changedTree) => {
+      tree.addListener("change", (changedTree) => {
         SelectTree.setTotal(changedTree, counter);
       });
     });
