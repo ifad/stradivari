@@ -221,13 +221,13 @@ tabs_for @foos do
     .loading Loading...
 ```
 
-When retrieving data from a remote URL, Stradivari will emit events at key lifecycle points:
+When retrieving data from a remote URL, Stradivari will emit native DOM events at key lifecycle points:
 
-Event Name             | Extra Parameters | When
-:--------------------- | :--------------- | :--------------------------------------
-stradivari:tab:loading | none             | Before the AJAX send
-stradivari:tab:loaded  | none             | After a successful response is received
-stradivari:tab:failed  | none             | After a failed response is received
+Event Name             | Detail | When
+:--------------------- | :----- | :--------------------------------------
+stradivari:tab:loading | `{}`   | Before the remote request is sent
+stradivari:tab:loaded  | `{}`   | After a successful response is received
+stradivari:tab:failed  | `{}`   | After a failed response is received
 
 These events will be emitted on the tab link that was clicked to initiate the remote load.
 This is useful if there are actions that must be performed before or after the remote data
@@ -251,19 +251,28 @@ The partial ```/foos```:
 = paginate @foos, remote: true
 ```
 
-And finally, some javascript to bind the paginators correctly when the partial loads:
+And finally, some JavaScript to bind the paginators correctly when the partial loads:
 
 ```javascript
-function bindPaginators(tab_pane) {
-  $('nav.pagination a',tab_pane).on('ajax:success', function(e,data) {
-    $(tab_pane).html(data);
-    bindPaginators(tab_pane);
+function bindPaginators(tabPane) {
+  tabPane.querySelectorAll('nav.pagination a').forEach((link) => {
+    link.addEventListener('click', async (event) => {
+      event.preventDefault();
+
+      const response = await fetch(link.href, {
+        credentials: 'same-origin',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      });
+
+      tabPane.innerHTML = await response.text();
+      bindPaginators(tabPane);
+    });
   });
 }
 
-$('[data-stradivari-tab]').on('stradivari:tab:loaded', function(evt) {
-  var tab_id = $(this).attr('href'); // href of the <a> element is "#tab_div_id"
-  bindPaginators( $(tab_id) ); // $('#tab_div_id')
+document.addEventListener('stradivari:tab:loaded', (event) => {
+  const tabId = event.target.getAttribute('href');
+  bindPaginators(document.querySelector(tabId));
 });
 ```
 
@@ -525,32 +534,6 @@ TODO
   - field :string_field, title: "Here we go"
   - field :created_at
 ```
-
-### Stradivari Autocompleter
-
-If you want to use the Stradivari Autocomplete, please add
-[twitter-typeahead-rails](https://github.com/yourabi/twitter-typeahead-rails) to your project
-
-The stradivari Autocompleter uses both the detached form and the form filters
-
-It will use the keys in the filters to generate a list of autocomplete terms
-in the detached form
-
-When you select a term from the autocomplete list, the corresponding filter is
-automagically selected in the filter list
-
-
-To enable it, put the autocomplete:true option in the detached form search field
-
-  - search :matching, title: 'Search', class: "focus", autocomplete: true
-
-The class "focus" is used to give default focus to the search field
-
-Then, on the checkbox fields in the filter, use the autocomplete: true option
-to tell to the Stradivari to grab that list and use it in the Autocompleter
-
-- checkbox :foo, collection: Foo.foos, priority: :low, title: "Foo", autocomplete: true
-
 
 ## Tests
 

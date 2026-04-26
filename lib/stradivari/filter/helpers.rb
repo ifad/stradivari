@@ -45,8 +45,7 @@ module Stradivari
               concat content_tag(:span, (opts[:active_field] ? 'Add More' : 'Expand'), class: 'stradivari-filter__toggle', data: { stradivari_filter_toggle: true })
             end
           end
-          data = { data: { stradivari: 'autocomplete' } } if opts[:autocomplete].present?
-          concat(label(opts[:namespace], name, title.html_safe, data))
+          concat(label(opts[:namespace], name, title.html_safe))
         end
       end
 

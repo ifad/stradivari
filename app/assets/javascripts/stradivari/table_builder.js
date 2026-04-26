@@ -1,20 +1,13 @@
-$(function() {
-  $('[data-stradivari-table]').on('click', '[data-stradivari-table-sort]', function(event) {
+Stradivari.ready(() => {
+  Stradivari.delegate(document, 'click', '[data-stradivari-table] [data-stradivari-table-sort]', (event, header) => {
     event.preventDefault();
 
-    with($(this).data()) {
-      _TABLE_.mergeURLParameters([
-        'direction='.concat(direction),
-        'sort='     .concat(sort)
-      ]);
-    }
-
+    _TABLE_.mergeURLParameters([`direction=${header.dataset.direction}`, `sort=${header.dataset.sort}`]);
   });
 
-  $('[data-stradivari-table]').on('click', '[data-stradivari-table-download="event"]', function(event) {
+  Stradivari.delegate(document, 'click', '[data-stradivari-table] [data-stradivari-table-download="event"]', (event, link) => {
     event.preventDefault();
-    var $form = $(this).parents('[data-stradivari-table]');
 
-    $form.trigger('stradivari:download', {element: this});
+    Stradivari.emit(link.closest('[data-stradivari-table]'), 'stradivari:download', { element: link });
   });
 });

@@ -233,30 +233,4 @@
     @apply m-0 list-none p-0;
   }
 
-  span.twitter-typeahead {
-    @apply w-full;
-  }
-  span.twitter-typeahead .tt-dropdown-menu {
-    @apply z-50 w-full min-w-40 rounded border border-sky-600 bg-white py-1 shadow-lg;
-  }
-  span.twitter-typeahead .tt-suggestion {
-    @apply px-5 py-1 leading-6;
-  }
-  span.twitter-typeahead .tt-suggestion > p {
-    @apply clear-both m-0 block whitespace-nowrap text-slate-950;
-  }
-  span.twitter-typeahead .tt-suggestion > p:hover,
-  span.twitter-typeahead .tt-suggestion > p:focus,
-  span.twitter-typeahead .tt-suggestion.tt-cursor {
-    @apply bg-sky-100;
-  }
-  .stradivari-input-group span.twitter-typeahead {
-    display: block !important;
-  }
-  .stradivari-input-group span.twitter-typeahead .tt-dropdown-menu {
-    top: 33px !important;
-  }
-  span.twitter-typeahead .dataset-name {
-    @apply m-0 border-b border-slate-300 p-1 leading-6 text-sky-700;
-  }
 }

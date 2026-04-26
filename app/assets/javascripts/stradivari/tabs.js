@@ -1,52 +1,74 @@
-/**
- * Lazy-loaded tabs
- */
-jQuery(function() {
-  $(document).on('click', '[data-stradivari-tab]', function(event) {
-    event.preventDefault();
+const activateStradivariTab = (link) => {
+  const target = document.querySelector(link.getAttribute('href'));
 
-    var loader = $(this);
-    var target = $(loader.attr('href')); // It's an #anchor
-
-    loader.closest('.stradivari-tabs__nav').find('.stradivari-tabs__item').removeClass('stradivari-tabs__item--active');
-    loader.closest('.stradivari-tabs__item').addClass('stradivari-tabs__item--active');
-    target.siblings('.stradivari-tabs__pane').removeClass('stradivari-tabs__pane--active');
-    target.addClass('stradivari-tabs__pane--active');
-
-    if (!loader.data('url'))
-      return;
-
-    if (loader.data().hasOwnProperty('loaded'))
-      return;
-
-    $.ajax({
-        url: loader.data('url'),
-        beforeSend: function() {
-          loader.data('loaded', false);
-          loader.trigger('stradivari:tab:loading');
-        }
-      })
-      .done(function(html) {
-        loader.data('loaded', true);
-        target.html(html);
-        loader.trigger('stradivari:tab:loaded');
-      })
-      .fail(function() {
-        loader.removeData('loaded');
-        alert('Aw, snap! Something went wrong');
-        target.html('');
-        loader.trigger('stradivari:tab:failed');
-      });
-  })
-
-  // activate tab if tab id is specified in the url stradi_tabs[] parameter
-  // clicking the tab link works even with ajax tabs
-  var stradivari_tabs = _TABLE_.parseURLParameters(location.href)["stradi_tabs"];
-  if ( stradivari_tabs != undefined ) {
-    $.each(stradivari_tabs, function(i, tab_id){
-      var tab = $("[data-stradivari-tab][href='#" + tab_id + "']").first();
-      if (tab != undefined) tab.click();
-    })
+  if (!target) {
+    return null;
   }
 
+  const nav = link.closest('.stradivari-tabs__nav');
+  const item = link.closest('.stradivari-tabs__item');
+
+  if (nav) {
+    Stradivari.all('.stradivari-tabs__item', nav).forEach((navItem) => {
+      navItem.classList.remove('stradivari-tabs__item--active');
+    });
+  }
+
+  if (item) {
+    item.classList.add('stradivari-tabs__item--active');
+  }
+
+  Stradivari.all('.stradivari-tabs__pane', target.parentElement).forEach((pane) => {
+    pane.classList.remove('stradivari-tabs__pane--active');
+  });
+  target.classList.add('stradivari-tabs__pane--active');
+
+  return target;
+};
+
+Stradivari.ready(() => {
+  Stradivari.delegate(document, 'click', '[data-stradivari-tab]', async (event, link) => {
+    event.preventDefault();
+
+    const target = activateStradivariTab(link);
+
+    if (!target || !link.dataset.url || Object.prototype.hasOwnProperty.call(link.dataset, 'loaded')) {
+      return;
+    }
+
+    link.dataset.loaded = 'false';
+    Stradivari.emit(link, 'stradivari:tab:loading');
+
+    try {
+      const response = await fetch(link.dataset.url, {
+        credentials: 'same-origin',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Tab request failed with ${response.status}`);
+      }
+
+      link.dataset.loaded = 'true';
+      target.innerHTML = await response.text();
+      Stradivari.emit(link, 'stradivari:tab:loaded');
+    } catch (_error) {
+      delete link.dataset.loaded;
+      window.alert('Aw, snap! Something went wrong');
+      target.innerHTML = '';
+      Stradivari.emit(link, 'stradivari:tab:failed');
+    }
+  });
+
+  const stradivariTabs = _TABLE_.parseURLParameters(window.location.href).stradi_tabs;
+
+  if (stradivariTabs) {
+    stradivariTabs.forEach((tabId) => {
+      const tab = document.querySelector(`[data-stradivari-tab][href="#${Stradivari.selectorEscape(tabId)}"]`);
+
+      if (tab) {
+        tab.click();
+      }
+    });
+  }
 });

@@ -1,39 +1,33 @@
-window.Stradivari = (typeof Stradivari != "undefined") ? Stradivari : {};
+window.Stradivari = window.Stradivari || {};
 
-$.extend(Stradivari, {
-  filterContext:    "<%= Stradivari::Filter::CONTEXT %>",
-  filterNamespace:  "<%= Stradivari::Filter::NAMESPACE %>",
-  typeaheadDisplay: "<%= Stradivari::Filter::TYPEAHEAD_DISPLAY_NAME %>",
-  typeaheadValue:   "<%= Stradivari::Filter::TYPEAHEAD_VALUE_NAME %>",
-  version:          "<%= Stradivari::VERSION %>",
+Object.assign(Stradivari, {
+  filterContext: '<%= Stradivari::Filter::CONTEXT %>',
+  filterNamespace: '<%= Stradivari::Filter::NAMESPACE %>',
+  version: '<%= Stradivari::VERSION %>',
 
-  init: function() {
-    /* Initialize forms */
-    if (Stradivari.DetachedForm.form())
+  init() {
+    if (Stradivari.DetachedForm.form()) {
       Stradivari.detachedForm = new Stradivari.DetachedForm();
+    }
 
     if (Stradivari.FilterForm.form()) {
-      // we need filterForm instance for the autocomplete function
       Stradivari.filterForm = new Stradivari.FilterForm();
       new Stradivari.FoldableForm(Stradivari.filterForm.form);
     }
 
-<% if defined? Twitter::Typeahead %>
-    /* Initialize autocompleter */
-    Stradivari.autocompleter = new Stradivari.Autocompleter();
-<% end %>
-    // all this to give focus to the input.focus element, positioning
-    // the cursor after the last character
-    setTimeout(function() {
-      var focusField = $('input.focus:not([readonly])');
-      if (focusField.length > 0){
+    setTimeout(() => {
+      const focusField = document.querySelector('input.focus:not([readonly])');
+
+      if (focusField) {
         focusField.focus();
-        focusField[0].setSelectionRange(focusField.val().length, focusField.val().length);
+
+        if (focusField.setSelectionRange) {
+          const cursorPosition = focusField.value.length;
+          focusField.setSelectionRange(cursorPosition, cursorPosition);
+        }
       }
     });
   }
-})
+});
 
-$(function() {
-  Stradivari.init();
-})
+Stradivari.ready(() => Stradivari.init());
