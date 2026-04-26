@@ -21,7 +21,7 @@ RSpec.describe Stradivari::CSV::Generator do
     create_widget(name: 'Foo')
     csv_string = view.csv_for(Widget.all) do
       column :upper do |w|
-        haml_concat w.name.upcase
+        concat w.name.upcase
       end
     end
     parsed = CSV.parse(csv_string)

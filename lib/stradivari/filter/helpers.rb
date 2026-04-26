@@ -3,30 +3,30 @@ module Stradivari
     module Helpers
       def self.radios_for_collection(collection, attr, opts)
         lambda do
-          haml_tag :div, class: 'form-inline' do
-            any_checked = true
+          any_checked = true
 
-            collection.each do |title, value|
-              checked = opts[:value].to_s == value.to_s || opts[:default_checked].to_s == value.to_s
-              any_checked = false if checked
+          radios = collection.map do |title, value|
+            checked = opts[:value].to_s == value.to_s || opts[:default_checked].to_s == value.to_s
+            any_checked = false if checked
 
-              haml_tag :div, class: Helpers.prepare_radio_class(checked, 'radio') do
-                haml_tag :label do
-                  haml_concat radio_button(opts[:namespace], attr, value, checked: checked)
-                  haml_concat title
-                end
-              end
-            end
-
-            if opts.fetch(:include_blank, true).to_s == 'true'
-              haml_tag :div, class: Helpers.prepare_radio_class(any_checked, 'radio') do
-                haml_tag :label do
-                  haml_concat radio_button(opts[:namespace], attr, '', checked: any_checked)
-                  haml_concat 'Any'
-                end
-              end
+            content_tag(:div, class: Helpers.prepare_radio_class(checked, 'radio')) do
+              content_tag(:label, safe_join([
+                                              radio_button(opts[:namespace], attr, value, checked: checked),
+                                              title
+                                            ]))
             end
           end
+
+          if opts.fetch(:include_blank, true).to_s == 'true'
+            radios << content_tag(:div, class: Helpers.prepare_radio_class(any_checked, 'radio')) do
+              content_tag(:label, safe_join([
+                                              radio_button(opts[:namespace], attr, '', checked: any_checked),
+                                              'Any'
+                                            ]))
+            end
+          end
+
+          concat content_tag(:div, safe_join(radios), class: 'form-inline')
         end
       end
 
@@ -36,12 +36,12 @@ module Stradivari
              (opts[:active_field] && opts.fetch(:collapsed_field, false))
             title = content_tag(:span, title, class: 'text')
 
-            title << ' ' << capture_haml do
-              haml_tag :span, (opts[:active_field] ? 'Add More' : 'Expand'), class: 'handle'
+            title << ' ' << capture do
+              concat content_tag(:span, (opts[:active_field] ? 'Add More' : 'Expand'), class: 'handle')
             end
           end
           data = { data: { stradivari: 'autocomplete' } } if opts[:autocomplete].present?
-          haml_concat(label(opts[:namespace], name, title.html_safe, data))
+          concat(label(opts[:namespace], name, title.html_safe, data))
         end
       end
 

@@ -6,7 +6,7 @@ module Stradivari
       include Stradivari::Concerns::CssFriendly
 
       delegate :view, :klass, to: :@parent
-      delegate :t, :capture_haml, :haml_tag, :haml_concat, to: :view
+      delegate :capture, :concat, :content_tag, :safe_join, :t, :tag, to: :view
 
       attr_reader :opts
 
@@ -64,6 +64,8 @@ module Stradivari
     end
 
     def initialize(view, data, *pass)
+      @output_buffer = ActionView::OutputBuffer.new
+
       # ActionView
       @view = view
 
@@ -76,7 +78,7 @@ module Stradivari
 
     attr_reader :view, :data, :opts
 
-    delegate :params, :t, :capture_haml, :haml_tag, to: :@view
+    delegate :capture, :concat, :content_tag, :params, :safe_join, :t, :tag, to: :@view
 
     def to_s
       raise NotImplementedError

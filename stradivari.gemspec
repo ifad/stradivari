@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Stradivari::VERSION
   spec.authors       = ['Lleïr Borràs Metje', 'Marcello Barnaba', 'Ivan Turkovic']
   spec.email         = ['l.borrasmetje@ifad.org', 'm.barnaba@ifad.org', 'i.turkovic@ifad.org']
-  spec.summary       = 'Enterprise toolkit for Ruby/HAML/Bootstrap3 web apps'
+  spec.summary       = 'Enterprise toolkit for Rails/Bootstrap3 web apps'
   spec.description   = '
-This Gem combines HAML and Bootstrap 3 to provide you easy generators for:
+This Gem combines Rails view helpers and Bootstrap 3 to provide you easy generators for:
 
 - HTML Tables
 - CSV Tables
@@ -38,7 +38,6 @@ This Gem combines HAML and Bootstrap 3 to provide you easy generators for:
   spec.add_development_dependency 'rake'
 
   spec.add_dependency 'caxlsx'
-  spec.add_dependency 'haml', '>= 5.0', '< 6'
   spec.add_dependency 'pg_search'
   spec.add_dependency 'ransack'
 end

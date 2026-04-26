@@ -23,7 +23,7 @@ grew up on its own. :smile:
 
 ## Features
 
-This Gem combines [HAML][] and [Bootstrap 3][] to provide you easy
+This Gem combines Rails view helpers and [Bootstrap 3][] to provide you easy
 generators for:
 
 - HTML Tables
@@ -65,6 +65,9 @@ Add to your config/initializers/stradivari.rb
 
 
 ## Usage
+
+The examples below use Haml syntax, but Stradivari itself does not depend on
+Haml; the helpers are implemented with standard Rails view helpers.
 
 ### Table
 

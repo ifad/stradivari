@@ -13,20 +13,18 @@ module Stradivari
 
           opts[:collapsed_field] = true if (opts[:value].present? & collection.is_a?(Array)) && collection.size <= radios_max
 
-          haml_tag :div, class: 'form-group' do
-            instance_exec(&Helpers.render_title(attr, title, opts))
-
-            haml_tag :div, class: Builder.prepare_classes(opts) do
-              if collection.is_a?(Array) && collection.size <= radios_max
-                instance_exec(&Helpers.radios_for_collection(collection, attr, opts))
-              else
-                options = { selected: opts[:value] }
-                options[:include_blank] = 'Any' if opts.fetch(:include_blank, true).to_s == 'true'
-
-                haml_concat select(opts[:namespace], attr, collection, { selected: opts[:value], include_blank: 'Any' }, { class: 'form-control' })
-              end
+          field = content_tag(:div, class: Builder.prepare_classes(opts)) do
+            if collection.is_a?(Array) && collection.size <= radios_max
+              capture { instance_exec(&Helpers.radios_for_collection(collection, attr, opts)) }
+            else
+              select(opts[:namespace], attr, collection, { selected: opts[:value], include_blank: 'Any' }, { class: 'form-control' })
             end
           end
+
+          concat content_tag(:div, safe_join([
+                                               capture { instance_exec(&Helpers.render_title(attr, title, opts)) },
+                                               field
+                                             ]), class: 'form-group')
         end
       end
     end

@@ -11,14 +11,17 @@ module Stradivari
             ['Less Than', "#{attr}_lt"]
           ]
 
-          haml_tag :div, class: 'form-group' do
-            instance_exec(&Helpers.render_title("#{attr}_eq", opts[:title] || attr.to_s.humanize, opts))
-
-            haml_tag :div, class: Builder.prepare_classes(opts, 'input-number') do
-              haml_concat select(nil, nil, options_for_select(select_opts, selected: opts[:value].first), {}, class: 'form-control')
-              haml_concat text_field(opts[:namespace], opts[:value].first, value: value, class: 'form-control')
-            end
+          fields = content_tag(:div, class: Builder.prepare_classes(opts, 'input-number')) do
+            safe_join([
+                        select(nil, nil, options_for_select(select_opts, selected: opts[:value].first), {}, class: 'form-control'),
+                        text_field(opts[:namespace], opts[:value].first, value: value, class: 'form-control')
+                      ])
           end
+
+          concat content_tag(:div, safe_join([
+                                               capture { instance_exec(&Helpers.render_title("#{attr}_eq", opts[:title] || attr.to_s.humanize, opts)) },
+                                               fields
+                                             ]), class: 'form-group')
         end
       end
 

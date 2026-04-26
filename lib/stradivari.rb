@@ -2,12 +2,12 @@ require 'stradivari/version'
 require 'stradivari/engine'
 
 module Stradivari
-  autoload :Error,      'stradivari/error'
+  autoload :Error,                'stradivari/error'
 
-  autoload :Builder,    'stradivari/builder'
-  autoload :Generator,  'stradivari/generator'
-  autoload :Helpers,    'stradivari/helpers'
-  autoload :Controller, 'stradivari/controller'
+  autoload :Builder,              'stradivari/builder'
+  autoload :Generator,            'stradivari/generator'
+  autoload :Helpers,              'stradivari/helpers'
+  autoload :Controller,           'stradivari/controller'
 
   autoload :Details,    'stradivari/details'
   autoload :Table,      'stradivari/table'

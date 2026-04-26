@@ -34,22 +34,28 @@ module Stradivari
           attributes.deep_merge!(href: "##{@dom_id}", data: { toggle: :tab })
           attributes[:data][:url] = @opts[:url]
 
-          haml_tag :li, class: klass do
-            haml_tag :a, attributes do
-              haml_concat @label
-              counter global_opts
+          concat(
+            content_tag(:li, class: klass) do
+              concat(
+                content_tag(:a, attributes) do
+                  concat @label
+                  counter global_opts
+                end
+              )
             end
-          end
+          )
         end
 
         def content(opts = {})
           klass = 'tab-pane'
           klass << ' active' if active?
 
-          haml_tag :div, class: klass, id: @dom_id do
-            renderer = @content.blank? && !force? ? opts.fetch(:blank) : @renderer
-            view.instance_exec(@content, &renderer)
-          end
+          concat(
+            content_tag(:div, class: klass, id: @dom_id) do
+              renderer = @content.blank? && !force? ? opts.fetch(:blank) : @renderer
+              view.instance_exec(@content, &renderer)
+            end
+          )
         end
 
         def counter(global_opts = {})
@@ -64,7 +70,7 @@ module Stradivari
           return unless counter
 
           count = @content.respond_to?(:count) ? @content.count : counter
-          haml_tag :span, count, class: 'badge alert-info'
+          concat content_tag(:span, count, class: 'badge alert-info')
         end
       end
 
@@ -96,7 +102,7 @@ module Stradivari
                      render_for_display(tabs)
                    end
 
-        capture_haml(&renderer)
+        capture(&renderer)
       end
 
       class << self
@@ -129,11 +135,13 @@ module Stradivari
         lambda do
           tabs.each do |tab|
             if @render_nav
-              haml_tag(:h5) do
-                haml_tag(:ul, class: 'list-unstyled') { tab.nav(@opts) }
-              end
+              concat(
+                content_tag(:h5) do
+                  concat(content_tag(:ul, class: 'list-unstyled') { tab.nav(@opts) })
+                end
+              )
             end
-            haml_tag(:div) { tab.content(blank: blank) } if @render_content
+            concat(content_tag(:div) { tab.content(blank: blank) }) if @render_content
           end
         end
       end
@@ -145,15 +153,19 @@ module Stradivari
           tabs.first.opts[:active] = true if tabs.none? { |tab| tab.opts.fetch(:active, false) }
 
           if @render_nav
-            haml_tag :ul, class: "nav nav-#{flavor}" do
-              tabs.each { |tab| tab.nav(@opts) }
-            end
+            concat(
+              content_tag(:ul, class: "nav nav-#{flavor}") do
+                tabs.each { |tab| tab.nav(@opts) }
+              end
+            )
           end
 
           if @render_content
-            haml_tag :div, class: 'tab-content' do
-              tabs.each { |tab| tab.content(blank: blank) }
-            end
+            concat(
+              content_tag(:div, class: 'tab-content') do
+                tabs.each { |tab| tab.content(blank: blank) }
+              end
+            )
           end
         end
       end

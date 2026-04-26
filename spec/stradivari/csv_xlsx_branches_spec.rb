@@ -54,7 +54,7 @@ RSpec.describe 'CSV/XLSX child rendering and counters' do
     create_widget(name: 'lower')
     binary = view.xlsx_for(Widget.all) do
       column :name do |w|
-        haml_concat w.name.upcase
+        concat w.name.upcase
       end
     end
     open_xlsx(binary) do |sheet|

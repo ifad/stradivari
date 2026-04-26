@@ -44,7 +44,10 @@ module Stradivari
 
         def to_s
           render_block = @renderer.presence || builder.render
-          view.instance_exec(@name, @opts.merge(value: value, active_field: active?), &render_block)
+          rendered = view.capture do
+            view.instance_exec(@name, @opts.merge(value: value, active_field: active?), &render_block)
+          end
+          view.concat rendered
         end
 
         protected
@@ -89,35 +92,37 @@ module Stradivari
           form_classes = 'filter-form '
           form_classes << 'form-detached ' if detached?
 
-          capture_haml do
-            haml_tag :div, class: @opts[:class] do
+          concat(
+            content_tag(:div, class: @opts[:class]) do
               link = [id, 'detached'].join('_')
               id, link = link, id if detached?
 
               data = { link: link }
               data[:detached] = 'true' if detached?
 
-              haml_tag :form, class: form_classes, role: 'form', id: id, data: data do
-                unless detached?
-                  haml_tag :input, type: :hidden, name: :sort,      value: @opts.fetch(:sort,      view.params[:sort])
-                  haml_tag :input, type: :hidden, name: :direction, value: @opts.fetch(:direction, view.params[:direction])
-                end
+              concat(
+                content_tag(:form, class: form_classes, role: 'form', id: id, data: data) do
+                  unless detached?
+                    concat tag.input(type: :hidden, name: :sort,      value: @opts.fetch(:sort,      view.params[:sort]))
+                    concat tag.input(type: :hidden, name: :direction, value: @opts.fetch(:direction, view.params[:direction]))
+                  end
 
-                wrapping do
-                  generate_actions if !inline? && @fields.count > 5
+                  wrapping do
+                    generate_actions if !inline? && @fields.count > 5
 
-                  generate_custom_block(@prepended) if !detached? && @prepended.present?
-                  generate_active_fields
-                  generate_inactive_fields
-                  generate_custom_block(@appended) if !detached? && @appended.present?
-                  generate_actions unless inline?
+                    generate_custom_block(@prepended) if !detached? && @prepended.present?
+                    generate_active_fields
+                    generate_inactive_fields
+                    generate_custom_block(@appended) if !detached? && @appended.present?
+                    generate_actions unless inline?
+                  end
                 end
-              end
+              )
             end
-          end
+          )
         end
 
-        capture_haml(&renderer)
+        capture(&renderer)
       end
 
       def prepend(opts = {}, &block)
@@ -138,7 +143,7 @@ module Stradivari
         if inline?
           yield
         else
-          haml_tag(:div, class: 'panel panel-info', &)
+          concat(content_tag(:div, class: 'panel panel-info', &))
         end
       end
 
@@ -152,24 +157,30 @@ module Stradivari
 
       def generate_active_fields
         if (active_fields = @fields.select(&:active?)).any?
-          haml_tag :div, class: (inline? ? '' : 'panel-heading') do
-            active_fields.each(&:to_s)
-          end
+          concat(
+            content_tag(:div, class: (inline? ? '' : 'panel-heading')) do
+              active_fields.each(&:to_s)
+            end
+          )
         end
       end
 
       def generate_inactive_fields
         if (inactive_fields = @fields.reject(&:active?)).any?
-          haml_tag :div, class: (inline? ? '' : 'panel-body') do
-            inactive_fields.each(&:to_s)
-          end
+          concat(
+            content_tag(:div, class: (inline? ? '' : 'panel-body')) do
+              inactive_fields.each(&:to_s)
+            end
+          )
         end
       end
 
       def generate_custom_block(opts)
-        haml_tag :div, class: "panel-body #{opts[:class] || 'custom'}" do
-          @view.instance_exec(&opts[:block])
-        end
+        concat(
+          content_tag(:div, class: "panel-body #{opts[:class] || 'custom'}") do
+            @view.instance_exec(&opts[:block])
+          end
+        )
       end
 
       def generate_actions
