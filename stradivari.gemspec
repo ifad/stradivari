@@ -28,11 +28,19 @@ This Gem combines HAML and Bootstrap 3 to provide you easy generators for:
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler", "~> 1.5"
-  spec.add_development_dependency "rake"
+  spec.required_ruby_version = '>= 3.0'
 
+  spec.metadata = {
+    'bug_tracker_uri'       => 'https://github.com/ifad/stradivari/issues',
+    'homepage_uri'          => 'https://github.com/ifad/stradivari',
+    'source_code_uri'       => 'https://github.com/ifad/stradivari',
+    'rubygems_mfa_required' => 'true'
+  }
+
+  spec.add_development_dependency 'rake'
+
+  spec.add_runtime_dependency 'caxlsx'
+  spec.add_runtime_dependency 'haml', '>= 5.0', '< 6'
   spec.add_runtime_dependency 'pg_search'
   spec.add_runtime_dependency 'ransack'
-  spec.add_runtime_dependency 'haml'
-  spec.add_runtime_dependency 'caxlsx'
 end

@@ -1,0 +1,16 @@
+en:
+  stradivari:
+    empty: "—"
+  empty: "—"
+  activerecord:
+    attributes:
+      widget:
+        name: Name
+        price: Price
+        active: Active
+        released_on: Released on
+        description: Description
+        kind: Kind
+        priced_above: Priced above
+        name_like: Name contains
+        search: Search

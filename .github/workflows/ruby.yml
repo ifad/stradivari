@@ -1,0 +1,55 @@
+name: Ruby specs
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Ruby ${{ matrix.ruby-version }} / ${{ matrix.gemfile }}
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: stradivari_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby-version: ['3.0', '3.1', '3.2', '3.3', '3.4']
+        gemfile: [rails_7.0, rails_7.1, rails_7.2]
+
+        exclude:
+          # Rails 7.2 requires Ruby >= 3.1
+          - ruby-version: '3.0'
+            gemfile: rails_7.2
+
+    env:
+      BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/stradivari_test
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true
+      - name: Run specs
+        run: bundle exec rake spec

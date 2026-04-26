@@ -1,0 +1,57 @@
+inherit_from: .rubocop_todo.yml
+
+plugins:
+  - rubocop-packaging
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rake
+  - rubocop-rspec
+
+AllCops:
+  NewCops: enable
+  TargetRailsVersion: 7.0
+  TargetRubyVersion: 3.0
+  Exclude:
+    - .git/**/*
+    - .github/**/*
+    - bin/**/*
+    - gemfiles/**/*
+    - node_modules/**/*
+    - spec/internal/**/*
+    - tmp/**/*
+    - vendor/**/*
+
+# Production code is out of scope for this PR; do not flag pre-existing issues.
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - 'lib/**/*'
+    - 'app/**/*'
+    - 'stradivari.gemspec'
+
+Layout/LineLength:
+  Enabled: false
+
+Naming/PredicateMethod:
+  AllowBangMethods: true
+
+Rails/Delegate:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+Style/ArgumentsForwarding:
+  Enabled: false
+
+Style/OneClassPerFile:
+  Exclude:
+    - 'spec/**/*'
+
+# Production code is out of scope for this PR.
+Metrics:
+  Exclude:
+    - 'lib/**/*'
+    - 'app/**/*'
