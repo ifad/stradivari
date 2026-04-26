@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ViewContext
   # Builds a real ActionView::Base instance with StradivariHelper + Haml::Helpers
   # mixed in. Used by unit specs that need to invoke generators directly outside

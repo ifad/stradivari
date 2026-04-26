@@ -3,8 +3,8 @@ module Stradivari
     class Builder::DateBuilder < Builder
       def self.render
         lambda do |object, attr, opts|
-          if (d=object.public_send(attr)).present?
-            if f = opts.fetch(:format, nil)
+          if (d = object.public_send(attr)).present?
+            if (f = opts.fetch(:format, nil))
               d.strftime(f)
             else
               I18n.l(d)

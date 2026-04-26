@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Stradivari::Table::Generator do
@@ -106,7 +108,7 @@ RSpec.describe Stradivari::Table::Generator do
         column :name
       end
       doc = Nokogiri::HTML.fragment(out)
-      names = doc.css('tbody td').map(&:text).map(&:strip)
+      names = doc.css('tbody td').map { |td| td.text.strip }
       expect(names).to include('P', 'C')
     end
   end

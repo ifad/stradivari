@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Factories
   module_function
 
@@ -32,7 +34,7 @@ module Factories
         active: i.even?,
         released_on: Date.new(2024, 1, 1) + i
       }
-      attrs = attrs.merge(block.call(i)) if block
+      attrs = attrs.merge(yield(i)) if block
       create_widget(attrs)
     end
   end

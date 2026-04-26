@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Stradivari::Filter::Generator do
@@ -69,7 +71,7 @@ RSpec.describe Stradivari::Filter::Generator do
   it 'supports prepend and append blocks' do
     out = view.filter_for(Widget) do
       prepend(class: 'pre') { haml_tag :div, 'PRE' }
-      append(class: 'post')  { haml_tag :div, 'POST' }
+      append(class: 'post') { haml_tag :div, 'POST' }
       search :name_like
     end
     doc = Nokogiri::HTML.fragment(out)
@@ -91,11 +93,11 @@ RSpec.describe Stradivari::Filter::Builder do
 
   describe '.active?' do
     it 'returns true when value is present' do
-      expect(described_class.active?({ 'name' => 'x' }, 'name')).to be_truthy
+      expect(described_class).to be_active({ 'name' => 'x' }, 'name')
     end
 
     it 'returns false when value is blank' do
-      expect(described_class.active?({ 'name' => '' }, 'name')).to be_falsey
+      expect(described_class).not_to be_active({ 'name' => '' }, 'name')
     end
   end
 

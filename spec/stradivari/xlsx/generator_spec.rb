@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Stradivari::XLSX::Generator do
@@ -11,7 +13,7 @@ RSpec.describe Stradivari::XLSX::Generator do
       column :price
     end
     open_xlsx(binary) do |sheet|
-      expect(sheet.row(1)).to eq(['Id', 'Name', 'Price'])
+      expect(sheet.row(1)).to eq(%w[Id Name Price])
       expect(sheet.last_row).to eq(3) # header + 2
     end
   end

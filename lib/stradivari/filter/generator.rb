@@ -1,6 +1,5 @@
 module Stradivari
   module Filter
-
     class Generator < Stradivari::Generator
       NAMESPACE = Filter::NAMESPACE
 
@@ -8,8 +7,8 @@ module Stradivari
         detached: false,
         inline: false,
         class: 'filter-form-container ',
-        id:    'filter-form'
-      }
+        id: 'filter-form'
+      }.freeze
 
       class Field < Tag
         def initialize(parent, scope, name, opts, &renderer)
@@ -18,13 +17,14 @@ module Stradivari
           @scope    = scope
           @name     = name
           @active   = if (active_block = @opts.fetch(:active, nil))
-            view.instance_exec(&active_block)
-          else
-            false
-          end
+                        view.instance_exec(&active_block)
+                      else
+                        false
+                      end
 
           if renderer.present?
-            raise ArgumentError, "To use custom field you need to provide active attribute block inside options" unless opts.has_key?(:active)
+            raise ArgumentError, 'To use custom field you need to provide active attribute block inside options' unless opts.key?(:active)
+
             @renderer = renderer
           end
 
@@ -43,18 +43,19 @@ module Stradivari
         end
 
         def to_s
-          render_block = @renderer.present? ? @renderer : builder.render
+          render_block = @renderer.presence || builder.render
           view.instance_exec(@name, @opts.merge(value: value, active_field: active?), &render_block)
         end
 
         protected
-          def builder
-            @_bulder ||= @opts[:builder] || Builder::Implementations.fetch(@scope)
-          end
 
-          def params
-            @parent.params[NAMESPACE] || {}
-          end
+        def builder
+          @builder ||= @opts[:builder] || Builder::Implementations.fetch(@scope)
+        end
+
+        def params
+          @parent.params[NAMESPACE] || {}
+        end
       end
 
       def initialize(view, klass, *pass, &)
@@ -76,7 +77,7 @@ module Stradivari
         end
       end
 
-      Builder::Implementations.each do |name, _|
+      Builder::Implementations.each_key do |name|
         define_method name do |attr, opts = {}, &renderer|
           field(name, attr, opts, &renderer)
         end
@@ -90,12 +91,11 @@ module Stradivari
 
           capture_haml do
             haml_tag :div, class: @opts[:class] do
-
-              id, link = id, [ id, 'detached' ].join('_')
+              link = [id, 'detached'].join('_')
               id, link = link, id if detached?
 
               data = { link: link }
-              data[:detached] = "true" if detached?
+              data[:detached] = 'true' if detached?
 
               haml_tag :form, class: form_classes, role: 'form', id: id, data: data do
                 unless detached?
@@ -110,7 +110,7 @@ module Stradivari
                   generate_active_fields
                   generate_inactive_fields
                   generate_custom_block(@appended) if !detached? && @appended.present?
-                  generate_actions if !inline?
+                  generate_actions unless inline?
                 end
               end
             end
@@ -120,11 +120,11 @@ module Stradivari
         capture_haml(&renderer)
       end
 
-      def prepend opts = {}, &block
+      def prepend(opts = {}, &block)
         @prepended = opts.merge(block: block)
       end
 
-      def append opts = {}, &block
+      def append(opts = {}, &block)
         @appended = opts.merge(block: block)
       end
 
@@ -134,48 +134,47 @@ module Stradivari
 
       protected
 
-        def wrapping(&block)
-          if inline?
-            block.call
-          else
-            haml_tag :div, class: 'panel panel-info', &block
+      def wrapping(&)
+        if inline?
+          yield
+        else
+          haml_tag(:div, class: 'panel panel-info', &)
+        end
+      end
+
+      def detached?
+        !!@opts.fetch(:detached, nil)
+      end
+
+      def inline?
+        !!@opts.fetch(:inline, nil)
+      end
+
+      def generate_active_fields
+        if (active_fields = @fields.select(&:active?)).any?
+          haml_tag :div, class: (inline? ? '' : 'panel-heading') do
+            active_fields.each(&:to_s)
           end
         end
+      end
 
-        def detached?
-          !!@opts.fetch(:detached, nil)
-        end
-
-        def inline?
-          !!@opts.fetch(:inline, nil)
-        end
-
-        def generate_active_fields
-          if (active_fields = @fields.select(&:active?)).count > 0
-            haml_tag :div, class: (inline? ? '' : 'panel-heading') do
-              active_fields.each(&:to_s)
-            end
+      def generate_inactive_fields
+        if (inactive_fields = @fields.reject(&:active?)).any?
+          haml_tag :div, class: (inline? ? '' : 'panel-body') do
+            inactive_fields.each(&:to_s)
           end
         end
+      end
 
-        def generate_inactive_fields
-          if (inactive_fields = @fields.reject(&:active?)).count > 0
-            haml_tag :div, class: (inline? ? '' : 'panel-body') do
-              inactive_fields.each(&:to_s)
-            end
-          end
+      def generate_custom_block(opts)
+        haml_tag :div, class: "panel-body #{opts[:class] || 'custom'}" do
+          @view.instance_exec(&opts[:block])
         end
+      end
 
-        def generate_custom_block(opts)
-          haml_tag :div, class: "panel-body #{opts[:class] || 'custom'}" do
-            @view.instance_exec(&opts[:block])
-          end
-        end
-
-        def generate_actions
-          @view.instance_exec(&Filter::Builder::ActionField.render)
-        end
-
+      def generate_actions
+        @view.instance_exec(&Filter::Builder::ActionField.render)
+      end
     end
   end
 end

@@ -3,10 +3,9 @@ module Stradivari
     module CssFriendly
       extend ActiveSupport::Concern
 
-          def css_friendly dom_id
-            dom_id.gsub( /[\[\]:.,]/, '_' )
-          end
-
+      def css_friendly(dom_id)
+        dom_id.gsub(/[\[\]:.,]/, '_')
+      end
     end
   end
 end

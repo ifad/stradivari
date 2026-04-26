@@ -1,5 +1,5 @@
-module Stradivari::CSV
-
-  autoload :Generator, 'stradivari/csv/generator'
-
+module Stradivari
+  module CSV
+    autoload :Generator, 'stradivari/csv/generator'
+  end
 end

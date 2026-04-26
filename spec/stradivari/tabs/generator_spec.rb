@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Stradivari::Tabs::Generator do
@@ -5,7 +7,7 @@ RSpec.describe Stradivari::Tabs::Generator do
     it 'renders nav and content with default flavor (tabs)' do
       view = view_context
       out = view.tabs_for([1, 2, 3]) do |scope|
-        tab 'First',  'first',  scope, present: true do |s|
+        tab 'First',  'first', scope, present: true do |s|
           haml_concat "Count: #{s.count}"
         end
         tab 'Second', 'second', [], present: false do |_|
@@ -75,7 +77,9 @@ RSpec.describe Stradivari::Tabs::Generator do
     it 'tab_navs_for renders only the navigation' do
       view = view_context
       out = view.tab_navs_for do
-        tab 'Only', 'only', [1] do |_|; haml_concat 'x'; end
+        tab 'Only', 'only', [1] do |_|
+          haml_concat 'x'
+        end
       end
       expect(out).to include('nav-tabs')
       expect(out).not_to include('tab-content')
@@ -84,7 +88,9 @@ RSpec.describe Stradivari::Tabs::Generator do
     it 'tab_content_for renders only the panes' do
       view = view_context
       out = view.tab_content_for do
-        tab 'Only', 'only', [1] do |_|; haml_concat 'x'; end
+        tab 'Only', 'only', [1] do |_|
+          haml_concat 'x'
+        end
       end
       expect(out).to include('tab-content')
       expect(out).not_to include('nav-tabs')
@@ -95,7 +101,9 @@ RSpec.describe Stradivari::Tabs::Generator do
     it 'honours per-tab :counter override' do
       view = view_context
       out = view.tabs_for([1, 2, 3]) do |s|
-        tab 'A', 'a', s, counter: 99 do |_|; haml_concat 'x'; end
+        tab 'A', 'a', s, counter: 99 do |_|
+          haml_concat 'x'
+        end
       end
       expect(out).to include('>3<') # @content responds to count → uses count, not raw counter
     end
@@ -103,7 +111,9 @@ RSpec.describe Stradivari::Tabs::Generator do
     it 'renders printable layout when printable: true' do
       view = view_context
       out = view.tabs_for([1], printable: true) do |s|
-        tab 'A', 'a', s do |_|; haml_concat 'X'; end
+        tab 'A', 'a', s do |_|
+          haml_concat 'X'
+        end
       end
       expect(out).to include('X')
       expect(out).not_to include('nav-tabs')
@@ -112,7 +122,9 @@ RSpec.describe Stradivari::Tabs::Generator do
     it 'tab_content alias forwards to tab' do
       view = view_context
       out = view.tabs_for([1]) do |_|
-        tab_content 'a', [1] do |_|; haml_concat 'aliased'; end
+        tab_content 'a', [1] do |_|
+          haml_concat 'aliased'
+        end
       end
       expect(out).to include('aliased')
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Stradivari::Generator do
@@ -17,31 +19,32 @@ RSpec.describe Stradivari::Generator do
   end
 
   it 'delegates haml helpers to the view' do
-    expect(described_class.new(view, nil).respond_to?(:capture_haml)).to be_truthy
+    expect(described_class.new(view, nil)).to respond_to(:capture_haml)
   end
 
   describe Stradivari::Generator::Tag do
     let(:parent_double) do
-      Class.new do
-        def view; @view; end
-        def klass; Widget; end
-        attr_writer :view
-      end.new.tap { |p| p.view = view_context }
+      klass = Class.new do
+        attr_accessor :view
+
+        def klass = Widget
+      end
+      klass.new.tap { |p| p.view = view_context }
     end
 
     it 'is enabled by default' do
       tag = described_class.new(parent_double, {})
-      expect(tag.enabled?).to be_truthy
+      expect(tag).to be_enabled
     end
 
     it 'disables when :if returns false' do
       tag = described_class.new(parent_double, if: -> { false })
-      expect(tag.enabled?).to be_falsey
+      expect(tag).not_to be_enabled
     end
 
     it 'disables when :unless returns true' do
       tag = described_class.new(parent_double, unless: -> { true })
-      expect(tag.enabled?).to be_falsey
+      expect(tag).not_to be_enabled
     end
 
     it 'returns the supplied :title verbatim when a string' do
