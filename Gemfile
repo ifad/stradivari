@@ -19,7 +19,7 @@ gem 'database_cleaner-active_record'
 gem 'haml-rails'
 gem 'nokogiri'
 gem 'pg'
-gem 'rails', '>= 7.0', '< 7.3'
+gem 'rails', '>= 7.2', '< 8.2'
 gem 'roo'
 
 gem 'rubocop',             require: false

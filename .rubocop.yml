@@ -10,7 +10,7 @@ plugins:
 AllCops:
   NewCops: enable
   TargetRailsVersion: 7.0
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 3.2
   Exclude:
     - .git/**/*
     - .github/**/*

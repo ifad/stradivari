@@ -34,7 +34,7 @@ module Stradivari
         xlsx.to_stream.read.html_safe.force_encoding('BINARY')
       end
 
-      def initialize view, rows, *pass, &definition
+      def initialize(view, rows, *pass, &)
         super
         opts.reverse_merge! XLSX_OPTIONS
       end

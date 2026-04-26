@@ -12,10 +12,7 @@ module Stradivari
             #
             case (ver = ::ActiveRecord::VERSION::MAJOR)
             when 3 then extend Rails3
-            when 4 then extend Rails4
-            when 5 then extend Rails4
-            when 6 then extend Rails4
-            when 7 then extend Rails4
+            when 4, 5, 6, 7, 8 then extend Rails4
             else
               raise Stradivari::Error, "Unsupported Active Record version (#{ver})"
             end
@@ -34,11 +31,11 @@ module Stradivari
         end
 
         module ClassMethods
-          def stradivari_scope(name, *args, &block)
-            callable, options = stradivari_scope_options(*args, &block)
+          def stradivari_scope(name, *args, &)
+            callable, options = stradivari_scope_options(*args, &)
 
             if options[:type] == :full_text
-              full_text_search name, options, &block
+              full_text_search(name, options, &)
               stradivari_scopes.store(name.to_sym, options)
             else
               super

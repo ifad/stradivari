@@ -37,16 +37,16 @@ module Stradivari
           ##
           # Defines a search scope, callable from the query string.
           #
-          def stradivari_scope(name, *args, &block)
-            callable, options = stradivari_scope_options(*args, &block)
+          def stradivari_scope(name, *args, &)
+            callable, options = stradivari_scope_options(*args, &)
 
             scope(name, callable)
             options[:type] ||= :string
             stradivari_scopes.store(name.to_sym, options)
           end
-          def scope_search(*args, &block)
+          def scope_search(*args, &)
             $stderr.puts "#{name}.scope_search is deprecated. Please use .stradivari_scope (called from #{caller[0]})"
-            stradivari_scope(*args, &block)
+            stradivari_scope(*args, &)
           end
 
           def stradivari_scope_options(*args, &block)

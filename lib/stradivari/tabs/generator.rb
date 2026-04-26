@@ -77,8 +77,8 @@ module Stradivari
 
       alias_method :tab_nav, :tab
 
-      def tab_content(dom_id, content, opts = {}, &renderer)
-        tab 'label', dom_id, content, opts, &renderer
+      def tab_content(dom_id, content, opts = {}, &)
+        tab('label', dom_id, content, opts, &)
       end
 
       def blank(&block)
@@ -101,29 +101,29 @@ module Stradivari
       end
 
       class << self
-        def tabs view, *pass, &definition
-          new(view, true, true, *pass, &definition)
+        def tabs(view, *pass, &)
+          new(view, true, true, *pass, &)
         end
 
-        def navs view, *pass, &definition
-          new(view, true, false, *pass, &definition)
+        def navs(view, *pass, &)
+          new(view, true, false, *pass, &)
         end
 
-        def content view, *pass, &definition
-          new(view, false, true, *pass, &definition)
+        def content(view, *pass, &)
+          new(view, false, true, *pass, &)
         end
       end
 
     protected
 
-      def initialize(view, render_nav, render_content, *pass, &definition)
+      def initialize(view, render_nav, render_content, *pass, &)
         super(view, nil, *pass)
 
         @tabs           = []
         @render_nav     = render_nav
         @render_content = render_content
 
-        instance_exec(*pass, &definition)
+        instance_exec(*pass, &)
       end
 
       def render_for_print tabs

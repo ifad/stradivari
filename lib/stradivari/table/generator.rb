@@ -100,13 +100,13 @@ module Stradivari
           end
       end
 
-      def initialize(view, rows, *pass, &definition)
+      def initialize(view, rows, *pass, &)
         @columns = []
 
         super(view, rows, *pass)
         opts.reverse_merge! Stradivari::Table::Generator::TABLE_OPTIONS
 
-        instance_exec(rows, *pass, &definition)
+        instance_exec(rows, *pass, &)
       end
 
       def row &block
