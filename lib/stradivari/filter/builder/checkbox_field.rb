@@ -5,7 +5,7 @@ module Stradivari
         lambda do |attr, opts|
           # rubocop:disable Lint/NestedMethodDefinition -- defined on the view via instance_exec; refactoring to a lambda would change call semantics for descendants
           def cb(name, label, value, checked, opts)
-            content_tag(:div, class: 'checkbox') do
+            content_tag(:div, class: 'stradivari-filter__choice stradivari-filter__choice--checkbox', data: { stradivari_filter_choice: true }) do
               content_tag(:label, safe_join([
                                               check_box(opts[:namespace], name, { multiple: true, value: value, checked: checked }, value, nil),
                                               label
@@ -29,14 +29,18 @@ module Stradivari
           checked, unchecked = collection.partition { |_, value| values.include?(value.to_s) }
           opts[:collapsed_field] = true if type == :multi_line && checked.present?
 
-          classes = Builder.prepare_classes(opts, (type == :single_line ? 'form-inline' : 'multi-line'))
+          choice_list_classes = Stradivari::ClassNames.join(
+            'stradivari-filter__choice-list',
+            Stradivari::ClassNames.modifier('stradivari-filter__choice-list', type)
+          )
+          classes = Builder.prepare_classes(opts, choice_list_classes)
           checkboxes = if type == :multi_line
                          checked_boxes = checked.map { |label, value| cb(name, label, value, true, opts) }
                          if checked.present?
                            checked_boxes << content_tag(:div, safe_join([
                                                                           tag.hr,
                                                                           *unchecked.map { |label, value| cb(name, label, value, false, opts) }
-                                                                        ]), class: 'closed')
+                                                                        ]), class: 'stradivari-filter__collapsed', data: { stradivari_filter_collapsible: true })
                          else
                            checked_boxes.concat(unchecked.map { |label, value| cb(name, label, value, false, opts) })
                          end
@@ -50,7 +54,7 @@ module Stradivari
                                                capture { instance_exec(&Helpers.render_title(name, title, opts)) },
                                                hidden_field(opts[:namespace], "#{name}[]", value: ''),
                                                content_tag(:div, safe_join(checkboxes), class: classes)
-                                             ]), class: 'form-group')
+                                             ]), Builder.field_attributes(opts))
         end
       end
 

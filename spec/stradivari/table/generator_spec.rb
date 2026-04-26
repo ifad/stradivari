@@ -10,8 +10,9 @@ RSpec.describe Stradivari::Table::Generator do
         column :id
       end
       doc = Nokogiri::HTML.fragment(out)
-      expect(doc.at_css('div.no-data.alert.alert-warning')).not_to be_nil
+      expect(doc.at_css('div.stradivari-table__empty')).not_to be_nil
       expect(doc.at_css('table')).to be_nil
+      expect(out).not_to include('alert-warning')
     end
 
     it 'renders a custom no_data block when provided' do

@@ -26,29 +26,32 @@ module Stradivari
             data[:sort] = sort
           end
 
-          input_options = { value: opts[:value], class: "#{opts[:class]} form-control", placeholder: placeholder, data: data }
+          input_options = { value: opts[:value], class: Stradivari::ClassNames.join(opts[:class], 'stradivari-control'), placeholder: placeholder, data: data }
 
           warn "The skip_button option to search filter field is deprecated. Please use button: true/false. Button is now disabled by default. (called from #{caller(1..1).first})" if opts.key?(:skip_button)
 
           body = if opts[:skip_button] || !opts.fetch(:button, nil)
                    safe_join([
                                capture { instance_exec(&Helpers.render_title(attr, title.clone, opts)) },
-                               content_tag(:div, text_field(opts[:namespace], attr, input_options), class: Builder.prepare_classes(opts))
+                               content_tag(:div, text_field(opts[:namespace], attr, input_options), Builder.control_attributes(opts, 'stradivari-filter__search'))
                              ])
                  else
-                   content_tag(:div, class: 'input-group') do
+                   content_tag(:div, class: 'stradivari-input-group') do
                      safe_join([
                                  text_field(opts[:namespace], attr, input_options),
-                                 content_tag(:span, class: 'input-group-btn') do
-                                   content_tag(:button, type: 'button', class: 'btn btn-primary search') do
-                                     safe_join([content_tag(:i, '', class: 'fa fa-search'), 'Search'])
+                                 content_tag(:span, class: 'stradivari-input-group__action') do
+                                   content_tag(:button,
+                                               type: 'button',
+                                               class: 'stradivari-button stradivari-button--primary stradivari-button--search',
+                                               data: { stradivari_filter_action: 'search' }) do
+                                     safe_join([Stradivari::Icons.svg(:search), 'Search'])
                                    end
                                  end
                                ])
                    end
                  end
 
-          concat content_tag(:div, body, class: 'form-group')
+          concat content_tag(:div, body, Builder.field_attributes(opts))
         end
       end
 

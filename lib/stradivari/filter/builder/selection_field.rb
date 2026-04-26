@@ -13,18 +13,18 @@ module Stradivari
 
           opts[:collapsed_field] = true if (opts[:value].present? & collection.is_a?(Array)) && collection.size <= radios_max
 
-          field = content_tag(:div, class: Builder.prepare_classes(opts)) do
+          field = content_tag(:div, Builder.control_attributes(opts)) do
             if collection.is_a?(Array) && collection.size <= radios_max
               capture { instance_exec(&Helpers.radios_for_collection(collection, attr, opts)) }
             else
-              select(opts[:namespace], attr, collection, { selected: opts[:value], include_blank: 'Any' }, { class: 'form-control' })
+              select(opts[:namespace], attr, collection, { selected: opts[:value], include_blank: 'Any' }, { class: 'stradivari-control' })
             end
           end
 
           concat content_tag(:div, safe_join([
                                                capture { instance_exec(&Helpers.render_title(attr, title, opts)) },
                                                field
-                                             ]), class: 'form-group')
+                                             ]), Builder.field_attributes(opts))
         end
       end
     end

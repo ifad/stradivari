@@ -150,10 +150,11 @@ RSpec.describe 'Table::Generator download text' do
     expect(out).to include('Export to CSV...')
   end
 
-  it 'shows "downloadable_event" class when downloadable_type: :event' do
+  it 'shows the event download data hook when downloadable_type: :event' do
     out = view.table_for(Widget.all, downloadable: :csv, downloadable_type: :event) do
       column :name
     end
-    expect(out).to include('downloadable_event')
+    expect(out).to include('data-stradivari-table-download="event"')
+    expect(out).not_to include('downloadable_event')
   end
 end

@@ -2,13 +2,22 @@
  * Lazy-loaded tabs
  */
 jQuery(function() {
-  $(document).on('click', '.nav.nav-tabs [data-url], .nav.nav-pills [data-url], .nav.nav-stacked [data-url]', function(event) {
+  $(document).on('click', '[data-stradivari-tab]', function(event) {
+    event.preventDefault();
+
     var loader = $(this);
+    var target = $(loader.attr('href')); // It's an #anchor
+
+    loader.closest('.stradivari-tabs__nav').find('.stradivari-tabs__item').removeClass('stradivari-tabs__item--active');
+    loader.closest('.stradivari-tabs__item').addClass('stradivari-tabs__item--active');
+    target.siblings('.stradivari-tabs__pane').removeClass('stradivari-tabs__pane--active');
+    target.addClass('stradivari-tabs__pane--active');
+
+    if (!loader.data('url'))
+      return;
 
     if (loader.data().hasOwnProperty('loaded'))
       return;
-
-    var target = $(loader.attr('href')); // It's an #anchor
 
     $.ajax({
         url: loader.data('url'),
@@ -35,7 +44,7 @@ jQuery(function() {
   var stradivari_tabs = _TABLE_.parseURLParameters(location.href)["stradi_tabs"];
   if ( stradivari_tabs != undefined ) {
     $.each(stradivari_tabs, function(i, tab_id){
-      var tab = $("[data-toggle='tab'][href='#" + tab_id + "']").first();
+      var tab = $("[data-stradivari-tab][href='#" + tab_id + "']").first();
       if (tab != undefined) tab.click();
     })
   }

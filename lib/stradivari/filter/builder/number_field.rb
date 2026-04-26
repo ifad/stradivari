@@ -11,17 +11,20 @@ module Stradivari
             ['Less Than', "#{attr}_lt"]
           ]
 
-          fields = content_tag(:div, class: Builder.prepare_classes(opts, 'input-number')) do
+          attributes = Builder.control_attributes(opts, 'stradivari-filter__number')
+          attributes[:data] = (attributes[:data] || {}).merge(stradivari_filter_field: 'number')
+
+          fields = content_tag(:div, attributes) do
             safe_join([
-                        select(nil, nil, options_for_select(select_opts, selected: opts[:value].first), {}, class: 'form-control'),
-                        text_field(opts[:namespace], opts[:value].first, value: value, class: 'form-control')
+                        select(nil, nil, options_for_select(select_opts, selected: opts[:value].first), {}, class: 'stradivari-control'),
+                        text_field(opts[:namespace], opts[:value].first, value: value, class: 'stradivari-control')
                       ])
           end
 
           concat content_tag(:div, safe_join([
                                                capture { instance_exec(&Helpers.render_title("#{attr}_eq", opts[:title] || attr.to_s.humanize, opts)) },
                                                fields
-                                             ]), class: 'form-group')
+                                             ]), Builder.field_attributes(opts))
         end
       end
 

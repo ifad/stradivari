@@ -10,8 +10,9 @@ RSpec.describe 'Stradivari::Filter::Builder field branches' do
       search :name_like, button: true
     end
     doc = Nokogiri::HTML.fragment(out)
-    expect(doc.at_css('div.input-group')).not_to be_nil
-    expect(doc.at_css('button.search')).not_to be_nil
+    expect(doc.at_css('div.stradivari-input-group')).not_to be_nil
+    expect(doc.at_css('button[data-stradivari-filter-action="search"]')).not_to be_nil
+    expect(out).not_to include('class="input-group"')
   end
 
   it 'search field accepts data: { remote_url: } and sets data-remote-url' do
@@ -81,7 +82,8 @@ RSpec.describe 'Stradivari::Filter::Builder field branches' do
       selection :kind, collection: %w[a b c d e f g h]
     end
     doc = Nokogiri::HTML.fragment(out)
-    expect(doc.at_css('select.form-control')).not_to be_nil
+    expect(doc.at_css('select.stradivari-control')).not_to be_nil
+    expect(out).not_to include('form-control')
     expect(doc.css('option').size).to be >= 8
   end
 end

@@ -28,10 +28,13 @@ module Stradivari
         end
 
         def nav(global_opts = {})
-          klass = 'active' if active?
+          klass = Stradivari::ClassNames.join(
+            'stradivari-tabs__item',
+            Stradivari::ClassNames.modifier('stradivari-tabs__item', :active, enabled: active?)
+          )
 
           attributes = @opts.except(:if, :url)
-          attributes.deep_merge!(href: "##{@dom_id}", data: { toggle: :tab })
+          attributes.deep_merge!(href: "##{@dom_id}", class: 'stradivari-tabs__link', data: { stradivari_tab: true })
           attributes[:data][:url] = @opts[:url]
 
           concat(
@@ -47,8 +50,10 @@ module Stradivari
         end
 
         def content(opts = {})
-          klass = 'tab-pane'
-          klass << ' active' if active?
+          klass = Stradivari::ClassNames.join(
+            'stradivari-tabs__pane',
+            Stradivari::ClassNames.modifier('stradivari-tabs__pane', :active, enabled: active?)
+          )
 
           concat(
             content_tag(:div, class: klass, id: @dom_id) do
@@ -70,7 +75,7 @@ module Stradivari
           return unless counter
 
           count = @content.respond_to?(:count) ? @content.count : counter
-          concat content_tag(:span, count, class: 'badge alert-info')
+          concat content_tag(:span, count, class: 'stradivari-tabs__badge')
         end
       end
 
@@ -137,7 +142,7 @@ module Stradivari
             if @render_nav
               concat(
                 content_tag(:h5) do
-                  concat(content_tag(:ul, class: 'list-unstyled') { tab.nav(@opts) })
+                  concat(content_tag(:ul, class: 'stradivari-tabs__print-nav') { tab.nav(@opts) })
                 end
               )
             end
@@ -154,7 +159,7 @@ module Stradivari
 
           if @render_nav
             concat(
-              content_tag(:ul, class: "nav nav-#{flavor}") do
+              content_tag(:ul, class: Stradivari::ClassNames.join('stradivari-tabs__nav', Stradivari::ClassNames.modifier('stradivari-tabs__nav', flavor))) do
                 tabs.each { |tab| tab.nav(@opts) }
               end
             )
@@ -162,7 +167,7 @@ module Stradivari
 
           if @render_content
             concat(
-              content_tag(:div, class: 'tab-content') do
+              content_tag(:div, class: 'stradivari-tabs__content') do
                 tabs.each { |tab| tab.content(blank: blank) }
               end
             )

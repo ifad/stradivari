@@ -2,7 +2,7 @@ module Stradivari
   module Table
     class Generator < Stradivari::Generator
       TABLE_OPTIONS = {
-        class: 'table table-hover',
+        class: 'stradivari-table stradivari-table--hover',
         format: :html,
         no_data: 'There is no data.',
 
@@ -38,24 +38,40 @@ module Stradivari
           concat title
         end
 
-        def html_opts
-          @html_opts ||= @opts.fetch(:html, {}).tap do |html_opts|
-            html_opts[:class] = html_opts.fetch(:class, name)
+        def header_html_opts
+          @header_html_opts ||= base_html_opts.tap do |html_opts|
+            classes = ['stradivari-table__header-cell', html_opts[:class]]
 
             if sortable?
-              html_opts[:class] = [html_opts[:class], 'sortable'].join(' ')
+              classes << 'stradivari-table__header-cell--sortable'
               html_opts[:data] ||= {}
+              html_opts[:data][:stradivari_table_sort] = true
               html_opts[:data][:sort]      = sort_on
               html_opts[:data][:direction] = if sorting_active?
-                                               html_opts[:class] << ' active-column'
+                                               classes << 'stradivari-table__header-cell--active'
                                                current_sorting_direction == 'asc' ? 'desc' : 'asc' # Inversion on click
                                              else
                                                'asc'
                                              end
             end
 
-            html_opts[:class] = [html_opts[:class], 'action-builder'].join(' ') if name == :actions # FIXME: REMOVE
+            classes << 'stradivari-table__header-cell--actions' if name == :actions
+            html_opts[:class] = Stradivari::ClassNames.join(classes)
           end
+        end
+
+        def cell_html_opts
+          @cell_html_opts ||= base_html_opts.tap do |html_opts|
+            html_opts[:class] = Stradivari::ClassNames.join(
+              'stradivari-table__cell',
+              html_opts[:class],
+              Stradivari::ClassNames.modifier('stradivari-table__cell', :actions, enabled: name == :actions)
+            )
+          end
+        end
+
+        def html_opts
+          header_html_opts
         end
 
         protected
@@ -65,6 +81,12 @@ module Stradivari
         end
 
         private
+
+        def base_html_opts
+          @opts.fetch(:html, {}).deep_dup.tap do |html_opts|
+            html_opts[:class] = html_opts.fetch(:class, name)
+          end
+        end
 
         def sortable?
           opts.key?(:sortable)
@@ -87,13 +109,9 @@ module Stradivari
         end
 
         def sortable_icon
-          fa_icon = "-#{opts[:sortable_icon]}" if opts.key?(:sortable_icon)
+          icon = sorting_active? ? "sort_#{current_sorting_direction}" : :sort
 
-          klass = 'fa fa-sort'.tap do |s_class|
-            s_class << [fa_icon, "-#{current_sorting_direction}"].join if sorting_active?
-          end
-
-          content_tag(:i, '', class: klass)
+          Stradivari::Icons.svg(icon)
         end
       end
 
@@ -148,10 +166,11 @@ module Stradivari
       protected
 
       def generate_table
-        html_opts         = @opts[:html].presence || {}
-        html_opts[:class] = [TABLE_OPTIONS[:class], @opts[:class]].uniq.join(' ')
+        html_opts         = (@opts[:html].presence || {}).deep_dup
+        html_opts[:class] = Stradivari::ClassNames.join(TABLE_OPTIONS[:class], @opts[:class], html_opts[:class])
         html_opts[:name]  = @opts[:name]
         html_opts[:id]    = @opts[:id]
+        html_opts[:data]  = (html_opts[:data] || {}).merge(stradivari_table: true)
 
         concat(
           content_tag(:table, html_opts) do
@@ -164,9 +183,9 @@ module Stradivari
 
       def generate_no_data
         if @no_data
-          concat(content_tag(:div, class: 'no-data alert alert-warning', &@no_data))
+          concat(content_tag(:div, class: 'stradivari-table__empty', &@no_data))
         else
-          concat content_tag(:div, @opts[:no_data], class: 'no-data alert alert-warning')
+          concat content_tag(:div, @opts[:no_data], class: 'stradivari-table__empty')
         end
       end
 
@@ -176,7 +195,7 @@ module Stradivari
             concat(
               content_tag(:tr) do
                 @columns.each do |col|
-                  concat(content_tag(:th, col.html_opts) { col.header })
+                  concat(content_tag(:th, col.header_html_opts) { col.header })
                 end
               end
             )
@@ -210,7 +229,7 @@ module Stradivari
 
       def render_row(object, klass = nil)
         attributes = {}.tap do |attributes|
-          attributes[:class] = klass
+          attributes[:class] = Stradivari::ClassNames.modifier('stradivari-table__row', klass) if klass
           attributes[:id] = "#{object.class.name.underscore}_row_#{object.id}"
           @row&.call(attributes, object) # allow developer to add custom attributes to the <tr>
         end
@@ -218,7 +237,7 @@ module Stradivari
         concat(
           content_tag(:tr, attributes) do
             @columns.each do |col|
-              concat content_tag(:td, col.to_s(object), col.html_opts)
+              concat content_tag(:td, col.to_s(object), col.cell_html_opts)
             end
           end
         )
@@ -231,18 +250,17 @@ module Stradivari
               content_tag(:tr) do
                 concat(
                   content_tag(:td, colspan: @columns.count) do
-                    concat content_tag(:div, download, class: 'download pull-left') if @opts[:downloadable]
+                    concat content_tag(:div, download, class: 'stradivari-table__download') if @opts[:downloadable]
 
                     if @custom_footer
                       concat(
-                        content_tag(:div, class: "pull-left #{@custom_footer[:class]}") do
+                        content_tag(:div, class: Stradivari::ClassNames.join('stradivari-table__custom-footer', @custom_footer[:class])) do
                           @view.instance_exec(&@custom_footer[:block])
                         end
                       )
                     end
 
-                    concat content_tag(:div, counters, class: 'counters pull-right') if data.respond_to?(:current_page)
-                    concat content_tag(:div, '', class: 'clearfix')
+                    concat content_tag(:div, counters, class: 'stradivari-table__counters') if data.respond_to?(:current_page)
                   end
                 )
               end
@@ -272,7 +290,8 @@ module Stradivari
       def download
         capture do
           format = @opts[:downloadable] === true ? :csv : @opts[:downloadable]
-          classes = @opts[:downloadable_type] == :event ? 'downloadable_event' : ''
+          data = {}
+          data[:stradivari_table_download] = 'event' if @opts[:downloadable_type] == :event
 
           text = 'Export'
           case format
@@ -298,7 +317,10 @@ module Stradivari
             params[:q] = query.each { |k, v| query[k] = [''] if v.is_a?(Array) && v.empty? }
           end
 
-          concat content_tag(:a, text, href: view.url_for(params.merge(format: format)), class: classes)
+          concat content_tag(:a, text,
+                             href: view.url_for(params.merge(format: format)),
+                             class: Stradivari::ClassNames.join('stradivari-table__download-link', Stradivari::ClassNames.modifier('stradivari-table__download-link', :event, enabled: data.present?)),
+                             data: data)
         end
       end
     end

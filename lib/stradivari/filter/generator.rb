@@ -6,7 +6,7 @@ module Stradivari
       FILTER_OPTIONS = {
         detached: false,
         inline: false,
-        class: 'filter-form-container ',
+        class: 'stradivari-filter',
         id: 'filter-form'
       }.freeze
 
@@ -89,15 +89,17 @@ module Stradivari
       def to_s
         renderer = lambda do
           id = @opts.fetch(:id, "filter_fields_for_#{klass.name.singularize.underscore}")
-          form_classes = 'filter-form '
-          form_classes << 'form-detached ' if detached?
+          form_classes = Stradivari::ClassNames.join(
+            'stradivari-filter__form',
+            Stradivari::ClassNames.modifier('stradivari-filter__form', :detached, enabled: detached?)
+          )
 
           concat(
             content_tag(:div, class: @opts[:class]) do
               link = [id, 'detached'].join('_')
               id, link = link, id if detached?
 
-              data = { link: link }
+              data = { link: link, stradivari_filter_form: (detached? ? 'detached' : 'main') }
               data[:detached] = 'true' if detached?
 
               concat(
@@ -143,7 +145,7 @@ module Stradivari
         if inline?
           yield
         else
-          concat(content_tag(:div, class: 'panel panel-info', &))
+          concat(content_tag(:div, class: 'stradivari-filter__panel', &))
         end
       end
 
@@ -158,7 +160,7 @@ module Stradivari
       def generate_active_fields
         if (active_fields = @fields.select(&:active?)).any?
           concat(
-            content_tag(:div, class: (inline? ? '' : 'panel-heading')) do
+            content_tag(:div, class: (inline? ? nil : 'stradivari-filter__section stradivari-filter__section--active')) do
               active_fields.each(&:to_s)
             end
           )
@@ -168,7 +170,7 @@ module Stradivari
       def generate_inactive_fields
         if (inactive_fields = @fields.reject(&:active?)).any?
           concat(
-            content_tag(:div, class: (inline? ? '' : 'panel-body')) do
+            content_tag(:div, class: (inline? ? nil : 'stradivari-filter__section stradivari-filter__section--inactive')) do
               inactive_fields.each(&:to_s)
             end
           )
@@ -177,7 +179,7 @@ module Stradivari
 
       def generate_custom_block(opts)
         concat(
-          content_tag(:div, class: "panel-body #{opts[:class] || 'custom'}") do
+          content_tag(:div, class: Stradivari::ClassNames.join('stradivari-filter__section stradivari-filter__section--custom', opts[:class])) do
             @view.instance_exec(&opts[:block])
           end
         )

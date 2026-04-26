@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Stradivari::VERSION
   spec.authors       = ['Lleïr Borràs Metje', 'Marcello Barnaba', 'Ivan Turkovic']
   spec.email         = ['l.borrasmetje@ifad.org', 'm.barnaba@ifad.org', 'i.turkovic@ifad.org']
-  spec.summary       = 'Enterprise toolkit for Rails/Bootstrap3 web apps'
+  spec.summary       = 'Enterprise toolkit for Rails web apps'
   spec.description   = '
-This Gem combines Rails view helpers and Bootstrap 3 to provide you easy generators for:
+This Gem combines Rails view helpers and Stradivari-owned BEM classes to provide easy generators for:
 
 - HTML Tables
 - CSV Tables
@@ -18,6 +18,8 @@ This Gem combines Rails view helpers and Bootstrap 3 to provide you easy generat
 - Tabbed layouts
 - Definition Lists
 - Filter forms
+
+The shipped stylesheet is plain CSS generated from Tailwind CSS and does not require Bootstrap or Tailwind in host applications.
   '
   spec.homepage      = 'https://github.com/ifad/stradivari'
   spec.license       = 'MIT'

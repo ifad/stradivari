@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Stradivari::Filter::Generator do
   let(:view) { view_context }
 
-  it 'renders the form wrapper, sort/direction hidden inputs and a panel' do
+  it 'renders the form wrapper, sort/direction hidden inputs and a Stradivari panel' do
     out = view.filter_for(Widget) do
       search :name_like
     end
@@ -13,14 +13,15 @@ RSpec.describe Stradivari::Filter::Generator do
     expect(doc.at_css('form#filter-form')).not_to be_nil
     expect(doc.at_css('input[type="hidden"][name="sort"]')).not_to be_nil
     expect(doc.at_css('input[type="hidden"][name="direction"]')).not_to be_nil
-    expect(doc.at_css('.panel.panel-info')).not_to be_nil
+    expect(doc.at_css('.stradivari-filter__panel')).not_to be_nil
+    expect(out).not_to include('panel panel-info')
   end
 
   it 'omits the panel when inline: true' do
     out = view.filter_for(Widget, inline: true) do
       search :name_like
     end
-    expect(out).not_to include('panel-info')
+    expect(out).not_to include('stradivari-filter__panel')
   end
 
   it 'detached forms drop hidden sort/direction and add data-detached' do
@@ -111,9 +112,9 @@ RSpec.describe Stradivari::Filter::Builder do
     end
 
     it 'adds priority class and closes low-priority inactive fields' do
-      expect(described_class.prepare_classes(priority: :low, active_field: false)).to include('low-priority')
-      expect(described_class.prepare_classes(priority: :low, active_field: false)).to include('closed')
-      expect(described_class.prepare_classes(priority: :low, active_field: true)).not_to include('closed')
+      expect(described_class.prepare_classes(priority: :low, active_field: false)).to include('stradivari-filter__control--priority-low')
+      expect(described_class.prepare_classes(priority: :low, active_field: false)).to include('stradivari-filter__control--closed')
+      expect(described_class.prepare_classes(priority: :low, active_field: true)).not_to include('stradivari-filter__control--closed')
     end
   end
 end

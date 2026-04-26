@@ -1,0 +1,262 @@
+@layer theme, components, utilities;
+@import "tailwindcss/theme" layer(theme);
+@import "tailwindcss/utilities" layer(utilities);
+
+@source "../../../lib/**/*.rb";
+@source "../../../app/assets/javascripts/**/*.js";
+@source "../../../spec/**/*.rb";
+
+@layer components {
+  .stradivari-filter {
+    @apply w-full;
+  }
+  .stradivari-filter__form {
+    @apply w-full;
+  }
+  .stradivari-filter__panel {
+    @apply rounded border border-slate-200 bg-white;
+  }
+  .stradivari-filter__section {
+    @apply px-4 py-3;
+  }
+  .stradivari-filter__section--active {
+    @apply border-b border-dashed border-white bg-emerald-50 text-emerald-950;
+  }
+  .stradivari-filter__section--inactive,
+  .stradivari-filter__section--custom {
+    @apply border-b border-dashed border-slate-200;
+  }
+  .stradivari-filter__actions {
+    @apply m-0 list-none p-0;
+  }
+  .stradivari-filter__action-item {
+    @apply border-0 px-4 py-3;
+  }
+  .stradivari-filter__field {
+    @apply mb-2 border-b border-dashed border-slate-200 pb-2;
+  }
+  .stradivari-filter__field:last-child {
+    @apply mb-0 border-b-0 pb-0;
+  }
+  .stradivari-filter__field > label,
+  .stradivari-filter__choice--single label,
+  .stradivari-filter__label-text {
+    @apply font-semibold;
+  }
+  .stradivari-filter__toggle {
+    @apply cursor-pointer text-emerald-700 hover:text-sky-800 hover:underline;
+  }
+  .stradivari-filter__control--closed,
+  .stradivari-filter__collapsed {
+    @apply hidden;
+  }
+  .stradivari-filter__choice {
+    @apply m-0;
+  }
+  .stradivari-filter__choice label {
+    @apply mr-1 font-normal;
+  }
+  .stradivari-filter__choice--single {
+    @apply ml-0 pl-0;
+  }
+  .stradivari-filter__choice--single input[type="checkbox"] {
+    @apply float-none ml-0;
+  }
+  .stradivari-filter__choice-list {
+    @apply flex flex-wrap gap-x-3 gap-y-1;
+  }
+  .stradivari-filter__choice-list--multi-line {
+    @apply block max-h-52 overflow-y-auto;
+  }
+  .stradivari-filter__choice-list--multi-line .stradivari-filter__choice {
+    @apply block;
+  }
+  .stradivari-filter__section--active .stradivari-filter__choice--radio {
+    @apply hidden;
+  }
+  .stradivari-filter__section--active .stradivari-filter__choice--checked {
+    @apply inline-block;
+  }
+  .stradivari-filter__number,
+  .stradivari-filter__date-range {
+    @apply flex flex-nowrap items-center gap-2;
+  }
+  .stradivari-filter__number .stradivari-control,
+  .stradivari-filter__date-range .stradivari-control {
+    @apply min-w-0 flex-1;
+  }
+  .stradivari-filter__delimiter {
+    @apply inline-block text-center text-slate-500;
+  }
+
+  .stradivari-input-group {
+    @apply flex w-full items-stretch;
+  }
+  .stradivari-input-group .stradivari-control {
+    @apply rounded-r-none;
+  }
+  .stradivari-input-group__action {
+    @apply inline-flex;
+  }
+  .stradivari-input-group__action .stradivari-button {
+    @apply rounded-l-none;
+  }
+
+  .stradivari-control {
+    @apply block w-full rounded border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-950 shadow-sm focus:border-sky-600 focus:ring-1 focus:ring-sky-600 focus:outline-none;
+  }
+
+  .stradivari-button {
+    @apply inline-flex items-center gap-1 rounded border border-transparent px-3 py-1.5 text-sm font-medium no-underline shadow-sm;
+  }
+  .stradivari-button--xs {
+    @apply px-2 py-1 text-xs;
+  }
+  .stradivari-button--sm {
+    @apply px-2.5 py-1 text-sm;
+  }
+  .stradivari-button--primary {
+    @apply bg-sky-700 text-white hover:bg-sky-800;
+  }
+  .stradivari-button--secondary {
+    @apply border-slate-300 bg-white text-slate-800 hover:bg-slate-50;
+  }
+  .stradivari-button--info {
+    @apply bg-cyan-700 text-white hover:bg-cyan-800;
+  }
+  .stradivari-button--danger {
+    @apply bg-rose-700 text-white hover:bg-rose-800;
+  }
+
+  .stradivari-icon {
+    @apply inline-block size-4 shrink-0 align-[-0.125em];
+  }
+
+  .stradivari-table {
+    @apply w-full border-collapse text-left text-sm;
+  }
+  .stradivari-table thead {
+    @apply bg-slate-100;
+  }
+  .stradivari-table thead tr {
+    @apply border-t border-slate-400;
+  }
+  .stradivari-table tbody tr {
+    @apply border-t border-dashed border-slate-300;
+  }
+  .stradivari-table tfoot tr {
+    @apply border-b border-slate-400 bg-sky-50;
+  }
+  .stradivari-table__header-cell,
+  .stradivari-table__cell {
+    @apply border-t-0 px-3 py-2 align-top;
+  }
+  .stradivari-table__header-cell {
+    @apply font-light whitespace-nowrap;
+  }
+  .stradivari-table__header-cell h4,
+  .stradivari-table__header-cell h5,
+  .stradivari-table__header-cell label {
+    @apply m-0;
+  }
+  .stradivari-table__header-cell--sortable {
+    @apply cursor-pointer;
+  }
+  .stradivari-table__header-cell--sortable:hover,
+  .stradivari-table__header-cell--active {
+    @apply bg-sky-100 font-medium;
+  }
+  .stradivari-table__cell--actions {
+    @apply whitespace-nowrap;
+  }
+  .stradivari-table__row--parent .stradivari-table__cell {
+    @apply bg-sky-50;
+  }
+  .stradivari-table__row--child .stradivari-table__cell {
+    @apply bg-slate-50;
+  }
+  .stradivari-table__download,
+  .stradivari-table__custom-footer {
+    @apply float-left mr-3;
+  }
+  .stradivari-table__counters {
+    @apply float-right;
+  }
+  .stradivari-table__empty {
+    @apply rounded border border-amber-200 bg-amber-50 px-4 py-3 text-amber-900;
+  }
+  .stradivari-table__download-link {
+    @apply text-sky-700 no-underline hover:text-sky-900 hover:underline;
+  }
+  table.selectable tbody tr.selected .stradivari-table__cell {
+    @apply bg-sky-100;
+  }
+  table.selectable tbody tr.selected:hover .stradivari-table__cell {
+    @apply bg-sky-200;
+  }
+  table.selectable tbody tr .select {
+    @apply w-8 p-0.5 text-center;
+  }
+
+  .stradivari-tabs__nav {
+    @apply m-0 flex list-none border-b border-slate-200 p-0;
+  }
+  .stradivari-tabs__nav--pills,
+  .stradivari-tabs__nav--stacked {
+    @apply gap-1 border-b-0;
+  }
+  .stradivari-tabs__nav--stacked {
+    @apply flex-col;
+  }
+  .stradivari-tabs__item {
+    @apply m-0;
+  }
+  .stradivari-tabs__link {
+    @apply inline-flex items-center gap-2 rounded-t border border-transparent px-3 py-2 text-sm text-slate-700 no-underline hover:bg-slate-50 hover:text-slate-950;
+  }
+  .stradivari-tabs__item--active .stradivari-tabs__link {
+    @apply border-slate-200 border-b-white bg-white text-slate-950;
+  }
+  .stradivari-tabs__content {
+    @apply py-3;
+  }
+  .stradivari-tabs__pane {
+    @apply hidden;
+  }
+  .stradivari-tabs__pane--active {
+    @apply block;
+  }
+  .stradivari-tabs__badge {
+    @apply rounded-full bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-800;
+  }
+  .stradivari-tabs__print-nav {
+    @apply m-0 list-none p-0;
+  }
+
+  span.twitter-typeahead {
+    @apply w-full;
+  }
+  span.twitter-typeahead .tt-dropdown-menu {
+    @apply z-50 w-full min-w-40 rounded border border-sky-600 bg-white py-1 shadow-lg;
+  }
+  span.twitter-typeahead .tt-suggestion {
+    @apply px-5 py-1 leading-6;
+  }
+  span.twitter-typeahead .tt-suggestion > p {
+    @apply clear-both m-0 block whitespace-nowrap text-slate-950;
+  }
+  span.twitter-typeahead .tt-suggestion > p:hover,
+  span.twitter-typeahead .tt-suggestion > p:focus,
+  span.twitter-typeahead .tt-suggestion.tt-cursor {
+    @apply bg-sky-100;
+  }
+  .stradivari-input-group span.twitter-typeahead {
+    display: block !important;
+  }
+  .stradivari-input-group span.twitter-typeahead .tt-dropdown-menu {
+    top: 33px !important;
+  }
+  span.twitter-typeahead .dataset-name {
+    @apply m-0 border-b border-slate-300 p-1 leading-6 text-sky-700;
+  }
+}

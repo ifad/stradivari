@@ -30,8 +30,8 @@ RSpec.describe 'Stradivari::Filter::Builder edge branches' do
         checkbox :kind, type: :multi_line, collection: Widget::KINDS.dup
       end
       doc = Nokogiri::HTML.fragment(out)
-      expect(doc.at_css('div.multi-line')).not_to be_nil
-      expect(doc.at_css('div.closed')).not_to be_nil
+      expect(doc.at_css('div.stradivari-filter__choice-list--multi-line')).not_to be_nil
+      expect(doc.at_css('div.stradivari-filter__collapsed')).not_to be_nil
       checkboxes = doc.css('input[type="checkbox"]')
       expect(checkboxes.size).to eq(Widget::KINDS.size)
       expect(checkboxes.css('[checked]').size).to eq(1)
@@ -42,7 +42,7 @@ RSpec.describe 'Stradivari::Filter::Builder edge branches' do
         checkbox :kind, type: :multi_line, collection: Widget::KINDS.dup
       end
       doc = Nokogiri::HTML.fragment(out)
-      expect(doc.at_css('div.closed')).to be_nil
+      expect(doc.at_css('div.stradivari-filter__collapsed')).to be_nil
       expect(doc.css('input[type="checkbox"]').size).to eq(Widget::KINDS.size)
     end
   end
@@ -65,9 +65,9 @@ RSpec.describe 'Stradivari::Filter::Builder edge branches' do
       end.to output(/skip_button option to search filter field is deprecated/).to_stderr
 
       doc = Nokogiri::HTML.fragment(out)
-      # Only the panel-level Apply button should remain; the per-field input-group button is gone.
-      expect(doc.at_css('div.input-group')).to be_nil
-      expect(doc.at_css('div.input-group button.search')).to be_nil
+      # Only the panel-level Apply button should remain; the per-field input group button is gone.
+      expect(doc.at_css('div.stradivari-input-group')).to be_nil
+      expect(doc.at_css('div.stradivari-input-group button[data-stradivari-filter-action="search"]')).to be_nil
     end
   end
 end
@@ -81,7 +81,7 @@ RSpec.describe Stradivari::Filter::Helpers do
         search :name_like, priority: :low
       end
       doc = Nokogiri::HTML.fragment(out)
-      expect(doc.at_css('span.handle')&.text).to eq('Expand')
+      expect(doc.at_css('span.stradivari-filter__toggle')&.text).to eq('Expand')
     end
 
     it 'shows an Add More handle for collapsed active fields' do
@@ -94,7 +94,7 @@ RSpec.describe Stradivari::Filter::Helpers do
         selection :kind, collection: Widget::KINDS.dup, value: 'gadget'
       end
       doc = Nokogiri::HTML.fragment(out2)
-      expect(doc.at_css('span.handle')&.text).to eq('Add More').or be_nil
+      expect(doc.at_css('span.stradivari-filter__toggle')&.text).to eq('Add More').or be_nil
       expect(out).to be_a(String)
     end
 
@@ -108,11 +108,11 @@ RSpec.describe Stradivari::Filter::Helpers do
 
   describe '.prepare_radio_class' do
     it 'appends " checked" when active' do
-      expect(described_class.prepare_radio_class(true, +'radio')).to eq('radio checked')
+      expect(described_class.prepare_radio_class(true)).to include('stradivari-filter__choice--checked')
     end
 
     it 'returns the default when not active' do
-      expect(described_class.prepare_radio_class(false, +'radio')).to eq('radio')
+      expect(described_class.prepare_radio_class(false)).to eq('stradivari-filter__choice stradivari-filter__choice--radio')
     end
   end
 end
