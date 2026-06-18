@@ -12,13 +12,20 @@ module Stradivari
   #                                  optional nested block) and append it
   #   capture_haml(&blk)          -> capture the block's buffer output as a
   #                                  string without appending it
+  # Each method defers to the native Haml helper (`super`) when one is present —
+  # i.e. on Haml 5, where `Haml::Helpers` still mixes these into the view below
+  # StradivariHelper in the ancestor chain. Only on Haml 6+ (helpers removed, no
+  # `super`) does the reimplementation kick in. This keeps consumers still on
+  # Haml 5 / older Rails working unchanged.
   module HamlCompat
     def haml_concat(text = "")
+      return super if defined?(super)
       output_buffer << (text.nil? ? "" : text.to_s)
       nil
     end
 
     def haml_tag(name, *args, &block)
+      return super if defined?(super)
       attributes = args.last.is_a?(Hash) ? args.pop : {}
       text       = args.first
 
@@ -28,6 +35,7 @@ module Stradivari
     end
 
     def capture_haml(*args, &block)
+      return super if defined?(super)
       # with_output_buffer swaps in a fresh buffer, runs the block, returns what
       # was written. `.to_s` so callers that String-massage the result work.
       #

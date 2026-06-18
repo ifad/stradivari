@@ -37,8 +37,8 @@ ActiveRecord::Schema.define do
 end
 
 class Widget < ActiveRecord::Base
-  def self.ransackable_attributes(_ = nil) = %w[name active]
-  def self.ransackable_associations(_ = nil) = []
+  def self.ransackable_attributes(_ = nil); %w[name active]; end
+  def self.ransackable_associations(_ = nil); []; end
 end
 Widget.create!(name: 'Alpha', active: true)
 Widget.create!(name: 'Beta',  active: false)
@@ -66,9 +66,9 @@ view = ActionView::Base.with_empty_template_cache.new(
 view.extend(StradivariHelper)
 
 # 3. Haml-6 compat shim (haml_tag / haml_concat / capture_haml)
-check "haml_tag builds a tag via the Haml-6 shim" do
-  out = view.haml_tag(:span, 'hi', class: 'badge')
-  # haml_tag appends to the buffer and returns nil; capture to inspect
+check "haml_tag builds a tag (Haml-6 shim, or native haml_tag on Haml 5)" do
+  # haml_tag appends to the active buffer and returns nil; run it inside a
+  # capture so there's a buffer (the generators always call it mid-render).
   html = view.capture { view.haml_tag(:span, 'hi', class: 'badge') }
   raise "bad tag: #{html.inspect}" unless html.include?('<span class="badge">hi</span>')
 end
@@ -96,5 +96,6 @@ if $failed
   puts "\nSMOKE FAILED"
   exit 1
 else
-  puts "\nSMOKE OK — stradivari loads + renders on Ruby 4.0.5 / Rails 8.1 / Haml 6 / Ransack 4"
+  puts "\nSMOKE OK — stradivari loads + renders on Ruby #{RUBY_VERSION} / " \
+       "Rails #{Rails::VERSION::STRING} / Haml #{Haml::VERSION}"
 end

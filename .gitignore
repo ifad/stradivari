@@ -16,3 +16,9 @@ test/tmp
 test/version_tmp
 tmp
 .DS_STORE
+
+# smoke harness bundle locks (gems don't commit locks — §17c)
+test/*.lock
+
+# Local-only Ruby 4.0.5 smoke runner (AI scratch) — not committed
+Dockerfile.ai

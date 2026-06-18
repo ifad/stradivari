@@ -28,7 +28,8 @@ This Gem combines HAML and Bootstrap 3 to provide you easy generators for:
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.required_ruby_version = ">= 3.0"
+  # No required_ruby_version cap: consumers span Ruby 2.x (pre-upgrade) through
+  # 4.0; the gem code runs on all of them. CI sweeps the supported matrix.
 
   spec.add_development_dependency "rake"
 
