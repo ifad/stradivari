@@ -10,14 +10,12 @@ module Stradivari
           base.module_eval do
             # Load the appropriate stradivari_all adapter
             #
-            case (ver = ::ActiveRecord::VERSION::MAJOR)
+            # Rails 3 used a distinct `scoped` adapter; Rails 4 through 8+ all
+            # share the modern `all`-relation adapter (Rails4), so default to it
+            # rather than enumerating each major (which broke on every new Rails).
+            case ::ActiveRecord::VERSION::MAJOR
             when 3 then extend Rails3
-            when 4 then extend Rails4
-            when 5 then extend Rails4
-            when 6 then extend Rails4
-            when 7 then extend Rails4
-            else
-              raise Stradivari::Error, "Unsupported Active Record version (#{ver})"
+            else        extend Rails4
             end
 
             # Add agnostic module API

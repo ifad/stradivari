@@ -1,4 +1,11 @@
+require 'stradivari/haml_compat'
+
 module StradivariHelper
+  # haml_tag / haml_concat / capture_haml were removed in Haml 6; stradivari's
+  # generators still call them on the view, so the gem provides them. See
+  # Stradivari::HamlCompat. (Consumers no longer need an app-side shim.)
+  include Stradivari::HamlCompat
+
   def table_for *args, &block
     Stradivari::Table::Generator.new(self, *args, &block).to_s
   end
