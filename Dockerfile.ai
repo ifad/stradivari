@@ -1,0 +1,12 @@
+# syntax=docker/dockerfile:1
+# Smoke harness: load + exercise stradivari on Ruby 4.0.5 / Rails 8.1 / Haml 6 /
+# Ransack 4. Build: docker build -f Dockerfile.ai --platform linux/amd64 -t stradivari:ai .
+FROM --platform=linux/amd64 ruby:4.0.5
+RUN apt-get update -qq && apt-get install -y --no-install-recommends \
+      build-essential git libpq-dev libsqlite3-dev sqlite3 ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
+WORKDIR /gem
+ENV BUNDLE_GEMFILE=test/Gemfile.ci
+COPY . .
+RUN gem install bundler --silent && bundle install --jobs 4 --retry 3
+CMD ["ruby", "test/smoke.rb"]

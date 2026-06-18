@@ -1,0 +1,7 @@
+# Test bundle for the smoke harness. RAILS_VERSION lets CI sweep a matrix;
+# defaults to the upgrade target (Rails 8.1). gemspec brings pg_search /
+# ransack / haml / caxlsx (latest — Ransack 4, Haml 7).
+source 'https://rubygems.org'
+gemspec path: '..'
+gem 'rails', ENV.fetch('RAILS_VERSION', '~> 8.1.0')
+gem 'sqlite3'

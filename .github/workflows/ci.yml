@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, "upgrade/**" ]
+  pull_request:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ["3.4", "4.0.5"]
+        rails: ["~> 7.2.0", "~> 8.1.0"]
+    name: "ruby ${{ matrix.ruby }} / rails ${{ matrix.rails }}"
+    env:
+      BUNDLE_GEMFILE: test/Gemfile.ci
+      RAILS_VERSION: ${{ matrix.rails }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Smoke (load + render on the version stack)
+        run: bundle exec ruby test/smoke.rb
