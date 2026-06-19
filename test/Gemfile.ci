@@ -1,9 +1,15 @@
 # Test bundle for the smoke harness. RAILS_VERSION / HAML_VERSION /
-# RANSACK_VERSION let CI sweep a matrix (old + new); all default to the
-# upgrade target when unset.
+# RANSACK_VERSION / SQLITE3_VERSION let CI sweep a matrix (old + new); all
+# default to the upgrade target when unset.
 source 'https://rubygems.org'
+
+# GitHub Actions sets an unspecified matrix var to "" (not unset), so a bare
+# ENV.fetch(...) returns "" and `gem 'x', ""` raises Illformed requirement.
+# Treat blank as absent.
+ci = ->(name, default = nil) { v = ENV[name].to_s.strip; v.empty? ? default : v }
+
 gemspec path: '..'
-gem 'rails',   ENV.fetch('RAILS_VERSION', '~> 8.1.0')
-gem 'haml',    ENV['HAML_VERSION']    if ENV['HAML_VERSION']
-gem 'ransack', ENV['RANSACK_VERSION'] if ENV['RANSACK_VERSION']
-gem 'sqlite3', ENV.fetch('SQLITE3_VERSION', '>= 0')
+gem 'rails',   ci.('RAILS_VERSION', '~> 8.1.0')
+gem 'haml',    ci.('HAML_VERSION')    if ci.('HAML_VERSION')
+gem 'ransack', ci.('RANSACK_VERSION') if ci.('RANSACK_VERSION')
+gem 'sqlite3', ci.('SQLITE3_VERSION', '>= 0')
