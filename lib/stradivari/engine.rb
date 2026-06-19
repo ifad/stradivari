@@ -20,8 +20,10 @@ module Stradivari
 
     initializer 'stradivari.setup_helpers' do |app|
       app.config.to_prepare do
-        ActionController::Base.send :helper, StradivariHelper
-        ActionMailer::Base.send     :helper, StradivariHelper
+        # Guarded so the gem loads in apps that don't pull in the full stack
+        # (e.g. api_only without ActionMailer) — was an unconditional NameError.
+        ActionController::Base.send :helper, StradivariHelper if defined?(ActionController::Base)
+        ActionMailer::Base.send     :helper, StradivariHelper if defined?(ActionMailer::Base)
       end
     end
 

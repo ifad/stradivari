@@ -28,9 +28,13 @@ This Gem combines HAML and Bootstrap 3 to provide you easy generators for:
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler", "~> 1.5"
+  # No required_ruby_version cap: consumers span Ruby 2.x (pre-upgrade) through
+  # 4.0; the gem code runs on all of them. CI sweeps the supported matrix.
+
   spec.add_development_dependency "rake"
 
+  # Runtime deps test through Rails 8.1 (see Appraisals / CI). haml >= 6 is
+  # supported via Stradivari::HamlCompat (haml_tag/haml_concat/capture_haml).
   spec.add_runtime_dependency 'pg_search'
   spec.add_runtime_dependency 'ransack'
   spec.add_runtime_dependency 'haml'
