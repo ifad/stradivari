@@ -8,7 +8,7 @@ module Stradivari
             content_tag(:div, class: 'stradivari-filter__choice stradivari-filter__choice--checkbox', data: { stradivari_filter_choice: true }) do
               content_tag(:label, safe_join([
                                               check_box(opts[:namespace], name, { multiple: true, value: value, checked: checked }, value, nil),
-                                              label
+                                              content_tag(:span, label, class: 'stradivari-filter__choice-text')
                                             ]))
             end
           end

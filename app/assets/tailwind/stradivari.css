@@ -31,6 +31,8 @@
   --stradivari-danger-strong: #912018;
   --stradivari-shadow: 0 24px 60px -36px rgb(15 23 42 / 0.28);
   --stradivari-shadow-sm: 0 16px 30px -24px rgb(15 23 42 / 0.22);
+  --stradivari-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='m5 7.5 5 5 5-5' stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8'/%3E%3C/svg%3E");
+  --stradivari-checkbox-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='m3.5 8 2.4 2.5L12.5 4.8' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/%3E%3C/svg%3E");
   --stradivari-radius-lg: 1rem;
   --stradivari-radius-md: 0.75rem;
   --stradivari-transition: 180ms ease;
@@ -61,6 +63,7 @@
     --stradivari-danger-strong: #ffb4aa;
     --stradivari-shadow: 0 28px 70px -40px rgb(2 6 23 / 0.75);
     --stradivari-shadow-sm: 0 18px 36px -28px rgb(2 6 23 / 0.65);
+    --stradivari-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='m5 7.5 5 5 5-5' stroke='%2392a7c4' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8'/%3E%3C/svg%3E");
   }
 }
 
@@ -112,7 +115,6 @@
     border-bottom: 0;
   }
   .stradivari-filter__field > label,
-  .stradivari-filter__choice--single label,
   .stradivari-filter__label-text {
     @apply mb-2 block font-semibold;
     color: var(--stradivari-text);
@@ -130,14 +132,72 @@
     @apply m-0;
   }
   .stradivari-filter__choice label {
-    @apply mr-1 font-normal;
+    @apply mr-1 inline-flex items-center gap-2.5 leading-tight font-normal;
     color: var(--stradivari-text-muted);
+    cursor: pointer;
+    user-select: none;
   }
   .stradivari-filter__choice--single {
     @apply ml-0 pl-0;
   }
+  .stradivari-filter__choice--single label {
+    @apply mr-0;
+  }
+  .stradivari-filter__choice-text {
+    color: inherit;
+  }
+  .stradivari-filter__choice--single .stradivari-filter__choice-text,
+  .stradivari-filter__choice--checked .stradivari-filter__choice-text {
+    color: var(--stradivari-text);
+    font-weight: 600;
+  }
   .stradivari-filter__choice--single input[type="checkbox"] {
     @apply float-none ml-0;
+  }
+  .stradivari-filter__choice input[type="checkbox"],
+  .stradivari-filter__choice input[type="radio"] {
+    @apply m-0 shrink-0;
+    appearance: none;
+    width: 1.125rem;
+    height: 1.125rem;
+    border: 1.5px solid var(--stradivari-border-strong);
+    background: var(--stradivari-surface-subtle);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08);
+    cursor: pointer;
+    transition:
+      border-color var(--stradivari-transition),
+      background-color var(--stradivari-transition),
+      box-shadow var(--stradivari-transition),
+      transform var(--stradivari-transition);
+  }
+  .stradivari-filter__choice input[type="checkbox"] {
+    border-radius: 0.4rem;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 0.8rem 0.8rem;
+  }
+  .stradivari-filter__choice input[type="radio"] {
+    border-radius: 999px;
+  }
+  .stradivari-filter__choice input[type="checkbox"]:hover,
+  .stradivari-filter__choice input[type="radio"]:hover {
+    border-color: var(--stradivari-accent);
+  }
+  .stradivari-filter__choice input[type="checkbox"]:focus-visible,
+  .stradivari-filter__choice input[type="radio"]:focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 4px rgb(15 108 189 / 0.16);
+  }
+  .stradivari-filter__choice input[type="checkbox"]:checked {
+    border-color: var(--stradivari-accent);
+    background-color: var(--stradivari-accent);
+    background-image: var(--stradivari-checkbox-check);
+  }
+  .stradivari-filter__choice input[type="radio"]:checked {
+    border-color: var(--stradivari-accent);
+    background:
+      radial-gradient(circle at center, #fff 0 28%, transparent 32% 100%),
+      var(--stradivari-accent);
   }
   .stradivari-filter__choice-list {
     @apply flex flex-wrap gap-x-3 gap-y-1;
@@ -194,6 +254,15 @@
   }
   .stradivari-control::placeholder {
     color: var(--stradivari-text-soft);
+  }
+  select.stradivari-control {
+    @apply pr-12;
+    appearance: none;
+    cursor: pointer;
+    background-image: var(--stradivari-select-chevron);
+    background-position: right 1rem center;
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
   }
   .stradivari-control:focus {
     outline: 0;
