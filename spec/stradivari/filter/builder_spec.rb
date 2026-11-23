@@ -58,6 +58,7 @@ RSpec.describe 'Stradivari::Filter::Builder field branches' do
     end
     doc = Nokogiri::HTML.fragment(out)
     expect(doc.at_css('input[type="checkbox"]')).not_to be_nil
+    expect(doc.at_css('.stradivari-filter__choice-text')&.text).to eq('Active')
   end
 
   it 'boolean field renders Yes/No radios when tristate: true' do
@@ -66,6 +67,7 @@ RSpec.describe 'Stradivari::Filter::Builder field branches' do
     end
     doc = Nokogiri::HTML.fragment(out)
     expect(doc.css('input[type="radio"]').size).to be >= 2
+    expect(doc.css('.stradivari-filter__choice-text').map(&:text)).to include('Yes', 'No')
   end
 
   it 'selection field renders radios when collection size <= radios_count' do
@@ -75,6 +77,9 @@ RSpec.describe 'Stradivari::Filter::Builder field branches' do
     doc = Nokogiri::HTML.fragment(out)
     # one radio per kind plus a final "Any" blank radio (include_blank default).
     expect(doc.css('input[type="radio"]').size).to eq(Widget::KINDS.size + 1)
+    expect(doc.css('input[type="radio"][checked]').size).to eq(1)
+    expect(doc.css('input[type="radio"]').map { |input| input['value'] }).to include(*Widget::KINDS, '')
+    expect(doc.css('.stradivari-filter__choice-text').map(&:text)).to include('Any')
   end
 
   it 'selection field renders a select when collection size > radios_count' do
@@ -85,5 +90,27 @@ RSpec.describe 'Stradivari::Filter::Builder field branches' do
     expect(doc.at_css('select.stradivari-control')).not_to be_nil
     expect(out).not_to include('form-control')
     expect(doc.css('option').size).to be >= 8
+  end
+
+  it 'selection field renders a multiple select with the extra class, without a blank option' do
+    out = view.filter_for(Widget) do
+      selection :category_id, collection: [%w[One 1], %w[Two 2]], multiple: true, include_blank: false, class: 'js-select2'
+    end
+    doc = Nokogiri::HTML.fragment(out)
+    select = doc.at_css('select.stradivari-control.js-select2')
+    expect(select['multiple']).to eq('multiple')
+    expect(select['name']).to eq('q[category_id_in][]')
+    expect(select.css('option').pluck('value')).to eq(%w[1 2])
+  end
+
+  it 'selection field adds the form group class to its wrapper' do
+    out = view.filter_for(Widget) do
+      selection :kind, collection: Widget::KINDS.dup, form_group_class: 'inline-choices'
+    end
+    expect(Nokogiri::HTML.fragment(out).at_css('.stradivari-filter__field.inline-choices')).not_to be_nil
+  end
+
+  it 'reads the selected values of a multiple selection from the _in parameter' do
+    expect(Stradivari::Filter::Builder.value({ 'kind_in' => %w[a b] }, 'kind')).to eq(%w[a b])
   end
 end

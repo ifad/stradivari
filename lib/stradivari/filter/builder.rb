@@ -21,7 +21,7 @@ module Stradivari
         FIELD_CLASS = 'stradivari-filter__field'.freeze
 
         def value(params, name)
-          params[name] || params["#{name}_eq"]
+          params[name] || params["#{name}_eq"] || params["#{name}_in"]
         end
 
         def active?(params, name)
@@ -51,7 +51,8 @@ module Stradivari
           {
             class: Stradivari::ClassNames.join(
               FIELD_CLASS,
-              Stradivari::ClassNames.modifier(FIELD_CLASS, "priority-#{priority(opts)}")
+              Stradivari::ClassNames.modifier(FIELD_CLASS, "priority-#{priority(opts)}"),
+              opts[:form_group_class]
             ),
             data: { stradivari_filter_field_wrapper: true }
           }
