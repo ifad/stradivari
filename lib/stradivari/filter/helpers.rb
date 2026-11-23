@@ -6,7 +6,8 @@ module Stradivari
           any_checked = true
 
           radios = collection.map do |title, value|
-            checked = opts[:value].to_s == value.to_s || opts[:default_checked].to_s == value.to_s
+            checked = opts[:value].to_s == value.to_s
+            checked ||= opts.key?(:default_checked) && opts[:default_checked].to_s == value.to_s
             any_checked = false if checked
             data = { stradivari_filter_choice: true }
             data[:stradivari_state] = 'checked' if checked
@@ -14,7 +15,7 @@ module Stradivari
             content_tag(:div, class: Helpers.prepare_radio_class(checked), data: data) do
               content_tag(:label, safe_join([
                                               radio_button(opts[:namespace], attr, value, checked: checked),
-                                              title
+                                              content_tag(:span, title, class: 'stradivari-filter__choice-text')
                                             ]))
             end
           end
@@ -26,7 +27,7 @@ module Stradivari
             radios << content_tag(:div, class: Helpers.prepare_radio_class(any_checked), data: data) do
               content_tag(:label, safe_join([
                                               radio_button(opts[:namespace], attr, '', checked: any_checked),
-                                              'Any'
+                                              content_tag(:span, 'Any', class: 'stradivari-filter__choice-text')
                                             ]))
             end
           end

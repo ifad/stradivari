@@ -86,7 +86,8 @@ Stradivari.FilterForm = class extends Stradivari.Form {
         return;
       }
 
-      const input = select.closest("fieldset").querySelector("input");
+      const field = select.closest('[data-stradivari-filter-field="number"]');
+      const input = field ? field.querySelector('input[type="text"]') : null;
 
       if (input) {
         input.name = `${Stradivari.filterNamespace}[${select.value}]`;
@@ -99,7 +100,11 @@ Stradivari.FilterForm = class extends Stradivari.Form {
     this.mergeForms(this.form, detached);
 
     if (options.submit) {
-      this.form.submit();
+      if (this.form.requestSubmit) {
+        this.form.requestSubmit();
+      } else {
+        this.form.submit();
+      }
     }
   }
 
@@ -160,7 +165,12 @@ Stradivari.DetachedForm = class extends Stradivari.Form {
   process() {
     const form = document.getElementById(this.form.dataset.link);
     this.mergeForms(form, this.form);
-    form.submit();
+
+    if (form.requestSubmit) {
+      form.requestSubmit();
+    } else {
+      form.submit();
+    }
   }
 };
 
