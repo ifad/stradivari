@@ -46,11 +46,32 @@ the gem, so applications can use Stradivari without adding Tailwind to their own
 asset pipeline. You can also replace that stylesheet with another implementation
 that targets the same Stradivari classes.
 
+## Styling contract for themes
+
+Generated HTML carries only the classes below. A theme (the shipped
+stylesheet or your own) styles these classes; nothing else in the markup is
+guaranteed. Names follow BEM: `block__element--modifier`.
+
+Block                | Classes
+:------------------- | :-----------------------------------------------------
+Table                | `stradivari-table`, `--hover`; `__viewport`, `__row`, `__cell`, `__cell--actions`, `__header-cell`, `__header-cell--actions`, `__header-cell--sortable`, `__header-cell--active`, `__sort-link`, `__counters`, `__custom-footer`, `__download`, `__download-link`, `__empty`
+Tabs                 | `stradivari-tabs__nav`, `__item`, `__item--active`, `__link`, `__badge`, `__content`, `__pane`, `__pane--active`, `__print-nav`
+Details              | `stradivari-details`
+Filter               | `stradivari-filter`, `__form`, `__panel`, `__section`, `__section--active`, `__section--inactive`, `__section--custom`, `__field`, `__field--priority-*`, `__control`, `__control--closed`, `__control--priority-*`, `__label-text`, `__search`, `__number`, `__date-range`, `__delimiter`, `__choice`, `__choice--checkbox`, `__choice--radio`, `__choice--single`, `__choice--checked`, `__choice-list`, `__choice-list--inline`, `__choice-text`, `__collapsed`, `__toggle`, `__actions`, `__action-item`
+Form controls        | `stradivari-control`, `stradivari-input-group`, `stradivari-input-group__action`
+Buttons              | `stradivari-button`, `--primary`, `--secondary`, `--info`, `--danger`, `--search`, `--clear`, `--sm`, `--xs`
+Icons                | `stradivari-icon`
+
+Modifier classes such as `--closed`, `--active` and `--checked` are toggled
+by the JavaScript at run time.
+
 ## Installation
 
 Add to your Gemfile
 
     gem 'stradivari', github: 'ifad/stradivari'
+
+Stradivari requires Ruby 3.2 or later and Rails 7.2, 8.0 or 8.1.
 
 Add to your app/assets/javascripts/application.js
 
@@ -75,8 +96,11 @@ Add to your config/initializers/stradivari.rb
 
 ## Usage
 
-The examples below use Haml syntax, but Stradivari itself does not depend on
-Haml; the helpers are implemented with standard Rails view helpers.
+The examples below use ERB. Stradivari does not depend on a template engine:
+the helpers are standard Rails view helpers and also work in Haml or Slim.
+Inside a generator block, DSL calls such as `column` and `tab` are written
+with `<% %>`; only the helper itself (`table_for`, `tabs_for`, ...) uses
+`<%= %>`.
 
 ### Table
 
@@ -90,21 +114,26 @@ class FooController < ApplicationController
 end
 ```
 
-You'd have in your `app/views/foo/index.html.haml`:
+You'd have in your `app/views/foo/index.html.erb`:
 
-```haml
-= table_for @foos [header_visible: (true|false), body_visible: (true|false), footer_visible: (true|false), downloadable: (:xlsx|:csv)] do
-  - row do |attributes,foo|
-    attributes[:class] << " foo_#{foo.foo_type}"
-    attributes['data-foo-id'] = foo.id
-  - column :id
-  - column :awesomeness, presence: true
-  - column :something_special do |foo|
-    - if foo.really_special?
-      %strong This is a special Foo!
-    - else
+```erb
+<%# header_visible:, body_visible:, footer_visible: (true|false), downloadable: (:xlsx|:csv) %>
+<%= table_for @foos, header_visible: true, downloadable: :csv do %>
+  <% row do |attributes, foo|
+       attributes[:class] << " foo_#{foo.foo_type}"
+       attributes['data-foo-id'] = foo.id
+     end %>
+  <% column :id %>
+  <% column :awesomeness, present: true %>
+  <% column :something_special do |foo| %>
+    <% if foo.really_special? %>
+      <strong>This is a special Foo!</strong>
+    <% else %>
       Nothing to foo here.
-  - column :lazy_to_translate, title: "Here we go"
+    <% end %>
+  <% end %>
+  <% column :lazy_to_translate, title: "Here we go" %>
+<% end %>
 ```
 
 This will generate the table head, body and foot markup, cycling over
@@ -124,54 +153,60 @@ an action specific to that object.
 If there is no data, the table will be replaced with a div saying
 `There is no data.` You can change this in one of two ways - specify a
 different message as the no_data option:
-```haml
-= table_for @foos, no_data: 'There is nothing to see here'
+```erb
+<%= table_for @foos, no_data: 'There is nothing to see here' %>
 ```
 or, provide a `no_data` block which will be rendered in place:
-```haml
-= table_for @foos do
-  - no_data do
+```erb
+<%= table_for @foos do %>
+  <% no_data do %>
     There are no entries.
-    %a.stradivari-button.stradivari-button--secondary{ href:'#' } Create
+    <a class="stradivari-button stradivari-button--secondary" href="#">Create</a>
+  <% end %>
+<% end %>
 ```
 
 ### CSV
 
-```haml
-= csv_for @foos do
-  - column :id
-  - column :boolean_field
-  - column :name, presence: true, html: {:class => "custom th class"}
-  - column :text_field
-  - column :string_field, title: "Here we go"
-  - column :created_at
+```erb
+<%= csv_for @foos do %>
+  <% column :id %>
+  <% column :boolean_field %>
+  <% column :name, present: true %>
+  <% column :text_field %>
+  <% column :string_field, title: "Here we go" %>
+  <% column :created_at %>
+<% end %>
 ```
 
 ### XLS
 
-```haml
-= xlsx_for @foos do
-  - column :id
-  - column :boolean_field
-  - column :name, presence: true, html: {:class => "custom th class"}
-  - column :text_field
-  - column :string_field, title: "Here we go"
-  - column :created_at
+```erb
+<%= xlsx_for @foos do %>
+  <% column :id %>
+  <% column :boolean_field %>
+  <% column :name, present: true %>
+  <% column :text_field %>
+  <% column :string_field, title: "Here we go" %>
+  <% column :created_at %>
+<% end %>
 ```
 
 You can alter the XLS heading and body styles in the header:
 
-```haml
-= xlsx_for @foos, heading_style: { font_name: 'Verdana', sz: 15, bg_color: 'c6c6c6' } do
-  - column :id
-  - column text_field
+```erb
+<%= xlsx_for @foos, heading_style: { font_name: 'Verdana', sz: 15, bg_color: 'c6c6c6' } do %>
+  <% column :id %>
+  <% column :text_field %>
+<% end %>
 ```
 
 You can also alter the style of each column:
 
-```haml
-= xlsx_for @foos do
-  - column :id, style: { size: 8, alignment: { horizontal: :right } }
+```erb
+<%= xlsx_for @foos do %>
+  <% column :id, style: { sz: 8, alignment: { horizontal: :right } } %>
+<% end %>
 ```
 
 Each style is a hash of Axlsx styling parameters. Here is a subset of the Axslx style
@@ -194,12 +229,15 @@ Parameter     | Example value            | Description
 
 ### Tabs
 
-```haml
-= tabs_for @foos, flavor: (:tabs|:pills|:stacked), counters: (true|false) do |foos|
-  - blank do
-    .warning Nothing found
-  - tab "Tab label", "tab_div_id", foos.scope, present: (false|true|:force)  do
-    = render(partial: 'foos', locals: { foos: foos.scope })
+```erb
+<%= tabs_for @foos, flavor: :tabs, counters: true do |foos| %>
+  <% blank do %>
+    <div class="warning">Nothing found</div>
+  <% end %>
+  <% tab "Tab label", "tab_div_id", foos.scope, present: true do %>
+    <%= render partial: 'foos', locals: { foos: foos.scope } %>
+  <% end %>
+<% end %>
 ```
 
 When a tab scope is empty, Stradivari will by default not show the tab. You can force the tab to show
@@ -215,10 +253,12 @@ to a falsish value, the tab is hidden. The block is executed in the view context
 Tab content can be optionally loaded from a remote URL by passing the `url:` option. If you need to use
 Rails' route helpers, you have to reach to them through the `view` object, e.g.:
 
-```
-tabs_for @foos do
-  - tab :bar, url: view.bars_path do
-    .loading Loading...
+```erb
+<%= tabs_for @foos do %>
+  <% tab :bar, url: view.bars_path do %>
+    <div class="loading">Loading...</div>
+  <% end %>
+<% end %>
 ```
 
 When retrieving data from a remote URL, Stradivari will emit native DOM events at key lifecycle points:
@@ -234,21 +274,24 @@ This is useful if there are actions that must be performed before or after the r
 is loaded. For example, here is a simple example enabling pagination of a table loaded in
 the remote request:
 
-The HAML:
+The view:
 
-```haml
-= tabs_for @foos do |foos|
-  - tab "Tab label", "tab_div_id", foos.scope, present: true, url: '/foos' do
-    .loading Loading...
+```erb
+<%= tabs_for @foos do |foos| %>
+  <% tab "Tab label", "tab_div_id", foos.scope, present: true, url: '/foos' do %>
+    <div class="loading">Loading...</div>
+  <% end %>
+<% end %>
 ```
 
 The partial ```/foos```:
 
-```haml
-= table_for @foos do |foos|
-  - column :bar
-  - column :baz
-= paginate @foos, remote: true
+```erb
+<%= table_for @foos do %>
+  <% column :bar %>
+  <% column :baz %>
+<% end %>
+<%= paginate @foos, remote: true %>
 ```
 
 And finally, some JavaScript to bind the paginators correctly when the partial loads:
@@ -283,18 +326,25 @@ groups both the nav and the content under the same container. In some cases, you
 may wish to separatethe nav from the content. The ```tab_navs_for``` and
 ```tab_content_for``` helper methods allow this:
 
-```haml
-  .people-tabs
-    .people-tabs__nav
-      = tab_navs_for @people, flavor: :stacked do |people|
-        - tab 'Option 1', 'option_1_id', people.foos, active: true
-        - tab 'Option 2', 'option_2_id', people.bars
-    .people-tabs__content
-      = tab_content_for @people do |people|
-        - tab_content 'option_1_id', people.foos, active: true do |scope|
-          This is content for option 1
-        - tab_content 'option_2', people.bars do |scope|
-          This is content for option 2
+```erb
+<div class="people-tabs">
+  <div class="people-tabs__nav">
+    <%= tab_navs_for @people, flavor: :stacked do |people| %>
+      <% tab 'Option 1', 'option_1_id', people.foos, active: true %>
+      <% tab 'Option 2', 'option_2_id', people.bars %>
+    <% end %>
+  </div>
+  <div class="people-tabs__content">
+    <%= tab_content_for @people do |people| %>
+      <% tab_content 'option_1_id', people.foos, active: true do |scope| %>
+        This is content for option 1
+      <% end %>
+      <% tab_content 'option_2_id', people.bars do |scope| %>
+        This is content for option 2
+      <% end %>
+    <% end %>
+  </div>
+</div>
 ```
 
 `tab_navs_for` takes the same options as `tabs_for`, as does its `tab` method,
@@ -365,24 +415,28 @@ principle: _Be conservative in what you do, be liberal in what you accept_.
 
 Let's then define a posts list table with some filters.
 
-```haml
-    / app/views/posts/index.html.haml
+```erb
+<%# app/views/posts/index.html.erb %>
 
-    = table_for @posts do
-      - column :author do |post|
-        = post.author.name
-      - column :title
-      - column :body do |post|
-        = truncate(post.body, length: 140)
-      - column :created_at
-      - column :updated_at
+<%= table_for @posts do %>
+  <% column :author do |post| %>
+    <%= post.author.name %>
+  <% end %>
+  <% column :title %>
+  <% column :body do |post| %>
+    <%= truncate(post.body, length: 140) %>
+  <% end %>
+  <% column :created_at %>
+  <% column :updated_at %>
+<% end %>
 
-    = filter_for Post do
-      - selection :author_id, collection: Author.all
-      - search :title
-      - search :body
-      - date_range :created_at
-      - search :by_author_name
+<%= filter_for Post do %>
+  <% selection :author_id, collection: Author.all %>
+  <% search :title %>
+  <% search :body %>
+  <% date_range :created_at %>
+  <% search :by_author_name %>
+<% end %>
 ```
 
 Behind the scenes, Stradivari builds an appropriate Ransack predicate for each
@@ -486,8 +540,9 @@ Ransack provides basic sorting options for column names. The `title` column in
 the above example can be made sortable in the rendered table by adding the
 `sortable: true` option:
 
-    = table_for @posts do
-      - column :title, sortable: true
+    <%= table_for @posts do %>
+      <% column :title, sortable: true %>
+    <% end %>
 
 For more complex sorting schemes, e.g. if we want to sort on the associated
 author name, we have to define the sorting semantics in the model first.
@@ -501,14 +556,37 @@ be:
       scope :sort_by_author_desc, -> { joins(:author).order('authors.name DESC') }
     end
 
-    = table_for @posts do
-      - column :author, sortable: true do |post|
-        = post.author.name
+    <%= table_for @posts do %>
+      <% column :author, sortable: true do |post| %>
+        <%= post.author.name %>
+      <% end %>
+    <% end %>
 
 You can pass to the `sortable` option the scope name you want to use, e.g. if
 you called the above scope `sort_by_person_asc`, you would have needed to
-specify `sortable: person`. This is useful when reusing these scopes for
+specify `sortable: :person`. This is useful when reusing these scopes for
 multiple purposes.
+
+#### Field options
+
+Every filter field accepts these options:
+
+Option              | Applies to        | Description
+:------------------ | :---------------- | :------------------------------------------
+`title`             | all               | Label text. Defaults to the humanized attribute name.
+`form_group_class`  | all               | Extra class on the `stradivari-filter__field` wrapper of the field.
+`priority`          | all               | `:low`, `:normal` (default) or `:high`. A `:low` field is collapsed until it has a value.
+`class`             | `selection`, `search` | Extra class on the `<select>` or `<input>`, next to `stradivari-control`.
+`multiple`          | `selection`       | `true` renders a multi-select and filters with the `_in` predicate. Defaults to `false`, which uses `_eq`. A multi-select never renders radios.
+`include_blank`     | `selection`       | `true` (default) adds an `Any` option to the `<select>`; `false` removes it. Radio lists never show it.
+`radios_count`      | `selection`       | Up to this many options (default 5) the single selection renders as radios instead of a `<select>`.
+
+```erb
+<%= filter_for Post do %>
+  <% selection :author_id, collection: Author.all, multiple: true, include_blank: false,
+               class: 'author-select', form_group_class: 'author-field' %>
+<% end %>
+```
 
 #### Detached form
 
@@ -520,20 +598,32 @@ TODO
 
 #### Prepending elements to the search form
 
-    - prepend(class: "options") do
-      %p This is a prepended text
+```erb
+<%= filter_for Post do %>
+  <% prepend(class: "options") do %>
+    <p>This is a prepended text</p>
+  <% end %>
+<% end %>
+```
 
 ### Definition Lists
 
-```haml
-= details_for @foos[1] do
-  - field :id
-  - field :boolean_field, title: "custom title"
-  - field :name, presence: true, html: {:class => "custom dd class"}
-  - field :text_field
-  - field :string_field, title: "Here we go"
-  - field :created_at
+```erb
+<%= details_for @foo, class: "compact" do %>
+  <% field :id %>
+  <% field :boolean_field, title: "custom title" %>
+  <% field :name, present: true, label: { class: "custom dt class" }, content: { class: "custom dd class" } %>
+  <% field :text_field %>
+  <% field :string_field, title: "Here we go" %>
+  <% field :created_at %>
+<% end %>
 ```
+
+The `dl` gets the `stradivari-details` class plus any `class:` you pass.
+Fields whose content is blank are skipped; `present: true` renders them with
+the `empty` translation instead. `label:` and `content:` take the HTML
+attributes of the `dt` and `dd` elements. `if:` and `unless:` take a lambda
+evaluated in the view.
 
 ## Tests
 
@@ -565,7 +655,6 @@ impact in making the world a better place.
 
 [logo]:                    http://upload.wikimedia.org/wikipedia/commons/c/cd/Antonio_stradivari.jpg
 [Active Admin]:            https://github.com/gregbell/active_admin
-[HAML]:                    https://github.com/haml/haml
 [PgSearch]:                https://github.com/Casecommons/pg_search
 [Ransack]:                 https://github.com/activerecord-hackery/ransack
 [rails-i18n-ar]:           http://guides.rubyonrails.org/i18n.html#translations-for-active-record-models
