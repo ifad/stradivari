@@ -109,6 +109,30 @@ describe("SelectTree", () => {
     },
   );
 
+  it("updates every counter on the page", () => {
+    const window = openPage(
+      [
+        checkBox("fruit"),
+        checkBox("apple", { parent: "fruit", countTotal: 1 }),
+        checkBox("pear", { parent: "fruit", countTotal: 1 }),
+        '<span data-select-tree-total="0">0 selected</span>',
+        '<input type="text" data-select-tree-total="0" value="Tags: 0">',
+      ].join(""),
+      ["select_tree"],
+    );
+    const [text, input] = window.document.querySelectorAll(
+      "[data-select-tree-total]",
+    );
+
+    checkBoxFor(window, "fruit").click();
+
+    expect([text.textContent, input.value]).toEqual(["2 selected", "Tags: 2"]);
+
+    checkBoxFor(window, "fruit/pear").click();
+
+    expect([text.textContent, input.value]).toEqual(["1 selected", "Tags: 1"]);
+  });
+
   it("rebinds a replaced node so its parent still reaches it", () => {
     const window = openPage(
       `${checkBox("fruit")}

@@ -212,9 +212,8 @@ class SelectTree {
     Stradivari.all(`[data-${this.dataPrefix}-total]`).forEach(callback);
   }
 
-  static setTotal(tree, counter) {
+  static setTotal(tree, counter, previousTotal = tree.total) {
     let count = Number(counter.dataset.selectTreeTotal || 0);
-    const previousTotal = tree.total;
     const updatedTotal = tree.calcTotalSelected();
 
     count += updatedTotal - previousTotal;
@@ -238,10 +237,16 @@ window.SelectTree = SelectTree;
 Stradivari.ready(() => {
   SelectTree.buildAll();
 
-  SelectTree.eachCounter((counter) => {
-    SelectTree.trees.forEach((tree) => {
-      tree.addListener("change", (changedTree) => {
-        SelectTree.setTotal(changedTree, counter);
+  const counters = [];
+  SelectTree.eachCounter((counter) => counters.push(counter));
+
+  SelectTree.trees.forEach((tree) => {
+    tree.addListener("change", (changedTree) => {
+      // The first counter recalculates the tree total, so read it once for all
+      const previousTotal = changedTree.total;
+
+      counters.forEach((counter) => {
+        SelectTree.setTotal(changedTree, counter, previousTotal);
       });
     });
   });
