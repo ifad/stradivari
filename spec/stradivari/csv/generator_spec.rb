@@ -36,4 +36,29 @@ RSpec.describe Stradivari::CSV::Generator do
     parsed = CSV.parse(csv_string)
     expect(parsed.last.first).to eq('Padded')
   end
+
+  context 'with special characters' do
+    let(:name) { %(Doe, John "JD" & Co's) }
+
+    before { create_widget(name: name) }
+
+    it 'writes attribute and block columns as raw text' do
+      csv_string = view.csv_for(Widget.all) do
+        column :name
+        column(:returned, &:name)
+        column(:concatenated) { |w| concat w.name }
+      end
+      expect(CSV.parse(csv_string).last).to eq([name, name, name])
+    end
+
+    it 'writes raw text when rendered from an ERB template' do
+      csv_string = view.render(inline: <<~ERB)
+        <%= csv_for(Widget.all) do %>
+          <% column :name %>
+          <% column :erb do |w| %><%= w.name %><% end %>
+        <% end %>
+      ERB
+      expect(CSV.parse(csv_string.strip).last).to eq([name, name])
+    end
+  end
 end

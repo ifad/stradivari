@@ -1,3 +1,4 @@
+require 'cgi/escape'
 require 'csv'
 
 module Stradivari
@@ -6,17 +7,22 @@ module Stradivari
       class Column < Table::Generator::Column
         def to_s(object)
           if @renderer.present?
-            capture { view.instance_exec(object, &@renderer) }
+            render_text(object)
           else
             build(object)
           end.to_s.strip
         end
+
+        protected
+
+        # capture and ERB output HTML-escape the block's text; file cells hold it raw.
+        def render_text(object)
+          CGI.unescapeHTML(capture { view.instance_exec(object, &@renderer) }.to_s)
+        end
       end
 
       def to_s
-        renderer = -> { render_csv_content }
-
-        capture(&renderer)
+        render_csv_content.html_safe # rubocop:disable Rails/OutputSafety -- CSV text, not HTML: <%= %> must emit it unescaped
       end
 
       protected
