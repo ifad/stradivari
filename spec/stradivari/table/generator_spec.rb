@@ -27,6 +27,20 @@ RSpec.describe Stradivari::Table::Generator do
     end
   end
 
+  describe 'sorting icon' do
+    before { create_widgets(2) }
+
+    it 'shows the sort icon only on sortable columns' do
+      view = view_context
+      out = view.table_for(Widget.all) do
+        column :name, sortable: true
+        column :price
+      end
+      headers = Nokogiri::HTML.fragment(out).css('th')
+      expect(headers.map { |header| header.at_css('.stradivari-icon').nil? }).to eq([false, true])
+    end
+  end
+
   describe 'visibility toggles' do
     before { create_widgets(2) }
 
