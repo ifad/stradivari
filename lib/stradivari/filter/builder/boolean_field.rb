@@ -20,8 +20,8 @@ module Stradivari
                  else
                    content_tag(:div, class: 'stradivari-filter__choice stradivari-filter__choice--checkbox stradivari-filter__choice--single', data: { stradivari_filter_choice: true }) do
                      content_tag(:label, safe_join([
-                                                    check_box(opts[:namespace], attr, { checked: opts[:value].present? }, 'true', nil),
-                                                    content_tag(:span, title, class: 'stradivari-filter__choice-text')
+                                                     check_box(opts[:namespace], attr, { checked: opts[:value].present? }, 'true', nil),
+                                                     content_tag(:span, title, class: 'stradivari-filter__choice-text')
                                                    ]))
                    end
                  end

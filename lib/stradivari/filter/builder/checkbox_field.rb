@@ -3,7 +3,7 @@ module Stradivari
     class Builder::CheckboxField < Builder
       def self.render
         lambda do |attr, opts|
-          # rubocop:disable Lint/NestedMethodDefinition -- defined on the view via instance_exec; refactoring to a lambda would change call semantics for descendants
+          # rubocop:disable-next Lint/NestedMethodDefinition -- defined on the view via instance_exec; refactoring to a lambda would change call semantics for descendants
           def cb(name, label, value, checked, opts)
             content_tag(:div, class: 'stradivari-filter__choice stradivari-filter__choice--checkbox', data: { stradivari_filter_choice: true }) do
               content_tag(:label, safe_join([
@@ -12,7 +12,6 @@ module Stradivari
                                             ]))
             end
           end
-          # rubocop:enable Lint/NestedMethodDefinition
 
           type     = opts.fetch :type, :single_line
           title    = opts.fetch :title, attr.to_s.humanize
