@@ -100,7 +100,7 @@ RSpec.describe WidgetsController, type: :request do
       widget = Widget.first
       get "/widgets/#{widget.id}"
       doc = html(response.body)
-      dl = doc.at_css('dl.dl-horizontal')
+      dl = doc.at_css('dl.stradivari-details')
       expect(dl).not_to be_nil
       labels = dl.css('dt').map(&:text)
       expect(labels).to include('Name', 'Price', 'Released on')

@@ -2,7 +2,7 @@ module Stradivari
   module Details
     class Generator < Stradivari::Generator
       DETAILS_OPTIONS = {
-        class: 'dl-horizontal'
+        class: 'stradivari-details'
       }.freeze
 
       class Field < Tag
@@ -53,6 +53,7 @@ module Stradivari
 
         super(view, object, *pass)
         opts.reverse_merge! Details::Generator::DETAILS_OPTIONS
+        opts[:class] = Stradivari::ClassNames.join(Details::Generator::DETAILS_OPTIONS[:class], opts[:class])
 
         instance_exec(object, *pass, &)
       end
