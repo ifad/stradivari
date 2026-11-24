@@ -3,8 +3,9 @@ module Stradivari
     class Builder::ActionField
       def self.render
         lambda do
+          # A submit button lets Enter in a field submit; the click handler still runs first.
           search = content_tag(:button, safe_join([Stradivari::Icons.svg(:search), ' Search']),
-                               type: 'button',
+                               type: 'submit',
                                class: 'stradivari-button stradivari-button--primary stradivari-button--sm stradivari-button--search',
                                data: { stradivari_filter_action: 'search' })
           clear = content_tag(:button, safe_join([Stradivari::Icons.svg(:clear), ' Clear']),
