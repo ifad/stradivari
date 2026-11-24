@@ -18,11 +18,12 @@ const activateStradivariTab = (link) => {
     item.classList.add("stradivari-tabs__item--active");
   }
 
-  Stradivari.all(".stradivari-tabs__pane", target.parentElement).forEach(
-    (pane) => {
-      pane.classList.remove("stradivari-tabs__pane--active");
-    },
-  );
+  Stradivari.all(
+    ":scope > .stradivari-tabs__pane",
+    target.parentElement,
+  ).forEach((pane) => {
+    pane.classList.remove("stradivari-tabs__pane--active");
+  });
   target.classList.add("stradivari-tabs__pane--active");
 
   return target;
