@@ -124,10 +124,6 @@
     color: var(--stradivari-accent);
     transition: color var(--stradivari-transition);
   }
-  .stradivari-filter__control--closed,
-  .stradivari-filter__collapsed {
-    @apply hidden;
-  }
   .stradivari-filter__choice {
     @apply m-0;
   }
@@ -221,6 +217,11 @@
   .stradivari-filter__number .stradivari-control,
   .stradivari-filter__date-range .stradivari-control {
     @apply min-w-0 flex-1;
+  }
+  /* Kept after the controls that set display so it wins over them */
+  .stradivari-filter__control--closed,
+  .stradivari-filter__collapsed {
+    @apply hidden;
   }
   .stradivari-filter__delimiter {
     @apply hidden text-center md:inline-block;
