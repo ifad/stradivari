@@ -54,16 +54,25 @@ guaranteed. Names follow BEM: `block__element--modifier`.
 
 Block                | Classes
 :------------------- | :-----------------------------------------------------
-Table                | `stradivari-table`, `--hover`; `__viewport`, `__row`, `__cell`, `__cell--actions`, `__header-cell`, `__header-cell--actions`, `__header-cell--sortable`, `__header-cell--active`, `__sort-link`, `__counters`, `__custom-footer`, `__download`, `__download-link`, `__empty`
-Tabs                 | `stradivari-tabs__nav`, `__item`, `__item--active`, `__link`, `__badge`, `__content`, `__pane`, `__pane--active`, `__print-nav`
+Table                | `stradivari-table`, `--hover`; `__viewport`, `__row--parent`, `__row--child`, `__cell`, `__cell--actions`, `__header-cell`, `__header-cell--actions`, `__header-cell--sortable`, `__header-cell--active`, `__sort-link`, `__counters`, `__custom-footer`, `__download`, `__download-link`, `__download-link--event`, `__empty`
+Tabs                 | `stradivari-tabs__nav`, `__nav--tabs`, `__nav--pills`, `__nav--stacked`, `__item`, `__item--active`, `__link`, `__badge`, `__content`, `__pane`, `__pane--active`, `__print-nav`
 Details              | `stradivari-details`
-Filter               | `stradivari-filter`, `__form`, `__panel`, `__section`, `__section--active`, `__section--inactive`, `__section--custom`, `__field`, `__field--priority-*`, `__control`, `__control--closed`, `__control--priority-*`, `__label-text`, `__search`, `__number`, `__date-range`, `__delimiter`, `__choice`, `__choice--checkbox`, `__choice--radio`, `__choice--single`, `__choice--checked`, `__choice-list`, `__choice-list--inline`, `__choice-text`, `__collapsed`, `__toggle`, `__actions`, `__action-item`
+Filter               | `stradivari-filter`, `__form`, `__form--detached`, `__panel`, `__section`, `__section--active`, `__section--inactive`, `__section--custom`, `__field`, `__field--priority-*`, `__control`, `__control--closed`, `__control--priority-*`, `__label-text`, `__search`, `__number`, `__date-range`, `__delimiter`, `__choice`, `__choice--checkbox`, `__choice--radio`, `__choice--single`, `__choice--checked`, `__choice-list`, `__choice-list--inline`, `__choice-list--single-line`, `__choice-list--multi-line`, `__choice-text`, `__collapsed`, `__toggle`, `__actions`, `__action-item`
 Form controls        | `stradivari-control`, `stradivari-input-group`, `stradivari-input-group__action`
 Buttons              | `stradivari-button`, `--primary`, `--secondary`, `--info`, `--danger`, `--search`, `--clear`, `--sm`, `--xs`
 Icons                | `stradivari-icon`
 
-Modifier classes such as `--closed`, `--active` and `--checked` are toggled
-by the JavaScript at run time.
+Table rows only carry a class when they are parent or child rows. The
+`--priority-*` modifiers are `--priority-low`, `--priority-normal` and
+`--priority-high`.
+
+The JavaScript toggles `stradivari-tabs__item--active` and
+`stradivari-tabs__pane--active` when a tab is clicked, and
+`stradivari-filter__choice--checked` when a radio list is narrowed or
+expanded. `stradivari-filter__control--closed` and
+`stradivari-filter__collapsed` are only rendered by the server: the
+Expand/Close toggle shows and hides that element by setting its inline
+`style.display`, and leaves its classes unchanged.
 
 ## Installation
 
@@ -120,7 +129,7 @@ You'd have in your `app/views/foo/index.html.erb`:
 <%# header_visible:, body_visible:, footer_visible: (true|false), downloadable: (:xlsx|:csv) %>
 <%= table_for @foos, header_visible: true, downloadable: :csv do %>
   <% row do |attributes, foo|
-       attributes[:class] << " foo_#{foo.foo_type}"
+       attributes[:class] = [attributes[:class], "foo_#{foo.foo_type}"].compact.join(' ')
        attributes['data-foo-id'] = foo.id
      end %>
   <% column :id %>
@@ -148,13 +157,17 @@ If you wish to set custom attributes on the table row itself, the ```row```
 (`@foos[n]`). You may add or alter the hash contents and these will be
 set on the row element. A good use case for this would be if you wanted
 to bind a click handler to the row and needed to record the `foo.id` for
-an action specific to that object.
+an action specific to that object. `attributes[:class]` is `nil` except on
+parent and child rows, so build on it as shown above rather than appending
+to it.
 
 If there is no data, the table will be replaced with a div saying
 `There is no data.` You can change this in one of two ways - specify a
 different message as the no_data option:
 ```erb
-<%= table_for @foos, no_data: 'There is nothing to see here' %>
+<%= table_for @foos, no_data: 'There is nothing to see here' do %>
+  <% column :id %>
+<% end %>
 ```
 or, provide a `no_data` block which will be rendered in place:
 ```erb
@@ -234,8 +247,8 @@ Parameter     | Example value            | Description
   <% blank do %>
     <div class="warning">Nothing found</div>
   <% end %>
-  <% tab "Tab label", "tab_div_id", foos.scope, present: true do %>
-    <%= render partial: 'foos', locals: { foos: foos.scope } %>
+  <% tab "Tab label", "tab_div_id", foos, present: true do %>
+    <%= render partial: 'foos', locals: { foos: foos } %>
   <% end %>
 <% end %>
 ```
@@ -254,8 +267,8 @@ Tab content can be optionally loaded from a remote URL by passing the `url:` opt
 Rails' route helpers, you have to reach to them through the `view` object, e.g.:
 
 ```erb
-<%= tabs_for @foos do %>
-  <% tab :bar, url: view.bars_path do %>
+<%= tabs_for @foos do |foos| %>
+  <% tab "Bars", "bars", foos, present: true, url: view.bars_path do %>
     <div class="loading">Loading...</div>
   <% end %>
 <% end %>
@@ -278,7 +291,7 @@ The view:
 
 ```erb
 <%= tabs_for @foos do |foos| %>
-  <% tab "Tab label", "tab_div_id", foos.scope, present: true, url: '/foos' do %>
+  <% tab "Tab label", "tab_div_id", foos, present: true, url: '/foos' do %>
     <div class="loading">Loading...</div>
   <% end %>
 <% end %>
@@ -431,7 +444,7 @@ Let's then define a posts list table with some filters.
 <% end %>
 
 <%= filter_for Post do %>
-  <% selection :author_id, collection: Author.all %>
+  <% selection :author_id, collection: Author.pluck(:name, :id) %>
   <% search :title %>
   <% search :body %>
   <% date_range :created_at %>
@@ -573,17 +586,17 @@ Every filter field accepts these options:
 
 Option              | Applies to        | Description
 :------------------ | :---------------- | :------------------------------------------
-`title`             | all               | Label text. Defaults to the humanized attribute name.
+`title`             | all               | Label text. Defaults to the humanized attribute name. A `search` field defaults to `"Search #{predicate.humanize}"`, where the predicate is the attribute with `_cont` appended, or the scope name for a `stradivari_scope`: `search :title` shows `Search Title cont`, `search :by_author_name` shows `Search By author name`. The search title is also the default placeholder.
 `form_group_class`  | all               | Extra class on the `stradivari-filter__field` wrapper of the field.
-`priority`          | all               | `:low`, `:normal` (default) or `:high`. A `:low` field is collapsed until it has a value.
+`priority`          | all               | `:low`, `:normal` (default) or `:high`. A `:low` field without a value renders its control hidden, with `stradivari-filter__control--closed`, behind an Expand toggle; once it has a value it renders open. A `search` with `button: true` and a two-state `boolean` never collapse.
 `class`             | `selection`, `search` | Extra class on the `<select>` or `<input>`, next to `stradivari-control`.
 `multiple`          | `selection`       | `true` renders a multi-select and filters with the `_in` predicate. Defaults to `false`, which uses `_eq`. A multi-select never renders radios.
-`include_blank`     | `selection`       | `true` (default) adds an `Any` option to the `<select>`; `false` removes it. Radio lists never show it.
+`include_blank`     | `selection`, `boolean` with `tristate: true` | `true` (default) adds an `Any` choice: a blank option in a `<select>`, or a last `Any` radio in a radio list. `false` removes it.
 `radios_count`      | `selection`       | Up to this many options (default 5) the single selection renders as radios instead of a `<select>`.
 
 ```erb
 <%= filter_for Post do %>
-  <% selection :author_id, collection: Author.all, multiple: true, include_blank: false,
+  <% selection :author_id, collection: Author.pluck(:name, :id), multiple: true, include_blank: false,
                class: 'author-select', form_group_class: 'author-field' %>
 <% end %>
 ```
