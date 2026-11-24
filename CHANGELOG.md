@@ -4,7 +4,7 @@
 
 This release refactors the gem and is **not backward compatible**.
 
-* [BREAKING] Requires Ruby 3.2 or later and Rails 7.2, 8.0 or 8.1. Older Rails versions are no longer supported.
+* [BREAKING] Requires Ruby 3.3 or later and Rails 7.2, 8.0 or 8.1. Older Rails versions are no longer supported.
 * [BREAKING] The Haml dependency is removed. The helpers use plain Rails view helpers and work in ERB, Haml or Slim. Applications with Haml views must add `haml` to their own Gemfile.
 * [BREAKING] The LESS and Bootstrap stylesheets are replaced by `stradivari.css`, plain CSS generated from Tailwind CSS. Host applications need neither Bootstrap nor Tailwind. Themes that target Bootstrap classes must target the `stradivari-*` classes instead (see the README).
 * [BREAKING] The generated markup uses `stradivari-*` BEM classes only. Bootstrap classes such as `dl-horizontal` are no longer rendered. The Stradivari classes that scripts and styles may target are renamed too: `filter-form-container`, `filter-form` and `form-detached` are now `stradivari-filter`, `stradivari-filter__form` and `stradivari-filter__form--detached`; the `parent` and `child` rows are `stradivari-table__row--parent` and `stradivari-table__row--child`; the `sortable` and `active-column` header cells are `stradivari-table__header-cell--sortable` and `stradivari-table__header-cell--active`; the `downloadable_event` link is `stradivari-table__download-link--event`.

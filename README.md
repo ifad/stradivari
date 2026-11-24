@@ -80,7 +80,7 @@ Add to your Gemfile
 
     gem 'stradivari', github: 'ifad/stradivari'
 
-Stradivari requires Ruby 3.2 or later and Rails 7.2, 8.0 or 8.1.
+Stradivari requires Ruby 3.3 or later and Rails 7.2, 8.0 or 8.1.
 
 Add to your app/assets/javascripts/application.js
 
