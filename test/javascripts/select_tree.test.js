@@ -152,4 +152,23 @@ describe("SelectTree", () => {
       "fruit/pear",
     ]);
   });
+
+  it("cascades and counts from a replaced node when it is clicked", () => {
+    const window = openPage(
+      `${checkBox("all")}
+       <div id="fruit">${checkBox("fruit", { parent: "all" })}</div>
+       ${checkBox("apple", { parent: "fruit", countTotal: 1 })}
+       <span data-select-tree-total="0">0 selected</span>`,
+      ["select_tree"],
+    );
+    const wrapper = window.document.getElementById("fruit");
+    const counter = window.document.querySelector("[data-select-tree-total]");
+
+    wrapper.innerHTML = checkBox("fruit", { parent: "all" });
+    window.SelectTree.rebind(wrapper);
+    checkBoxFor(window, "all/fruit").click();
+
+    expect(checkedPaths(window)).toEqual(["all/fruit", "fruit/apple"]);
+    expect(counter.textContent).toBe("1 selected");
+  });
 });

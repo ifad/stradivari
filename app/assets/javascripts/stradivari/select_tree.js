@@ -122,6 +122,9 @@ class SelectTree {
           child.node.getAttribute("data-select-tree-name")
       ) {
         child.node = path[0];
+        child.node.addEventListener("change", () => {
+          child.onChange(child.node.checked);
+        });
         return true;
       }
 
