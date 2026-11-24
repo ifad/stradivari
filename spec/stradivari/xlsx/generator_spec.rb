@@ -36,6 +36,19 @@ RSpec.describe Stradivari::XLSX::Generator do
       expect(sheet.sheets).to include('MySheet')
     end
   end
+
+  it 'writes attribute and block columns with special characters as raw text' do
+    name = %(Doe, John "JD" & Co's)
+    create_widget(name: name)
+    binary = view.xlsx_for(Widget.all) do
+      column :name
+      column(:returned, &:name)
+      column(:concatenated) { |w| concat w.name }
+    end
+    open_xlsx(binary) do |sheet|
+      expect(sheet.row(2)).to eq([name, name, name])
+    end
+  end
 end
 
 RSpec.describe Stradivari::XLSX::Controller, type: :request do
