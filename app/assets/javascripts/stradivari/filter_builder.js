@@ -14,6 +14,12 @@ Stradivari.Form = class {
         const clone = input.cloneNode(true);
         clone.value = input.value;
         clone.checked = input.checked;
+        // Setting value on a select keeps only the first match selected.
+        if (input.multiple) {
+          Array.from(input.options).forEach((option, index) => {
+            clone.options[index].selected = option.selected;
+          });
+        }
         clone.hidden = true;
         clone.style.display = "none";
         form.appendChild(clone);

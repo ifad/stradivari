@@ -153,6 +153,35 @@ describe("filter forms", () => {
     ).toEqual(["none", "none", "none", "none", "none"]);
   });
 
+  it("submits every option selected in a detached multi-select", () => {
+    const window = openPage(
+      filterForm(searchFields) +
+        detachedForm(`
+          <select name="q[state_in][]" multiple>
+            <option value="open">Open</option>
+            <option value="draft">Draft</option>
+            <option value="closed">Closed</option>
+          </select>
+        `),
+      scripts,
+    );
+    const submissions = recordSubmissions(window);
+
+    window.document
+      .querySelectorAll('#filter-form_detached option:not([value="closed"])')
+      .forEach((option) => {
+        option.selected = true;
+      });
+    actionIn(window, "filter-form_detached", "search").click();
+
+    expect(
+      submissions[0].fields.filter(([name]) => name === "q[state_in][]"),
+    ).toEqual([
+      ["q[state_in][]", "open"],
+      ["q[state_in][]", "draft"],
+    ]);
+  });
+
   it.each([
     ["", "relevance"],
     ["name", "name"],
