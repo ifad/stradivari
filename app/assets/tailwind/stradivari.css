@@ -1,9 +1,25 @@
-@layer theme, components, utilities;
-@import "tailwindcss/theme" layer(theme);
-@import "tailwindcss/utilities" layer(utilities) source(none);
+@layer stradivari.theme, stradivari.components, stradivari.utilities;
+@import "tailwindcss/utilities" layer(stradivari.utilities) source(none);
+
+/* The prefix shares the --stradivari- namespace with the custom properties
+   below, so the theme holds only the Tailwind defaults the rules use */
+@layer stradivari.theme {
+  @theme prefix(stradivari) {
+    --spacing: 0.25rem;
+    --breakpoint-sm: 40rem;
+    --breakpoint-md: 48rem;
+    --text-xs: 0.75rem;
+    --text-xs--line-height: calc(1 / 0.75);
+    --text-sm: 0.875rem;
+    --text-sm--line-height: calc(1.25 / 0.875);
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --leading-tight: 1.25;
+  }
+}
 
 :root {
-  color-scheme: light dark;
   --stradivari-surface: #ffffff;
   --stradivari-surface-muted: #f8fafc;
   --stradivari-surface-subtle: #f1f5f9;
@@ -61,23 +77,29 @@
   }
 }
 
-@layer components {
+@layer stradivari.components {
+  /* Set on Stradivari markup only, so the host page keeps its own scheme */
+  [class^="stradivari-"],
+  [class*=" stradivari-"] {
+    color-scheme: light dark;
+  }
+
   .stradivari-filter {
-    @apply w-full;
+    @apply stradivari:w-full;
     color: var(--stradivari-text);
   }
   .stradivari-filter__form {
-    @apply w-full;
+    @apply stradivari:w-full;
   }
   .stradivari-filter__panel {
-    @apply overflow-hidden;
+    @apply stradivari:overflow-hidden;
     border: 1px solid var(--stradivari-border);
     border-radius: var(--stradivari-radius-lg);
     background: var(--stradivari-surface);
     box-shadow: var(--stradivari-shadow);
   }
   .stradivari-filter__section {
-    @apply px-4 py-3 md:px-5 md:py-4;
+    @apply stradivari:px-4 stradivari:py-3 stradivari:md:px-5 stradivari:md:py-4;
     border-bottom: 1px solid var(--stradivari-border);
   }
   .stradivari-filter__section--active {
@@ -93,45 +115,48 @@
     background: var(--stradivari-surface);
   }
   .stradivari-filter__actions {
-    @apply m-0 list-none p-0;
+    @apply stradivari:m-0 stradivari:list-none stradivari:p-0;
     background: var(--stradivari-surface-muted);
     border-top: 1px solid var(--stradivari-border);
   }
   .stradivari-filter__action-item {
-    @apply flex flex-wrap items-center gap-2 px-4 py-3 md:px-5 md:py-4;
+    @apply stradivari:flex stradivari:flex-wrap stradivari:items-center stradivari:gap-2 stradivari:px-4 stradivari:py-3 stradivari:md:px-5 stradivari:md:py-4;
   }
   .stradivari-filter__field {
-    @apply mb-4 pb-4;
+    @apply stradivari:mb-4 stradivari:pb-4;
     border-bottom: 1px solid var(--stradivari-border);
   }
   .stradivari-filter__field:last-child {
-    @apply mb-0 pb-0;
+    @apply stradivari:mb-0 stradivari:pb-0;
     border-bottom: 0;
   }
   .stradivari-filter__field > label,
   .stradivari-filter__label-text {
-    @apply mb-2 block font-semibold;
+    @apply stradivari:mb-2 stradivari:block;
+    font-weight: --theme(--font-weight-semibold);
     color: var(--stradivari-text);
   }
   .stradivari-filter__toggle {
-    @apply cursor-pointer;
+    @apply stradivari:cursor-pointer;
     color: var(--stradivari-accent);
     transition: color var(--stradivari-transition);
   }
   .stradivari-filter__choice {
-    @apply m-0;
+    @apply stradivari:m-0;
   }
   .stradivari-filter__choice label {
-    @apply mr-1 inline-flex items-center gap-2.5 leading-tight font-normal;
+    @apply stradivari:mr-1 stradivari:inline-flex stradivari:items-center stradivari:gap-2.5;
+    line-height: --theme(--leading-tight);
+    font-weight: --theme(--font-weight-normal);
     color: var(--stradivari-text-muted);
     cursor: pointer;
     user-select: none;
   }
   .stradivari-filter__choice--single {
-    @apply ml-0 pl-0;
+    @apply stradivari:ml-0 stradivari:pl-0;
   }
   .stradivari-filter__choice--single label {
-    @apply mr-0;
+    @apply stradivari:mr-0;
   }
   .stradivari-filter__choice-text {
     color: inherit;
@@ -142,11 +167,11 @@
     font-weight: 600;
   }
   .stradivari-filter__choice--single input[type="checkbox"] {
-    @apply float-none ml-0;
+    @apply stradivari:float-none stradivari:ml-0;
   }
   .stradivari-filter__choice input[type="checkbox"],
   .stradivari-filter__choice input[type="radio"] {
-    @apply m-0 shrink-0;
+    @apply stradivari:m-0 stradivari:shrink-0;
     appearance: none;
     width: 1.125rem;
     height: 1.125rem;
@@ -190,53 +215,55 @@
       var(--stradivari-accent);
   }
   .stradivari-filter__choice-list {
-    @apply flex flex-wrap gap-x-3 gap-y-1;
+    @apply stradivari:flex stradivari:flex-wrap stradivari:gap-x-3 stradivari:gap-y-1;
   }
   .stradivari-filter__choice-list--multi-line {
-    @apply block max-h-52 overflow-y-auto;
+    @apply stradivari:block stradivari:max-h-52 stradivari:overflow-y-auto;
   }
   .stradivari-filter__choice-list--multi-line .stradivari-filter__choice {
-    @apply block;
+    @apply stradivari:block;
   }
   .stradivari-filter__section--active .stradivari-filter__choice--radio {
-    @apply hidden;
+    @apply stradivari:hidden;
   }
   .stradivari-filter__section--active .stradivari-filter__choice--checked {
-    @apply inline-block;
+    @apply stradivari:inline-block;
   }
   .stradivari-filter__number,
   .stradivari-filter__date-range {
-    @apply flex flex-col items-stretch gap-3 md:flex-row md:flex-nowrap md:items-center;
+    @apply stradivari:flex stradivari:flex-col stradivari:items-stretch stradivari:gap-3 stradivari:md:flex-row stradivari:md:flex-nowrap stradivari:md:items-center;
   }
   .stradivari-filter__number .stradivari-control,
   .stradivari-filter__date-range .stradivari-control {
-    @apply min-w-0 flex-1;
+    @apply stradivari:min-w-0 stradivari:flex-1;
   }
   /* Kept after the controls that set display so it wins over them */
   .stradivari-filter__control--closed,
   .stradivari-filter__collapsed {
-    @apply hidden;
+    @apply stradivari:hidden;
   }
   .stradivari-filter__delimiter {
-    @apply hidden text-center md:inline-block;
+    @apply stradivari:hidden stradivari:text-center stradivari:md:inline-block;
     color: var(--stradivari-text-soft);
   }
 
   .stradivari-input-group {
-    @apply flex w-full items-stretch;
+    @apply stradivari:flex stradivari:w-full stradivari:items-stretch;
   }
   .stradivari-input-group .stradivari-control {
-    @apply rounded-r-none;
+    @apply stradivari:rounded-r-none;
   }
   .stradivari-input-group__action {
-    @apply inline-flex;
+    @apply stradivari:inline-flex;
   }
   .stradivari-input-group__action .stradivari-button {
-    @apply rounded-l-none;
+    @apply stradivari:rounded-l-none;
   }
 
   .stradivari-control {
-    @apply block w-full px-3.5 py-2 text-sm;
+    @apply stradivari:block stradivari:w-full stradivari:px-3.5 stradivari:py-2;
+    font-size: --theme(--text-sm);
+    line-height: --theme(--text-sm--line-height);
     border: 1px solid var(--stradivari-border);
     border-radius: var(--stradivari-radius-md);
     background: var(--stradivari-surface-subtle);
@@ -251,7 +278,7 @@
     color: var(--stradivari-text-soft);
   }
   select.stradivari-control {
-    @apply pr-12;
+    @apply stradivari:pr-12;
     appearance: none;
     cursor: pointer;
     background-image: var(--stradivari-select-chevron);
@@ -267,7 +294,10 @@
   }
 
   .stradivari-button {
-    @apply inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-sm font-medium no-underline;
+    @apply stradivari:inline-flex stradivari:items-center stradivari:justify-center stradivari:gap-1.5 stradivari:px-3.5 stradivari:py-2 stradivari:no-underline;
+    font-size: --theme(--text-sm);
+    line-height: --theme(--text-sm--line-height);
+    font-weight: --theme(--font-weight-medium);
     border: 1px solid transparent;
     border-radius: 999px;
     transition:
@@ -279,10 +309,14 @@
     box-shadow: var(--stradivari-shadow-sm);
   }
   .stradivari-button--xs {
-    @apply px-2 py-1 text-xs;
+    @apply stradivari:px-2 stradivari:py-1;
+    font-size: --theme(--text-xs);
+    line-height: --theme(--text-xs--line-height);
   }
   .stradivari-button--sm {
-    @apply px-2.5 py-1 text-sm;
+    @apply stradivari:px-2.5 stradivari:py-1;
+    font-size: --theme(--text-sm);
+    line-height: --theme(--text-sm--line-height);
   }
   .stradivari-button--primary {
     background: var(--stradivari-accent);
@@ -303,11 +337,11 @@
   }
 
   .stradivari-icon {
-    @apply inline-block size-4 shrink-0 align-[-0.125em];
+    @apply stradivari:inline-block stradivari:size-4 stradivari:shrink-0 stradivari:align-[-0.125em];
   }
 
   .stradivari-table__viewport {
-    @apply w-full overflow-x-auto;
+    @apply stradivari:w-full stradivari:overflow-x-auto;
     -webkit-overflow-scrolling: touch;
     border: 1px solid var(--stradivari-border);
     border-radius: var(--stradivari-radius-lg);
@@ -316,7 +350,9 @@
   }
 
   .stradivari-table {
-    @apply w-full border-collapse text-left text-sm;
+    @apply stradivari:w-full stradivari:border-collapse stradivari:text-left;
+    font-size: --theme(--text-sm);
+    line-height: --theme(--text-sm--line-height);
     min-width: max(100%, 44rem);
     color: var(--stradivari-text);
   }
@@ -338,11 +374,11 @@
   }
   .stradivari-table__header-cell,
   .stradivari-table__cell {
-    @apply px-4 py-3 align-top;
+    @apply stradivari:px-4 stradivari:py-3 stradivari:align-top;
     border-top: 0;
   }
   .stradivari-table__header-cell {
-    @apply whitespace-nowrap;
+    @apply stradivari:whitespace-nowrap;
     font-weight: 600;
     letter-spacing: 0.01em;
     color: var(--stradivari-text-muted);
@@ -350,16 +386,16 @@
   .stradivari-table__header-cell h4,
   .stradivari-table__header-cell h5,
   .stradivari-table__header-cell label {
-    @apply m-0;
+    @apply stradivari:m-0;
   }
   .stradivari-table__header-cell--sortable {
-    @apply cursor-pointer;
+    @apply stradivari:cursor-pointer;
   }
   .stradivari-table__header-cell--sortable {
-    @apply p-0;
+    @apply stradivari:p-0;
   }
   .stradivari-table__sort-link {
-    @apply flex w-full items-center gap-2 px-4 py-3 no-underline;
+    @apply stradivari:flex stradivari:w-full stradivari:items-center stradivari:gap-2 stradivari:px-4 stradivari:py-3 stradivari:no-underline;
     color: inherit;
     transition:
       background-color var(--stradivari-transition),
@@ -379,7 +415,7 @@
     color: var(--stradivari-accent);
   }
   .stradivari-table__cell--actions {
-    @apply whitespace-nowrap;
+    @apply stradivari:whitespace-nowrap;
   }
   .stradivari-table__row--parent .stradivari-table__cell {
     background: color-mix(
@@ -393,19 +429,19 @@
   }
   .stradivari-table__download,
   .stradivari-table__custom-footer {
-    @apply mr-3;
+    @apply stradivari:mr-3;
     float: none;
   }
   .stradivari-table__counters {
-    @apply sm:ml-auto;
+    @apply stradivari:sm:ml-auto;
     float: none;
     color: var(--stradivari-text-soft);
   }
   .stradivari-table tfoot td[colspan] {
-    @apply flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center;
+    @apply stradivari:flex stradivari:flex-col stradivari:gap-3 stradivari:sm:flex-row stradivari:sm:flex-wrap stradivari:sm:items-center;
   }
   .stradivari-table__empty {
-    @apply px-4 py-3;
+    @apply stradivari:px-4 stradivari:py-3;
     border: 1px solid var(--stradivari-warning-border);
     border-radius: var(--stradivari-radius-lg);
     background: var(--stradivari-warning-bg);
@@ -413,7 +449,10 @@
     box-shadow: var(--stradivari-shadow-sm);
   }
   .stradivari-table__download-link {
-    @apply inline-flex items-center justify-center px-3.5 py-2 text-sm font-medium no-underline;
+    @apply stradivari:inline-flex stradivari:items-center stradivari:justify-center stradivari:px-3.5 stradivari:py-2 stradivari:no-underline;
+    font-size: --theme(--text-sm);
+    line-height: --theme(--text-sm--line-height);
+    font-weight: --theme(--font-weight-medium);
     border: 1px solid var(--stradivari-border);
     border-radius: 999px;
     background: var(--stradivari-surface);
@@ -425,20 +464,22 @@
   }
 
   .stradivari-tabs__nav {
-    @apply m-0 flex list-none gap-2 overflow-x-auto p-0 pb-1;
+    @apply stradivari:m-0 stradivari:flex stradivari:list-none stradivari:gap-2 stradivari:overflow-x-auto stradivari:p-0 stradivari:pb-1;
   }
   .stradivari-tabs__nav--pills,
   .stradivari-tabs__nav--stacked {
-    @apply gap-2;
+    @apply stradivari:gap-2;
   }
   .stradivari-tabs__nav--stacked {
-    @apply flex-col overflow-x-visible;
+    @apply stradivari:flex-col stradivari:overflow-x-visible;
   }
   .stradivari-tabs__item {
-    @apply m-0;
+    @apply stradivari:m-0;
   }
   .stradivari-tabs__link {
-    @apply inline-flex items-center gap-2 px-4 py-2.5 text-sm whitespace-nowrap no-underline;
+    @apply stradivari:inline-flex stradivari:items-center stradivari:gap-2 stradivari:px-4 stradivari:py-2.5 stradivari:whitespace-nowrap stradivari:no-underline;
+    font-size: --theme(--text-sm);
+    line-height: --theme(--text-sm--line-height);
     border: 1px solid var(--stradivari-border);
     border-radius: 999px;
     background: var(--stradivari-surface);
@@ -459,20 +500,24 @@
     color: var(--stradivari-accent-strong);
   }
   .stradivari-tabs__content {
-    @apply pt-4;
+    @apply stradivari:pt-4;
   }
   .stradivari-tabs__pane {
-    @apply hidden;
+    @apply stradivari:hidden;
   }
   .stradivari-tabs__pane--active {
-    @apply block px-4 py-3 md:p-4;
+    @apply stradivari:block stradivari:px-4 stradivari:py-3 stradivari:md:p-4;
     border: 1px solid var(--stradivari-border);
     border-radius: var(--stradivari-radius-lg);
     background: var(--stradivari-surface);
+    color: var(--stradivari-text);
     box-shadow: var(--stradivari-shadow-sm);
   }
   .stradivari-tabs__badge {
-    @apply rounded-full px-2 py-0.5 text-xs font-medium;
+    @apply stradivari:rounded-full stradivari:px-2 stradivari:py-0.5;
+    font-size: --theme(--text-xs);
+    line-height: --theme(--text-xs--line-height);
+    font-weight: --theme(--font-weight-medium);
     background: color-mix(
       in srgb,
       var(--stradivari-accent-soft) 92%,
@@ -481,11 +526,11 @@
     color: var(--stradivari-accent-strong);
   }
   .stradivari-tabs__print-nav {
-    @apply m-0 list-none p-0;
+    @apply stradivari:m-0 stradivari:list-none stradivari:p-0;
   }
 
   .stradivari-details {
-    @apply grid grid-cols-1 md:grid-cols-[minmax(11rem,15rem)_minmax(0,1fr)];
+    @apply stradivari:grid stradivari:grid-cols-1 stradivari:md:grid-cols-[minmax(11rem,15rem)_minmax(0,1fr)];
     border: 1px solid var(--stradivari-border);
     border-radius: var(--stradivari-radius-lg);
     overflow: hidden;
@@ -493,14 +538,14 @@
     box-shadow: var(--stradivari-shadow);
   }
   .stradivari-details dt {
-    @apply px-4 py-3 md:px-5 md:py-4;
+    @apply stradivari:px-4 stradivari:py-3 stradivari:md:px-5 stradivari:md:py-4;
     background: var(--stradivari-surface-muted);
     color: var(--stradivari-text);
     font-weight: 600;
     border-bottom: 1px solid var(--stradivari-border);
   }
   .stradivari-details dd {
-    @apply m-0 px-4 py-3 md:px-5 md:py-4;
+    @apply stradivari:m-0 stradivari:px-4 stradivari:py-3 stradivari:md:px-5 stradivari:md:py-4;
     background: var(--stradivari-surface);
     color: var(--stradivari-text-muted);
     border-bottom: 1px solid var(--stradivari-border);
