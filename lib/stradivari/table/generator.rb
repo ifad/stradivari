@@ -34,7 +34,7 @@ module Stradivari
         end
 
         def header
-          content = safe_join([sortable_icon, title].compact)
+          content = safe_join([(sortable_icon if sortable?), title].compact)
 
           return content unless sortable?
 
