@@ -115,6 +115,28 @@ describe("tabs", () => {
     expect(activePanes(window)).toEqual(["b", "two"]);
   });
 
+  it("activates a tab whose id starts with a digit when clicked", () => {
+    const window = openPage(tabSet([{ id: "1", active: true }, { id: "42" }]), [
+      "tabs",
+    ]);
+
+    clickTab(window, "42");
+
+    expect(activeItems(window)).toEqual(["#42"]);
+    expect(activePanes(window)).toEqual(["42"]);
+  });
+
+  it("opens a tab whose id starts with a digit from stradi_tabs[] at load", () => {
+    const window = openPage(
+      tabSet([{ id: "1", active: true }, { id: "42" }]),
+      ["tabs"],
+      { url: "https://example.test/items?stradi_tabs[]=42" },
+    );
+
+    expect(activeItems(window)).toEqual(["#42"]);
+    expect(activePanes(window)).toEqual(["42"]);
+  });
+
   describe("with a remote URL", () => {
     const remotePage = () => {
       const window = openPage(
