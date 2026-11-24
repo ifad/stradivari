@@ -78,7 +78,7 @@ RSpec.describe 'Stradivari::Filter::Builder field branches' do
     # one radio per kind plus a final "Any" blank radio (include_blank default).
     expect(doc.css('input[type="radio"]').size).to eq(Widget::KINDS.size + 1)
     expect(doc.css('input[type="radio"][checked]').size).to eq(1)
-    expect(doc.css('input[type="radio"]').map { |input| input['value'] }).to include(*Widget::KINDS, '')
+    expect(doc.css('input[type="radio"]').pluck('value')).to include(*Widget::KINDS, '')
     expect(doc.css('.stradivari-filter__choice-text').map(&:text)).to include('Any')
   end
 

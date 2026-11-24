@@ -95,9 +95,8 @@ module Stradivari
       private
 
       def render_row(object)
-        # rubocop:disable Lint/RedundantTypeConversion -- col.to_s(object) may return a non-String (Integer/Date) when :type is set
+        # rubocop:disable-next Lint/RedundantTypeConversion -- col.to_s(object) may return a non-String (Integer/Date) when :type is set
         [@columns.map { |col| col.to_s(object).to_s.strip }, { types: types, style: @body_style }]
-        # rubocop:enable Lint/RedundantTypeConversion
       end
 
       def types

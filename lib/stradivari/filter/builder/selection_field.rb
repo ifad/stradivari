@@ -10,9 +10,7 @@ module Stradivari
           multiple   = opts.fetch(:multiple, false).to_s == 'true'
           attr       = [attr, (multiple ? 'in' : 'eq')].join('_') unless opts[:is_scoped]
 
-          if collection.is_a?(Array) && collection.first.present? && !collection.first.is_a?(Array)
-            collection = collection.map { |item| [item, item] }
-          end
+          collection = collection.map { |item| [item, item] } if collection.is_a?(Array) && collection.first.present? && !collection.first.is_a?(Array)
 
           radios_max = opts.fetch(:radios_count, 5)
           radios     = !multiple && collection.is_a?(Array) && collection.size <= radios_max
