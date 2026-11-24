@@ -77,5 +77,13 @@ RSpec.describe Stradivari::Filter::Model::ActiveRecord, type: :model do
       result = Widget.search('zzzzznonexistent')
       expect(result.to_a).to eq([])
     end
+
+    it 'lets a block given to the call refine the search' do
+      result = Widget.search('Widget') do |query, search|
+        expect(query).to eq('Widget')
+        search.where(name: 'Widget 2')
+      end
+      expect(result.map(&:name)).to eq(['Widget 2'])
+    end
   end
 end

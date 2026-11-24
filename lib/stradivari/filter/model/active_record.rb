@@ -110,7 +110,7 @@ module Stradivari
             # results.
             define_singleton_method(name) do |query, _options = {}, &block|
               search = public_send("_#{name}", query)
-              search = yield(query, search) if block
+              search = block.call(query, search) if block
 
               search
             end
