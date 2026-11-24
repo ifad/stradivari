@@ -213,7 +213,12 @@ Stradivari.FoldableForm = class {
     const hidden =
       element.style.display === "none" ||
       window.getComputedStyle(element).display === "none";
-    element.style.display = hidden ? "block" : "none";
+    // Drop the hiding classes so an expanded control keeps its own display (flex for number, date range and choice lists)
+    element.classList.remove(
+      "stradivari-filter__control--closed",
+      "stradivari-filter__collapsed",
+    );
+    element.style.display = hidden ? "" : "none";
   }
 
   toggleRadioChoices(formGroup) {
