@@ -1,5 +1,5 @@
 const activateStradivariTab = (link) => {
-  const target = document.querySelector(link.getAttribute("href"));
+  const target = document.getElementById(link.getAttribute("href").slice(1));
 
   if (!target) {
     return null;
