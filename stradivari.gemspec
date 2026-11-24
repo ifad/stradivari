@@ -28,7 +28,7 @@ The shipped stylesheet is plain CSS generated from Tailwind CSS and does not req
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.required_ruby_version = '>= 3.2'
+  spec.required_ruby_version = '>= 3.3'
 
   spec.metadata = {
     'bug_tracker_uri' => 'https://github.com/ifad/stradivari/issues',
