@@ -12,9 +12,17 @@ RSpec.describe Stradivari::Details::Generator do
       field :price
     end
     doc = Nokogiri::HTML.fragment(out)
-    expect(doc.at_css('dl.dl-horizontal')).not_to be_nil
+    expect(doc.at_css('dl.stradivari-details')).not_to be_nil
     labels = doc.css('dt').map(&:text)
     expect(labels).to include('Name', 'Price')
+  end
+
+  it 'keeps the stradivari-details class when the caller passes its own class' do
+    widget = create_widget(name: 'Acme')
+    out = view.details_for(widget, class: 'compact') do
+      field :name
+    end
+    expect(Nokogiri::HTML.fragment(out).at_css('dl')['class']).to eq('stradivari-details compact')
   end
 
   it 'omits fields with blank content (default behavior)' do
