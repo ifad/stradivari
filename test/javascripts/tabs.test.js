@@ -16,9 +16,13 @@ const tabSet = (panes) => `
   <div class="stradivari-tabs__content">
     ${panes
       .map(
-        ({ id: paneId, active }) => `
+        ({
+          id: paneId,
+          active,
+          content = '<div class="loading">Loading...</div>',
+        }) => `
       <div class="stradivari-tabs__pane${active ? " stradivari-tabs__pane--active" : ""}" id="${paneId}">
-        <div class="loading">Loading...</div>
+        ${content}
       </div>`,
       )
       .join("")}
@@ -75,6 +79,26 @@ describe("tabs", () => {
     expect(clickTab(window, "second").defaultPrevented).toBe(true);
     expect(activeItems(window)).toEqual(["#second"]);
     expect(activePanes(window)).toEqual(["second"]);
+  });
+
+  it("keeps the active pane of nested tabs when switching the outer tabs", () => {
+    const window = openPage(
+      tabSet([
+        {
+          id: "outer-a",
+          active: true,
+          content: tabSet([{ id: "inner-a", active: true }, { id: "inner-b" }]),
+        },
+        { id: "outer-b" },
+      ]),
+      ["tabs"],
+    );
+
+    clickTab(window, "outer-b");
+    clickTab(window, "outer-a");
+
+    expect(activeItems(window)).toEqual(["#outer-a", "#inner-a"]);
+    expect(activePanes(window)).toEqual(["outer-a", "inner-a"]);
   });
 
   it("opens the tabs listed in stradi_tabs[] at load, skipping unknown ids", () => {
