@@ -39,8 +39,10 @@ The shipped stylesheet is plain CSS generated from Tailwind CSS and does not req
 
   spec.add_development_dependency 'rake'
 
+  spec.add_dependency 'actionpack'
   spec.add_dependency 'caxlsx'
   spec.add_dependency 'csv'
   spec.add_dependency 'pg_search'
+  spec.add_dependency 'railties'
   spec.add_dependency 'ransack'
 end
