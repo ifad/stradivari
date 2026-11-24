@@ -71,6 +71,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Lint
         run: pnpm lint
+      - name: Run JavaScript tests
+        run: pnpm test:js
       - name: Build stylesheet
         run: pnpm build:css
       - name: Check that the generated stylesheet is up to date

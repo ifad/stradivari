@@ -39,5 +39,11 @@ export default [
       'prefer-const': 'error',
       'prefer-template': 'error'
     }
+  },
+  {
+    files: ['test/javascripts/**/*.js'],
+    languageOptions: {
+      globals: globals.node
+    }
   }
 ];

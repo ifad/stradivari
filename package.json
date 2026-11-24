@@ -4,20 +4,23 @@
   "scripts": {
     "build:css": "tailwindcss -i ./app/assets/tailwind/stradivari.css -o ./app/assets/stylesheets/stradivari/generated.css --minify",
     "format": "pnpm run format:tailwind && pnpm run format:js",
-    "format:js": "prettier --write \"app/assets/javascripts/**/*.js\"",
+    "format:js": "prettier --write \"app/assets/javascripts/**/*.js\" \"test/javascripts/**/*.js\" vitest.config.mjs",
     "format:tailwind": "prettier --write ./app/assets/tailwind/stradivari.css",
     "lint": "pnpm run lint:tailwind && pnpm run lint:format:js && pnpm run lint:js",
-    "lint:format:js": "prettier --check \"app/assets/javascripts/**/*.js\"",
-    "lint:js": "eslint \"app/assets/javascripts/**/*.js\"",
-    "lint:tailwind": "prettier --check ./app/assets/tailwind/stradivari.css"
+    "lint:format:js": "prettier --check \"app/assets/javascripts/**/*.js\" \"test/javascripts/**/*.js\" vitest.config.mjs",
+    "lint:js": "eslint \"app/assets/javascripts/**/*.js\" \"test/javascripts/**/*.js\" vitest.config.mjs",
+    "lint:tailwind": "prettier --check ./app/assets/tailwind/stradivari.css",
+    "test:js": "vitest run"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@tailwindcss/cli": "4.2.2",
     "eslint": "10.2.1",
     "globals": "17.5.0",
+    "jsdom": "31.0.1",
     "prettier": "3.8.3",
     "prettier-plugin-tailwindcss": "0.7.3",
-    "tailwindcss": "4.2.2"
+    "tailwindcss": "4.2.2",
+    "vitest": "5.1.1"
   }
 }
