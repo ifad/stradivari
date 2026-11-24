@@ -8,7 +8,6 @@
   --stradivari-surface-muted: #f8fafc;
   --stradivari-surface-subtle: #f1f5f9;
   --stradivari-surface-emphasis: #ebf5ff;
-  --stradivari-surface-strong: #dbeafe;
   --stradivari-border: #dbe4ee;
   --stradivari-border-strong: #c4d0dd;
   --stradivari-text: #0f172a;
@@ -40,7 +39,6 @@
     --stradivari-surface-muted: #162033;
     --stradivari-surface-subtle: #1b263b;
     --stradivari-surface-emphasis: #0e2a47;
-    --stradivari-surface-strong: #12355a;
     --stradivari-border: #2b3b52;
     --stradivari-border-strong: #42556f;
     --stradivari-text: #e5eefb;
@@ -425,19 +423,6 @@
       border-color var(--stradivari-transition),
       color var(--stradivari-transition);
   }
-  table.selectable tbody tr.selected .stradivari-table__cell {
-    background: var(--stradivari-surface-strong);
-  }
-  table.selectable tbody tr.selected:hover .stradivari-table__cell {
-    background: color-mix(
-      in srgb,
-      var(--stradivari-surface-strong) 85%,
-      var(--stradivari-accent-soft) 15%
-    );
-  }
-  table.selectable tbody tr .select {
-    @apply w-8 p-0.5 text-center;
-  }
 
   .stradivari-tabs__nav {
     @apply m-0 flex list-none gap-2 overflow-x-auto p-0 pb-1;
@@ -499,7 +484,6 @@
     @apply m-0 list-none p-0;
   }
 
-  .dl-horizontal,
   .stradivari-details {
     @apply grid grid-cols-1 md:grid-cols-[minmax(11rem,15rem)_minmax(0,1fr)];
     border: 1px solid var(--stradivari-border);
@@ -508,7 +492,6 @@
     background: var(--stradivari-surface);
     box-shadow: var(--stradivari-shadow);
   }
-  .dl-horizontal dt,
   .stradivari-details dt {
     @apply px-4 py-3 md:px-5 md:py-4;
     background: var(--stradivari-surface-muted);
@@ -516,15 +499,12 @@
     font-weight: 600;
     border-bottom: 1px solid var(--stradivari-border);
   }
-  .dl-horizontal dd,
   .stradivari-details dd {
     @apply m-0 px-4 py-3 md:px-5 md:py-4;
     background: var(--stradivari-surface);
     color: var(--stradivari-text-muted);
     border-bottom: 1px solid var(--stradivari-border);
   }
-  .dl-horizontal dt:last-of-type,
-  .dl-horizontal dd:last-of-type,
   .stradivari-details dt:last-of-type,
   .stradivari-details dd:last-of-type {
     border-bottom: 0;
