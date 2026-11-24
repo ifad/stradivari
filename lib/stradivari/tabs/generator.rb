@@ -100,7 +100,7 @@ module Stradivari
         tabs = @tabs.compact_blank
 
         renderer = if tabs.blank?
-                     blank
+                     -> { view.instance_exec(&blank) }
                    elsif @opts.fetch(:printable, false)
                      render_for_print(tabs)
                    else

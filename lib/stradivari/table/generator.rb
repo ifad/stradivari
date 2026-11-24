@@ -235,7 +235,7 @@ module Stradivari
 
       def generate_no_data
         if @no_data
-          concat(content_tag(:div, class: 'stradivari-table__empty', &@no_data))
+          concat(content_tag(:div, class: 'stradivari-table__empty') { @view.instance_exec(&@no_data) })
         else
           concat content_tag(:div, @opts[:no_data], class: 'stradivari-table__empty')
         end
