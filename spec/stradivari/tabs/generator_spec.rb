@@ -58,6 +58,17 @@ RSpec.describe Stradivari::Tabs::Generator do
       expect(doc.at_css('ul.stradivari-tabs__nav')).to be_nil
     end
 
+    it 'renders the markup of a blank block written in ERB' do
+      out = view_context.render(inline: <<~ERB)
+        <%= tabs_for do %>
+          <% blank do %><div class="warning">Nothing found</div><% end %>
+          <% tab 'Empty', 'empty', [] do |_| %>never<% end %>
+        <% end %>
+      ERB
+      doc = Nokogiri::HTML.fragment(out)
+      expect(doc.at_css('div.warning').text).to eq('Nothing found')
+    end
+
     it 'renders counters by default and hides them when counters: false' do
       view = view_context
       with_counters = view.tabs_for([1, 2, 3]) do |s|

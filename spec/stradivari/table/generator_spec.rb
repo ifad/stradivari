@@ -25,6 +25,17 @@ RSpec.describe Stradivari::Table::Generator do
       end
       expect(out).to include('No widgets at all')
     end
+
+    it 'renders the markup of a no_data block written in ERB' do
+      out = view_context.render(inline: <<~ERB, locals: { foos: [] })
+        <%= table_for foos do %>
+          <% column :id %>
+          <% no_data do %><a class="create" href="/foos/new">Create</a><% end %>
+        <% end %>
+      ERB
+      doc = Nokogiri::HTML.fragment(out)
+      expect(doc.at_css('div.stradivari-table__empty > a.create').text).to eq('Create')
+    end
   end
 
   describe 'sorting icon' do
