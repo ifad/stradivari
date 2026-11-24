@@ -33,7 +33,6 @@ module Stradivari
             'stradivari-filter__choice-list',
             Stradivari::ClassNames.modifier('stradivari-filter__choice-list', type)
           )
-          classes = Builder.prepare_classes(opts, choice_list_classes)
           checkboxes = if type == :multi_line
                          checked_boxes = checked.map { |label, value| cb(name, label, value, true, opts) }
                          if checked.present?
@@ -53,7 +52,7 @@ module Stradivari
           concat content_tag(:div, safe_join([
                                                capture { instance_exec(&Helpers.render_title(name, title, opts)) },
                                                hidden_field(opts[:namespace], "#{name}[]", value: ''),
-                                               content_tag(:div, safe_join(checkboxes), class: classes)
+                                               content_tag(:div, safe_join(checkboxes), Builder.control_attributes(opts, choice_list_classes))
                                              ]), Builder.field_attributes(opts))
         end
       end

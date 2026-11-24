@@ -29,15 +29,11 @@ module Stradivari
         end
 
         def prepare_classes(opts, classes = '')
-          class_list = classes.to_s.split
-          class_list << CONTROL_CLASS if class_list.empty?
-
-          base_class = class_list.first
-
           Stradivari::ClassNames.join(
-            class_list,
-            Stradivari::ClassNames.modifier(base_class, "priority-#{priority(opts)}"),
-            Stradivari::ClassNames.modifier(base_class, :closed, enabled: collapsed?(opts))
+            CONTROL_CLASS,
+            classes,
+            Stradivari::ClassNames.modifier(CONTROL_CLASS, "priority-#{priority(opts)}"),
+            Stradivari::ClassNames.modifier(CONTROL_CLASS, :closed, enabled: collapsed?(opts))
           )
         end
 

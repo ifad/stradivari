@@ -113,4 +113,21 @@ RSpec.describe 'Stradivari::Filter::Builder field branches' do
   it 'reads the selected values of a multiple selection from the _in parameter' do
     expect(Stradivari::Filter::Builder.value({ 'kind_in' => %w[a b] }, 'kind')).to eq(%w[a b])
   end
+
+  it 'closes every inactive low-priority control with the modifier the stylesheet hides' do
+    out = view.filter_for(Widget) do
+      search :name_like, priority: :low
+      number :priced_above, priority: :low
+      date_range :released_on, priority: :low
+      checkbox :kind_chk, collection: Widget::KINDS.dup, priority: :low
+      selection :kind, collection: Widget::KINDS.dup, priority: :low
+      boolean :active, tristate: true, priority: :low
+    end
+    fields = Nokogiri::HTML.fragment(out).css('[data-stradivari-filter-field-wrapper]')
+    expect(fields.size).to eq(6)
+    fields.each do |field|
+      expect(field.css('[data-stradivari-filter-toggle]').size).to eq(1)
+      expect(field.at_css('[data-stradivari-filter-collapsible]')&.classes).to include('stradivari-filter__control--closed')
+    end
+  end
 end
