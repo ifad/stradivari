@@ -1,11 +1,6 @@
 @layer theme, components, utilities;
 @import "tailwindcss/theme" layer(theme);
-@import "tailwindcss/utilities" layer(utilities);
-
-@source "../../../lib/**/*.rb";
-@source "../../../app/assets/javascripts/**/*.js";
-@source not "../../../spec";
-@source not "../../../test";
+@import "tailwindcss/utilities" layer(utilities) source(none);
 
 :root {
   color-scheme: light dark;
