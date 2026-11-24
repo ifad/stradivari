@@ -34,11 +34,29 @@ jobs:
       matrix:
         ruby-version: ['3.3', '3.4', '4.0']
         gemfile: [rails_7.2, rails_8.0, rails_8.1]
+        channel: ['stable']
+
+        include:
+          # Experimental: failures here do not fail the workflow
+          - ruby-version: '4.0'
+            gemfile: rails_edge
+            channel: 'experimental'
+          - ruby-version: 'head'
+            gemfile: rails_8.0
+            channel: 'experimental'
+          - ruby-version: 'head'
+            gemfile: rails_8.1
+            channel: 'experimental'
+          - ruby-version: 'head'
+            gemfile: rails_edge
+            channel: 'experimental'
 
         exclude:
           # Rails 7.2 is security-only and was never updated for Ruby 4.0
           - ruby-version: '4.0'
             gemfile: rails_7.2
+
+    continue-on-error: ${{ matrix.channel == 'experimental' }}
 
     env:
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
