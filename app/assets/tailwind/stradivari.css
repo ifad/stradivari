@@ -5,6 +5,7 @@
 @source "../../../lib/**/*.rb";
 @source "../../../app/assets/javascripts/**/*.js";
 @source "../../../spec/**/*.rb";
+@source not "../../../test";
 
 :root {
   color-scheme: light dark;
