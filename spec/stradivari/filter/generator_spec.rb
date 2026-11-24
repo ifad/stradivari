@@ -20,6 +20,16 @@ RSpec.describe Stradivari::Filter::Generator do
     expect(out).not_to include('panel panel-info')
   end
 
+  it 'makes Search the submit button so Enter in a field submits the form' do
+    out = view.filter_for(Widget) do
+      search :name_like
+      number :priced_above
+    end
+    doc = Nokogiri::HTML.fragment(out)
+    expect(doc.css('form button[type="submit"]').pluck('data-stradivari-filter-action')).to eq(['search'])
+    expect(doc.at_css('button[data-stradivari-filter-action="clear"]')['type']).to eq('button')
+  end
+
   it 'omits the panel when inline: true' do
     out = view.filter_for(Widget, inline: true) do
       search :name_like
